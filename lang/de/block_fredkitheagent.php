@@ -215,3 +215,5 @@ $string['actstepregister'] = 'Registrieren';
 $string['actstepapproval'] = 'Freigabe';
 $string['actstepready'] = 'Fertig';
 $string['actpendingcaption'] = 'Wir prüfen deine Registrierung. Du musst dich nicht erneut registrieren.';
+$string['fredkitheagent:addinstance'] = 'Neuen FredKI-The-Agent-Block hinzufügen';
+$string['fredkitheagent:myaddinstance'] = 'Neuen FredKI-The-Agent-Block zum Dashboard hinzufügen';

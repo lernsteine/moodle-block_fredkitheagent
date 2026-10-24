@@ -80,6 +80,16 @@ jobs:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
+      - name: Collect check output as annotations
+        continue-on-error: true
+        if: ${{ !cancelled() }}
+        run: |
+          for c in "phpcs --max-warnings 0" "phpdoc --max-warnings 0" "validate"; do
+            moodle-plugin-ci $c > /tmp/out.txt 2>&1 || true
+            msg=$(head -c 30000 /tmp/out.txt | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::notice title=${c%% *}::$msg"
+          done
+
       - name: PHP Lint
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phplint

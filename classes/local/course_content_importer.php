@@ -281,6 +281,9 @@ class course_content_importer {
      * Only transfer material that participants may use: visible activities and
      * activities hidden on the course page but available by link. Completely
      * hidden/unavailable trainer-only material is skipped.
+     *
+     * @param \cm_info $sourcecm The sourcecm.
+     * @return bool The result.
      */
     protected function is_available_for_participants(\cm_info $sourcecm): bool {
         // Moodle 5.2: visible=0 denotes a hidden module, even if a trainer

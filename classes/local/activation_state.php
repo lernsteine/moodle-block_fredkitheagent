@@ -54,6 +54,9 @@ final class activation_state {
 
     /**
      * Parse only the response from the authenticated HTTPS activation service.
+     *
+     * @param array $data The data.
+     * @return array The result.
      */
     public static function from_server(array $data): array {
         $state = (string)($data['state'] ?? '');

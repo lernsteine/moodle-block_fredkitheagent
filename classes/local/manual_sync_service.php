@@ -53,6 +53,9 @@ class manual_sync_service {
      * depend on one exact Moodle customfield schema because activity custom fields differ
      * between Moodle versions. It first resolves the original cmid from the generated file path
      * and then reads all customfield_data rows for that cmid.
+     *
+     * @param \stored_file $file The file.
+     * @return string The result.
      */
     public static function get_moodle_activity_profile_tags(\stored_file $file): string {
         // The tags depend only on the source activity, not on the individual file. Cache them per

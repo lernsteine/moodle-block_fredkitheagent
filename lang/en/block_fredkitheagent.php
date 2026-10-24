@@ -216,3 +216,5 @@ $string['actstepregister'] = 'Register';
 $string['actstepapproval'] = 'Approval';
 $string['actstepready'] = 'Ready';
 $string['actpendingcaption'] = 'We are reviewing your registration. You do not need to register again.';
+$string['fredkitheagent:addinstance'] = 'Add a new FredKI The Agent block';
+$string['fredkitheagent:myaddinstance'] = 'Add a new FredKI The Agent block to the Dashboard';

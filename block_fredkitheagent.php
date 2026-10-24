@@ -182,6 +182,9 @@ class block_fredkitheagent extends block_base {
 
     /**
      * Inline stroke icons (static markup, no user data).
+     *
+     * @param string $name The name.
+     * @return string The result.
      */
     protected function ios_icon(string $name): string {
         $paths = [
@@ -207,6 +210,13 @@ class block_fredkitheagent extends block_base {
 
     /**
      * One POST form to sync.php. The big button and the quiet "full check" row share it.
+     *
+     * @param bool $fullcheck The fullcheck.
+     * @param string $label The label.
+     * @param string $busylabel The busylabel.
+     * @param string $icon The icon.
+     * @param string $class The class.
+     * @return string The result.
      */
     protected function render_ios_sync_form(
         bool $fullcheck,
@@ -232,6 +242,10 @@ class block_fredkitheagent extends block_base {
 
     /**
      * iPhone-style card: ONE big button for everything; extras sit quietly behind the gear.
+     *
+     * @param bool $canmanage The canmanage.
+     * @param stdClass|null $rec The rec.
+     * @return string The result.
      */
     protected function render_managed_learning_card(bool $canmanage, ?stdClass $rec): string {
         global $COURSE;

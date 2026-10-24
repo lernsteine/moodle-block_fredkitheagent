@@ -31,6 +31,10 @@ final class import_completion {
     /**
      * A completed import must have inspected a nonempty, accessible snapshot
      * and received remote acknowledgements for all current documents.
+     *
+     * @param array $counts The counts.
+     * @param int $syncedrecords The syncedrecords.
+     * @return bool The result.
      */
     public static function successful(array $counts, int $syncedrecords): bool {
         return empty($counts['emptycapture'])
@@ -42,6 +46,9 @@ final class import_completion {
 
     /**
      * Fail closed even for records written by older, permissive versions.
+     *
+     * @param \stdClass|null $record The record.
+     * @return bool The result.
      */
     public static function chat_ready(?\stdClass $record): bool {
         return $record !== null

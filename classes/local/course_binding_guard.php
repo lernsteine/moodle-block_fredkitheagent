@@ -33,6 +33,10 @@ namespace block_fredkitheagent\local;
 final class course_binding_guard {
     /**
      * Stable identity for the central server. Never use hostname alone.
+     *
+     * @param string $installationid The installationid.
+     * @param int $courseid The courseid.
+     * @return string The result.
      */
     public static function course_key(string $installationid, int $courseid): string {
         if ($courseid < 2 || $installationid === '') {
@@ -43,6 +47,11 @@ final class course_binding_guard {
 
     /**
      * Pure validation, useful for tests without a Moodle database.
+     *
+     * @param int $courseid The courseid.
+     * @param string $knowledgeid The knowledgeid.
+     * @param string $agentid The agentid.
+     * @param array $others The others.
      */
     public static function assert_distinct(int $courseid, string $knowledgeid, string $agentid, array $others): void {
         if ($courseid < 2 || trim($knowledgeid) === '' || trim($agentid) === '') {
@@ -64,6 +73,9 @@ final class course_binding_guard {
 
     /**
      * Verify a knowledge base is not assigned to any other course BEFORE uploading any material.
+     *
+     * @param int $courseid The courseid.
+     * @param string $knowledgeid The knowledgeid.
      */
     public static function assert_knowledge_available(int $courseid, string $knowledgeid): void {
         global $DB;
@@ -91,6 +103,10 @@ final class course_binding_guard {
      * Check existing assignments before accepting a remote binding.
      * Only local Moodle records are visible here; the gateway must also check
      * associations across all installations and customers on the server.
+     *
+     * @param int $courseid The courseid.
+     * @param string $knowledgeid The knowledgeid.
+     * @param string $agentid The agentid.
      */
     public static function assert_available(int $courseid, string $knowledgeid, string $agentid): void {
         global $DB;
@@ -116,6 +132,10 @@ final class course_binding_guard {
 
     /**
      * Ensure an existing assigned ID is never silently changed by an API reply.
+     *
+     * @param \stdClass|null $current The current.
+     * @param string $knowledgeid The knowledgeid.
+     * @param string $agentid The agentid.
      */
     public static function assert_stable(?\stdClass $current, string $knowledgeid, string $agentid): void {
         if (!$current) {

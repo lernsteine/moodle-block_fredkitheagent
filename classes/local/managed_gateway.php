@@ -77,6 +77,9 @@ final class managed_gateway {
 
     /**
      * One-time registration: store both returned credentials server-side, never render them.
+     *
+     * @param string $email The email.
+     * @return array The result.
      */
     public static function register(string $email): array {
         global $CFG;
@@ -158,6 +161,9 @@ final class managed_gateway {
 
     /**
      * Only metadata registered. No content transmission or MaxKB provisioning at this stage.
+     *
+     * @param \stdClass $course The course.
+     * @return array The result.
      */
     public static function register_course(\stdClass $course): array {
         self::require_active();
@@ -190,6 +196,9 @@ final class managed_gateway {
      *
      * The response is bound to the installation ID and course ID using the
      * same deterministic course key as the central licence server.
+     *
+     * @param \stdClass $course The course.
+     * @return array The result.
      */
     public static function ensure_course_registered(\stdClass $course): array {
         self::require_active();
@@ -253,6 +262,9 @@ final class managed_gateway {
 
     /**
      * Prepare or recover the server-owned course knowledge base, without touching the agent.
+     *
+     * @param \stdClass $course The course.
+     * @return array The result.
      */
     public static function prepare_knowledge(\stdClass $course): array {
         self::require_active();
@@ -293,6 +305,7 @@ final class managed_gateway {
      * implement only the idempotent courses/provision endpoint. Fall back only
      * for a missing API route, never for licensing, network or KB failures.
      *
+     * @param \stdClass $course The course.
      * @return array{knowledge_id:string,agent_id?:string,binding_verified?:bool,provision_state:string}
      */
     public static function prepare_or_provision_knowledge(\stdClass $course): array {
@@ -318,6 +331,9 @@ final class managed_gateway {
 
     /**
      * Create or reuse resources through the central service. No admin credentials in Moodle.
+     *
+     * @param \stdClass $course The course.
+     * @return array The result.
      */
     public static function provision_course(\stdClass $course): array {
         self::require_active();
@@ -364,6 +380,14 @@ final class managed_gateway {
 
     /**
      * Send course documents server-to-server. No FredKI account secrets in Moodle.
+     *
+     * @param int $courseid The courseid.
+     * @param string $filekey The filekey.
+     * @param string $contenthash The contenthash.
+     * @param string $file The file.
+     * @param string $filename The filename.
+     * @param string $sourceurl The sourceurl.
+     * @return array The result.
      */
     public static function upload_document(
         int $courseid,
@@ -478,6 +502,11 @@ final class managed_gateway {
 
     /**
      * Server-bound agent lookup: never accept agent IDs from browser/client input.
+     *
+     * @param int $courseid The courseid.
+     * @param string $message The message.
+     * @param array $history The history.
+     * @return string The result.
      */
     public static function send_chat(int $courseid, string $message, array $history): string {
         self::require_active();
@@ -538,6 +567,9 @@ final class managed_gateway {
 
     /**
      * Whitelist of safe details shown only to an administrator.
+     *
+     * @param \Throwable $e The e.
+     * @return string The result.
      */
     public static function safe_error(\Throwable $e): string {
         if ($e instanceof managed_api_diagnostic_exception) {
