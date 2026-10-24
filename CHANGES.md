@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.2 (2026-10-24)
+
+* Database tables are now prefixed with the component name (`block_fredkitheagent`, `block_fredkitheagent_map`,
+  `block_fredkitheagent_design`). Existing installations are migrated automatically by an upgrade step; no data is lost.
+* Capability names (`addinstance`, `myaddinstance`) now have language strings.
+* `install.xml` validates against the Moodle XMLDB schema; PHPDoc of all functions completed; language strings sorted.
+* Continuous integration (moodle-plugin-ci) on Moodle 4.5, 5.0 and 5.1 with PHP 8.2/8.3 passes: PHP lint, Code Checker,
+  PHPDoc, validation, upgrade savepoints and PHPUnit.
+
 ## 1.2.1 (2026-10-24)
 
 * New start state: before the site is activated the block shows a clear card with a single "Start activation" button

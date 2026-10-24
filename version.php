@@ -28,4 +28,4 @@ $plugin->component = 'block_fredkitheagent';
 $plugin->version = 202610240700;
 $plugin->requires = 2024100700;
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '1.2.1';
+$plugin->release = '1.2.2';
