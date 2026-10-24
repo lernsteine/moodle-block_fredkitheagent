@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/fredkitheagent/db" VERSION="202610222301" COMMENT="Install XML for block_fredkitheagent"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+    <TABLES>
+        <TABLE NAME="fredkitheagent" COMMENT="Course records for FredKI The Agent">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="FredKI The Agent"/>
+                <FIELD NAME="knowledgeid" TYPE="char" LENGTH="64" NOTNULL="true"/>
+                <FIELD NAME="knowledgebasename" TYPE="char" LENGTH="255" NOTNULL="false"/>
+                <FIELD NAME="workspace" TYPE="char" LENGTH="64" NOTNULL="true" DEFAULT="default"/>
+                <FIELD NAME="agentid" TYPE="char" LENGTH="64" NOTNULL="false"/>
+                <FIELD NAME="fredkiembedcode" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="fredkichaturl" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="agentcoursevisible" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="status" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="new"/>
+                <FIELD NAME="documentcount" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="tagcount" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="lasterror" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timesynced" TYPE="int" LENGTH="10" NOTNULL="false"/>
+                <FIELD NAME="managedtargetid" TYPE="char" LENGTH="64" NOTNULL="false"/>
+                <FIELD NAME="verifiedat" TYPE="int" LENGTH="10" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="course_uix" UNIQUE="true" FIELDS="course"/>
+            </INDEXES>
+        </TABLE>
+        <TABLE NAME="fredkitheagent_map" COMMENT="Maps generated course content files to FredKI documents">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="activityid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="pathnamehash" TYPE="char" LENGTH="40" NOTNULL="true"/>
+                <FIELD NAME="filename" TYPE="char" LENGTH="255" NOTNULL="true"/>
+                <FIELD NAME="contenthash" TYPE="char" LENGTH="40" NOTNULL="true"/>
+                <FIELD NAME="filesize" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="metahash" TYPE="char" LENGTH="40" NOTNULL="true"/>
+                <FIELD NAME="fredki_document_id" TYPE="char" LENGTH="64" NOTNULL="false"/>
+                <FIELD NAME="fredki_source_file_id" TYPE="char" LENGTH="64" NOTNULL="false"/>
+                <FIELD NAME="status" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="pending"/>
+                <FIELD NAME="lastresult" TYPE="char" LENGTH="20" NOTNULL="false"/>
+                <FIELD NAME="lasterror" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timesynced" TYPE="int" LENGTH="10" NOTNULL="false"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="activity_fk" TYPE="foreign" FIELDS="activityid" REFTABLE="fredkitheagent" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="pathnamehash_uix" UNIQUE="true" FIELDS="activityid, pathnamehash"/>
+                <INDEX NAME="status_ix" UNIQUE="false" FIELDS="status"/>
+            </INDEXES>
+        </TABLE>
+        <TABLE NAME="fredkitheagent_design" COMMENT="Optional visual settings for one course agent; no chat content">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="agentid" TYPE="char" LENGTH="64" NOTNULL="true"/>
+                <FIELD NAME="headercolor" TYPE="char" LENGTH="7" NOTNULL="false"/>
+                <FIELD NAME="accentcolor" TYPE="char" LENGTH="7" NOTNULL="false"/>
+                <FIELD NAME="backgroundcolor" TYPE="char" LENGTH="7" NOTNULL="false"/>
+                <FIELD NAME="botbubblecolor" TYPE="char" LENGTH="7" NOTNULL="false"/>
+                <FIELD NAME="userbubblecolor" TYPE="char" LENGTH="7" NOTNULL="false"/>
+                <FIELD NAME="welcometext" TYPE="char" LENGTH="255" NOTNULL="false"/>
+                <FIELD NAME="footertext" TYPE="char" LENGTH="255" NOTNULL="false"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="course_uix" UNIQUE="true" FIELDS="courseid"/>
+            </INDEXES>
+        </TABLE>
+    </TABLES>
+</XMLDB>

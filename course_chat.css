@@ -1,0 +1,109 @@
+/*
+ * This file is part of Moodle - http://moodle.org/
+ * Moodle is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version. Moodle is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY. See http://www.gnu.org/licenses/ .
+ *
+ * @package    block_fredkitheagent
+ * @copyright  2026 lernsteine.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+/* Normal Moodle content page; no overlay, floating widget or public embedding. */
+.fredki-course-chat{--fredki-accent:#007f91;--fredki-header:#e7f3fb;--fredki-bg:#f5f7fa;max-width:990px;min-height:min(75vh,780px);margin:20px auto 28px;border-radius:14px;border:1px solid #dce5eb;background:var(--fredki-bg);box-shadow:0 6px 25px #13273512;display:flex;flex-direction:column;overflow:hidden;color:#1d2937}
+.fredki-course-header{background:var(--fredki-header);padding:18px 22px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #dce5eb}
+.fredki-course-logo{height:49px;width:49px;object-fit:contain;border-radius:12px;background:#fff}
+.fredki-course-header strong{font-size:20px;line-height:1.4;display:block}.fredki-course-header span{font-size:13px;color:#506071}
+.fredki-course-back{font-size:13px;padding-right:12px;white-space:nowrap;color:var(--fredki-accent)}
+.fredki-course-messages{flex:1;min-height:300px;max-height:66vh;overflow-y:auto;padding:23px 26px;display:flex;flex-direction:column;gap:15px}
+.fredki-course-message{font-size:16px;line-height:1.6;border-radius:14px;padding:14px 17px;max-width:85%;white-space:pre-wrap;overflow-wrap:anywhere;background:#fff;border:1px solid #e4e9ef}
+.fredki-course-message.user{align-self:flex-end;background:#def1f5;border-color:#c7e1e8}.fredki-course-message.bot{align-self:flex-start}
+.fredki-course-form{display:flex;align-items:end;gap:10px;background:#fff;padding:15px 20px;border-top:1px solid #dce5eb}
+.fredki-course-form textarea{flex:1;min-width:0;resize:vertical;min-height:56px;max-height:170px;border:1px solid #cbd7e1;border-radius:12px;padding:12px 14px;background:#fff;color:#172536}
+.fredki-course-send{background:var(--fredki-accent);border:0;border-radius:10px;padding:15px 20px;color:#fff;font-weight:700}
+.fredki-course-send:disabled{opacity:.5;cursor:wait}.fredki-course-footer{text-align:center;font-size:12px;color:#778393;background:#fff;padding:8px}
+@media(max-width:650px){.fredki-course-chat{margin:0;border-radius:6px}.fredki-course-header{flex-wrap:wrap;padding:12px}.fredki-course-messages{padding:14px}.fredki-course-message{max-width:96%}.fredki-course-form{padding:10px}}
+
+/* Embedding inside the protected Moodle popover: no duplicated course navigation. */
+body.fredkitheagent-embedded-chat {margin:0!important;padding:0!important;overflow:hidden!important}
+body.fredkitheagent-embedded-chat #page,body.fredkitheagent-embedded-chat #page-content,
+body.fredkitheagent-embedded-chat #region-main,
+body.fredkitheagent-embedded-chat #region-main-box {height:100%;min-height:0!important;padding:0!important;margin:0!important}
+body.fredkitheagent-embedded-chat .fredki-course-chat {width:100%;max-width:none;height:100dvh;
+    min-height:0;margin:0;border:0;border-radius:0;box-shadow:none}
+body.fredkitheagent-embedded-chat .fredki-course-messages {min-height:0;max-height:none}
+
+body.fredkitheagent-embedded-chat .fredki-course-header {padding-right:66px}
+
+/* Three unobtrusive, animated dots only while the protected chat request is pending. */
+.fredki-course-message.fredki-typing{display:inline-flex;align-items:center;gap:6px;min-height:52px;min-width:84px;padding:15px 18px}
+.fredki-typing-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--fredki-accent,#007f91);opacity:.28;animation:fredki-typing-pulse 1.3s ease-in-out infinite both}
+.fredki-typing-dot:nth-child(2){animation-delay:.17s}
+.fredki-typing-dot:nth-child(3){animation-delay:.34s}
+@keyframes fredki-typing-pulse{0%,60%,100%{opacity:.28;transform:translateY(0)}30%{opacity:1;transform:translateY(-5px)}}
+@media(prefers-reduced-motion:reduce){.fredki-typing-dot{animation:none;opacity:.8}}
+
+
+/* Light, spacious protected chat – only within FredKI's own chat component. */
+.fredki-course-chat{background:var(--fredki-bg,#f5f7fa)!important;border-color:#e5e8f5!important;
+    border-radius:20px!important;color:#182849!important;box-shadow:none!important}
+.fredki-course-header{padding:17px 18px;background:var(--fredki-header,#e7f3fb)!important;
+    border-bottom-color:#ebedf5!important}
+.fredki-course-header strong{font-size:17px;letter-spacing:-.03em;color:#1c2c53}
+.fredki-course-header span{font-size:11px;color:#7b86a1}
+.fredki-course-logo{width:39px;height:39px;border-radius:50%;background:#fff}
+.fredki-course-messages{padding:19px 15px;gap:13px;scrollbar-width:thin;scrollbar-color:#c9d1e9 transparent}
+.fredki-course-message{font-size:14px;line-height:1.53;max-width:91%;border-radius:18px;
+    background:#f5f2ff;border-color:transparent;padding:12px 14px;color:#243254}
+.fredki-course-message.user{background:#e9f4ff;border:0}
+.fredki-course-form{padding:10px 11px;border-top-color:#e8ecf4;background:#fff}
+.fredki-course-form textarea{min-height:46px;max-height:150px;border-color:#dfe5f1;border-radius:14px;font-size:13px;padding:10px 12px}
+.fredki-course-send{background:var(--fredki-accent,#007f91);color:#fff;border-radius:14px;font-size:12px;padding:14px 12px}
+.fredki-course-footer{background:#fff;font-size:10px;color:#8b94ad}
+/* Embedded Moodle 5.x standard layout: never show drawers or navigation inside chat iframe. */
+body.fredkitheagent-embedded-chat #page-header,
+body.fredkitheagent-embedded-chat #page-navbar,
+body.fredkitheagent-embedded-chat #page-footer,
+body.fredkitheagent-embedded-chat .secondary-navigation,
+body.fredkitheagent-embedded-chat .drawer,
+body.fredkitheagent-embedded-chat nav.navbar,
+body.fredkitheagent-embedded-chat #nav-drawer,
+body.fredkitheagent-embedded-chat #theme_boost-drawers-blocks{display:none!important}
+body.fredkitheagent-embedded-chat #page-wrapper,
+body.fredkitheagent-embedded-chat #page,
+body.fredkitheagent-embedded-chat #page-content,
+body.fredkitheagent-embedded-chat #region-main,
+body.fredkitheagent-embedded-chat #region-main-box{margin:0!important;padding:0!important;max-width:none!important;min-width:0!important}
+body.fredkitheagent-embedded-chat .fredki-course-chat{height:100dvh!important;min-height:0!important;
+    width:100%!important;margin:0!important;border:0!important;border-radius:0!important}
+body.fredkitheagent-embedded-chat .fredki-course-messages{min-height:0!important;max-height:none!important;flex:1 1 0!important}
+
+/* Per-course agent design (fallbacks preserve site-wide styling). */
+.fredki-course-chat .fredki-course-message.bot{background:var(--fredki-botbubble,#f5f2ff)!important}
+.fredki-course-chat .fredki-course-message.user{background:var(--fredki-userbubble,#e9f4ff)!important}
+.fredki-course-message .fredki-word{opacity:0;animation:fredki-wordin .7s ease-out forwards}
+@keyframes fredki-wordin{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+.fredki-reveal-skip{font-size:11px;align-self:flex-start;border:1px solid #cfd9e5;background:#fff;color:#405371;border-radius:999px;padding:5px 11px;cursor:pointer;margin:-7px 0 5px 6px}
+@media(prefers-reduced-motion:reduce){.fredki-course-message .fredki-word{animation:none;opacity:1}}
+
+/* alpha14.16: formatted (Markdown) answers */
+.fredki-course-message.fredki-md{white-space:normal;line-height:1.6}
+.fredki-md [hidden]{display:none!important}
+.fredki-md>*:first-child{margin-top:0!important}
+.fredki-md>*:last-child{margin-bottom:0!important}
+.fredki-md p{margin:0 0 .75em}
+.fredki-md strong{font-weight:700}
+.fredki-md h3,.fredki-md h4,.fredki-md h5,.fredki-md h6{margin:1em 0 .4em;font-size:1.05em;font-weight:700;line-height:1.35}
+.fredki-md ul,.fredki-md ol{margin:.2em 0 .8em;padding-left:1.5em}
+.fredki-md li{margin:.3em 0;padding-left:.15em}
+.fredki-md li::marker{color:var(--fredki-accent,#007f91);font-weight:600}
+.fredki-md li>ul,.fredki-md li>ol{margin:.3em 0 .2em}
+.fredki-md code{padding:.1em .38em;border-radius:6px;background:rgba(20,40,80,.07);font-size:.9em;overflow-wrap:anywhere}
+.fredki-md pre{margin:.4em 0 .9em;padding:11px 13px;border-radius:10px;background:rgba(20,40,80,.07);overflow-x:auto;white-space:pre}
+.fredki-md pre code{padding:0;background:transparent}
+.fredki-md blockquote{margin:.4em 0 .9em;padding:.1em 0 .1em 13px;border-left:3px solid var(--fredki-accent,#007f91);color:#4d5d78}
+.fredki-md hr{margin:1em 0;border:0;border-top:1px solid rgba(20,40,80,.14)}
+.fredki-md a{color:var(--fredki-accent,#007f91);text-decoration:underline;text-underline-offset:2px}
+.fredki-md table{display:block;max-width:100%;overflow-x:auto;margin:.4em 0 .9em;border-collapse:collapse;font-size:.94em}
+.fredki-md th,.fredki-md td{padding:6px 10px;border:1px solid rgba(20,40,80,.14);text-align:left;vertical-align:top}
+.fredki-md th{background:rgba(20,40,80,.05);font-weight:700}

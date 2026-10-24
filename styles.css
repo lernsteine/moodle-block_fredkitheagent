@@ -1,0 +1,1156 @@
+/*
+ * This file is part of Moodle - http://moodle.org/
+ * Moodle is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version. Moodle is distributed in the hope
+ * that it will be useful, but WITHOUT ANY WARRANTY. See http://www.gnu.org/licenses/ .
+ *
+ * @package    block_fredkitheagent
+ * @copyright  2026 lernsteine.com
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+.fredki-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 12px 0 18px 0;
+}
+
+.fredki-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 10px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.fredki-actions-inline {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 16px;
+    flex-wrap: wrap;
+}
+
+.fredki-btn-main {
+    display: inline-flex !important;
+    justify-content: center;
+    width: 100%;
+    max-width: 420px;
+    padding: 14px 18px !important;
+    font-size: 1.08rem;
+    font-weight: 600;
+}
+
+/* Soft green */
+.fredki-btn-sync {
+    background: #e6f4ea !important;
+    border: 1px solid #b7e1c1 !important;
+    color: #000 !important;
+}
+
+.fredki-btn-sync:hover,
+.fredki-btn-sync:focus {
+    background: #d7eedf !important;
+    border-color: #b7e1c1 !important;
+    color: #000 !important;
+}
+
+/* Soft red */
+.fredki-btn-delete {
+    background: #fdecea !important;
+    border: 1px solid #f5c2c0 !important;
+    color: #000 !important;
+}
+
+.fredki-btn-delete:hover,
+.fredki-btn-delete:focus {
+    background: #fbdada !important;
+    border-color: #f5c2c0 !important;
+    color: #000 !important;
+}
+
+.fredki-btn-edit {
+    background: #eef2f7 !important;
+    border: 1px solid #cfd7e3 !important;
+    color: #000 !important;
+}
+
+.fredki-btn-edit:hover,
+.fredki-btn-edit:focus {
+    background: #e4e9f0 !important;
+    border-color: #cfd7e3 !important;
+    color: #000 !important;
+}
+
+.fredki-summary {
+    margin-bottom: 18px;
+}
+
+.fredki-summary-card {
+    border: 1px solid #d9e2ef;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+
+.fredki-summary-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.15rem;
+}
+
+.fredki-summary-inline {
+    margin: 8px 0 14px;
+    padding: 10px 14px;
+    background: #f5f7fa;
+    border: 1px solid #e1e7f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    color: #1f2b3d;
+}
+
+.fredki-meta-label,
+.fredki-meta-main,
+.fredki-meta-id,
+.fredki-meta-author {
+    color: #1f2b3d;
+}
+
+.fredki-meta-sep {
+    color: #9aa7b8;
+}
+
+.fredki-subtle-heading {
+    margin: 0 0 12px 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.fredki-definition-list {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+}
+
+.fredki-definition-list dt {
+    font-weight: 600;
+    margin: 0;
+}
+
+.fredki-definition-list dd {
+    margin: 0;
+}
+
+.fredki-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 8px 0 20px 0;
+}
+
+.fredki-stat-card {
+    background: #f8fafc;
+    border: 1px solid #d9e2ef;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.fredki-stat-label {
+    font-size: 0.92rem;
+    color: #465468;
+    margin-bottom: 8px;
+}
+
+.fredki-stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.fredki-toggle-group {
+    margin-top: 18px;
+}
+
+.fredki-toggle {
+    border-top: 1px solid #d9e2ef;
+    padding-top: 10px;
+    margin-top: 8px;
+}
+
+.fredki-toggle-link {
+    cursor: pointer;
+    color: #0f6cbf;
+    text-decoration: underline;
+    list-style: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.fredki-toggle summary::-webkit-details-marker {
+    display: none;
+}
+
+.fredki-toggle-link::after {
+    content: ' ▾';
+}
+
+.fredki-toggle[open] .fredki-toggle-link::after {
+    content: ' ▴';
+}
+
+.fredki-toggle-content {
+    margin: 10px 0 16px 0;
+}
+
+.fredki-progress-card {
+    border: 1px solid #d9e2ef;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 10px 0 18px 0;
+}
+
+.fredki-progress-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #465468;
+    margin-bottom: 10px;
+}
+
+.fredki-progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+    color: #465468;
+}
+
+.fredki-progress-track {
+    width: 100%;
+    height: 12px;
+    background: #e8eef6;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.fredki-progress-fill {
+    height: 100%;
+    background: #0f6cbf;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.fredki-progress-running {
+    display: none;
+    margin-top: 8px;
+}
+
+.fredki-progress-running.is-visible {
+    display: block;
+}
+
+.fredki-progress-running .fredki-progress-fill {
+    background: linear-gradient(90deg, #0f6cbf 25%, #6ea8da 50%, #0f6cbf 75%);
+    background-size: 200% 100%;
+    animation: fredki-loading 1.6s linear infinite;
+    transition: width 0.35s ease;
+}
+
+#fredki-progress-status {
+    font-weight: 500;
+}
+
+.fredki-mini-live-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #4b5b73;
+}
+
+.fredki-mini-live-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #9aa7b8;
+    display: inline-block;
+}
+
+.fredki-mini-live-dot.is-running {
+    background: #2d74da;
+    box-shadow: 0 0 0 0 rgba(45, 116, 218, 0.45);
+    animation: fredkiPulse 1.4s infinite;
+}
+
+@keyframes fredkiPulse {
+    0% { box-shadow: 0 0 0 0 rgba(45, 116, 218, 0.45); }
+    70% { box-shadow: 0 0 0 8px rgba(45, 116, 218, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(45, 116, 218, 0); }
+}
+
+@keyframes fredki-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: 0 0; }
+}
+.fredki-selection-form {
+    margin-top: 1.25rem;
+}
+
+.fredki-selection-intro {
+    margin-bottom: 1rem;
+    color: #495057;
+}
+
+.fredki-selection-toolbar {
+    display: flex;
+    align-items: baseline;
+    gap: .25rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.fredki-selection-toolbar-label {
+    font-weight: 700;
+    margin-right: .25rem;
+}
+
+.fredki-selection-link {
+    padding: 0;
+    border: 0;
+    color: #8d1f12;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.fredki-selection-link:hover,
+.fredki-selection-link:focus {
+    color: #681509;
+    text-decoration: underline;
+}
+
+.fredki-selection-separator {
+    color: #8d1f12;
+    font-weight: 700;
+}
+
+.fredki-section-card {
+    border: 1px solid #dee2e6;
+    border-radius: .75rem;
+    background: #fff;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.fredki-section-card-special {
+    background: #f8f9fa;
+}
+
+.fredki-section-heading {
+    font-weight: 700;
+    padding: .9rem 1rem;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.fredki-selection-row {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .75rem 1rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+.fredki-selection-row:nth-child(even) {
+    background: #f7f7f7;
+}
+
+.fredki-selection-row input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: 0 0 auto;
+}
+
+.fredki-selection-content {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    min-width: 0;
+}
+
+.fredki-selection-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.fredki-selection-title {
+    font-weight: 600;
+}
+
+.fredki-selection-type {
+    color: #6c757d;
+    font-size: .85rem;
+    margin-left: .35rem;
+}
+
+
+.fredki-selection-link.is-active {
+    display: inline-block;
+    padding: 0 0 2px 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 3px solid #00a8c6;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+
+.fredki-selection-row-hidden .fredki-selection-title {
+    color: #495057;
+}
+
+.fredki-hidden-note {
+    color: #6c757d;
+    font-size: .85rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+
+.fredki-form-info {
+    max-width: 760px;
+    line-height: 1.55;
+}
+
+.fredki-status-card {
+    border: 1px solid #bfe3ea;
+    background: #e9f7fa;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 12px 0 22px 0;
+    color: #102a3a;
+}
+
+.fredki-status-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.fredki-status-list {
+    display: grid;
+    gap: 7px;
+}
+
+.fredki-status-row {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    font-size: 1rem;
+}
+
+.fredki-status-row.is-done .fredki-status-icon {
+    color: #16833a;
+    font-weight: 800;
+}
+
+.fredki-status-row.is-open .fredki-status-icon {
+    color: #6b7280;
+    font-weight: 800;
+}
+
+.fredki-status-meta {
+    border-top: 1px solid rgba(16, 42, 58, .16);
+    margin-top: 14px;
+    padding-top: 12px;
+    font-size: .92rem;
+}
+
+.fredki-status-meta-line + .fredki-status-meta-line {
+    margin-top: 4px;
+}
+
+.fredki-status-meta-label {
+    font-weight: 700;
+}
+
+/* FredKI The Agent course block */
+.block_fredkitheagent .content {
+    overflow: visible;
+}
+
+.fredkitheagent-brand-card {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, .10);
+}
+
+.fredkitheagent-brand-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.fredkitheagent-brand-title {
+    min-width: 0;
+    font-size: 1.35rem;
+    line-height: 1.2;
+    color: #111827;
+    font-weight: 500;
+}
+
+.fredkitheagent-brand-logo {
+    width: 68px;
+    max-width: 30%;
+    height: auto;
+    object-fit: contain;
+    flex: 0 0 auto;
+}
+
+.fredkitheagent-brand-card .fredkitheagent-actions {
+    margin: 0 0 14px 0;
+}
+
+.fredkitheagent-brand-card .fredkitheagent-actions,
+.fredkitheagent-brand-card .fredkitheagent-actions form {
+    width: 100%;
+}
+
+.fredkitheagent-sync-hero {
+    display: inline-flex !important;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    border: 1px solid #0f6cbf !important;
+    border-radius: 10px;
+    background-color: #0f6cbf !important;
+    background-color: var(--bs-primary, #0f6cbf) !important;
+    color: #fff !important;
+    text-align: center;
+    text-decoration: none !important;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.35 !important;
+    font-weight: 600;
+    white-space: normal;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.fredkitheagent-sync-hero:hover,
+.fredkitheagent-sync-hero:focus {
+    color: #fff !important;
+    text-decoration: none !important;
+    filter: brightness(1.08);
+}
+
+.fredkitheagent-brand-status {
+    margin-top: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: .95rem;
+    line-height: 1.35;
+}
+
+.fredkitheagent-brand-status.is-open {
+    background: #f8fafc;
+    color: #4b5563;
+    border: 1px solid #e5e7eb;
+}
+
+.fredkitheagent-brand-status.is-running {
+    background: #fff7ed;
+    color: #7c2d12;
+    border: 1px solid #fed7aa;
+}
+
+.fredkitheagent-brand-status.is-done {
+    background: #ecfdf3;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.fredkitheagent-student-embed-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+    .fredkitheagent-brand-card {
+        padding: 16px;
+    }
+    .fredkitheagent-brand-head {
+        margin-bottom: 20px;
+    }
+    .fredkitheagent-brand-title {
+        font-size: 1.25rem;
+    }
+    .fredkitheagent-brand-logo {
+        width: 58px;
+        max-width: 28%;
+    }
+    .fredkitheagent-sync-hero {
+        font-size: .96rem;
+        padding: 12px 14px;
+    }
+}
+
+
+/* Final compact block layout: Titeltext verbergen, aber Moodle-Header/Aktionsmenü erhalten. */
+.block_fredkitheagent .card-title,
+.block_fredkitheagent .block-title,
+.block_fredkitheagent h5.card-title {
+    font-size: 0 !important;
+    line-height: 0 !important;
+    margin: 0 !important;
+}
+.block_fredkitheagent .card-title::before,
+.block_fredkitheagent .block-title::before,
+.block_fredkitheagent h5.card-title::before {
+    content: '' !important;
+}
+/* Header nicht ausblenden: sonst fehlen Löschen/Verschieben im Bearbeitungsmodus. */
+.block_fredkitheagent .header {
+    min-height: 0 !important;
+}
+
+.fredkitheagent-brand-card {
+    padding: 14px 16px;
+    border-radius: 12px;
+}
+
+.fredkitheagent-brand-head {
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.fredkitheagent-brand-title {
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.15;
+    white-space: nowrap;
+}
+
+.fredkitheagent-brand-logo {
+    width: 52px;
+    max-width: 24%;
+}
+
+.fredkitheagent-sync-hero {
+    font-size: .92rem;
+    line-height: 1.28 !important;
+    min-height: 42px !important;
+    padding: 11px 12px !important;
+    border-radius: 9px;
+}
+
+.fredkitheagent-brand-status {
+    font-size: .86rem;
+    line-height: 1.25;
+    padding: 8px 10px;
+    border-radius: 9px;
+}
+
+@media (max-width: 420px) {
+    .fredkitheagent-brand-title {
+        font-size: 1rem;
+    }
+    .fredkitheagent-brand-logo {
+        width: 46px;
+    }
+    .fredkitheagent-sync-hero {
+        font-size: .88rem;
+    }
+    .fredkitheagent-brand-status {
+        font-size: .82rem;
+    }
+}
+
+.block_fredkitheagent .fredki-sync-help,
+.block_fredkitheagent .fredki-status-help {
+    display: inline-flex;
+    align-items: center;
+    margin-left: .35rem;
+    vertical-align: middle;
+}
+.block_fredkitheagent .fredki-sync-row,
+.block_fredkitheagent .fredki-status-row {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+}
+.block_fredkitheagent .fredki-sync-row .fredki-sync-button {
+    flex: 1 1 auto;
+}
+
+/* FredKI The Agent: Hilfeicons inline und Logo etwas größer */
+.block_fredkitheagent .fredki-help-separator {
+    display: inline-block;
+    margin: 0 .35rem;
+    opacity: .65;
+    font-weight: 600;
+}
+.block_fredkitheagent .helptooltip,
+.block_fredkitheagent .helptooltip a {
+    vertical-align: middle;
+}
+.block_fredkitheagent .fredki-status,
+.block_fredkitheagent .fredki-statusbox,
+.block_fredkitheagent .fredki-ready {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    flex-wrap: wrap;
+}
+.block_fredkitheagent img[src*="fredki"],
+.block_fredkitheagent img[src*="FredKI"],
+.block_fredkitheagent .fredki-logo img,
+.block_fredkitheagent .fredkitheagent-logo img {
+    width: 52px !important;
+    max-width: 52px !important;
+    height: auto !important;
+}
+
+/* FredKI The Agent final help layout */
+.block_fredkitheagent .fredkitheagent-brand-head {
+    align-items: flex-start;
+}
+.block_fredkitheagent .fredkitheagent-brand-title {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    min-width: 0;
+}
+.block_fredkitheagent .fredkitheagent-brand-title-text {
+    display: inline-block;
+    white-space: nowrap;
+}
+.block_fredkitheagent .fredkitheagent-title-help {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+.block_fredkitheagent .fredkitheagent-title-help .helptooltip,
+.block_fredkitheagent .fredkitheagent-title-help a {
+    display: inline-flex;
+    align-items: center;
+}
+.block_fredkitheagent .fredkitheagent-sync-hero .helptooltip,
+.block_fredkitheagent .fredkitheagent-sync-hero .fredki-help-separator,
+.block_fredkitheagent .fredkitheagent-brand-status .helptooltip,
+.block_fredkitheagent .fredkitheagent-brand-status .fredki-help-separator {
+    display: none !important;
+}
+.block_fredkitheagent .fredkitheagent-brand-logo {
+    width: 58px;
+    max-width: 28%;
+}
+@media (max-width: 420px) {
+    .block_fredkitheagent .fredkitheagent-brand-title {
+        gap: .35rem;
+    }
+    .block_fredkitheagent .fredkitheagent-brand-logo {
+        width: 52px;
+    }
+}
+
+/* FredKI MaxKB mobile chat button */
+@media (max-width: 768px) {
+  [id^="maxkb-"] .maxkb-chat-button {
+    transform: translateY(-110px) scale(0.7) !important;
+    transform-origin: bottom right !important;
+  }
+}
+
+/* Managed-mode iframe: content is rendered by the Moodle-local FredKI ChatCustom plugin. */
+/* The course block only contains a launcher; never a nested Moodle page. */
+/* Standalone protected chat link, without floating overlays. */
+.fredki-course-chat-link{display:block;text-align:center;padding:10px 13px;border:1px solid #c0d7df;border-radius:8px;color:#005b70;background:#e7f4f7;text-decoration:none;font-weight:650}
+.fredki-course-chat-link:hover{background:#d3edf3;text-decoration:underline}
+
+
+/* Single-button course card with delayed chat launcher */
+.fredkitheagent-chat-launcher {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.fredkitheagent-chat-launcher-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: 0;
+    background: transparent;
+}
+
+.fredkitheagent-chat-launcher-image {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    transition: transform .18s ease, filter .18s ease;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.12));
+}
+
+.fredkitheagent-chat-launcher-link:hover .fredkitheagent-chat-launcher-image,
+.fredkitheagent-chat-launcher-link:focus .fredkitheagent-chat-launcher-image {
+    transform: scale(1.05);
+    filter: drop-shadow(0 7px 16px rgba(0,0,0,.16));
+}
+
+
+/* FredKI Alpha 8: fixed, site-wide chat launcher, independent of Boost block drawers. */
+.fredkitheagent-floating-root {position:fixed;right:22px;bottom:20px;z-index:11000;pointer-events:none}
+.fredkitheagent-floating-trigger {display:grid;place-items:center;width:72px;height:72px;border-radius:22px;
+    background:#fff;border:1px solid #dce5ec;box-shadow:0 8px 22px rgba(10,33,51,.2);
+    pointer-events:auto;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
+.fredkitheagent-floating-trigger:hover,.fredkitheagent-floating-trigger:focus-visible {transform:translateY(-3px);
+    box-shadow:0 13px 28px rgba(10,33,51,.25);outline-offset:3px}
+.fredkitheagent-floating-icon {width:55px!important;height:55px!important;max-width:55px!important;object-fit:contain}
+.fredkitheagent-floating-panel {position:absolute;right:0;bottom:86px;width:min(440px,calc(100vw - 32px));
+    height:min(660px,calc(100dvh - 130px));display:flex;flex-direction:column;overflow:hidden;
+    border-radius:18px;background:#fff;box-shadow:0 18px 65px rgba(0,0,0,.25);
+    border:1px solid #dce5ec;pointer-events:auto}
+.fredkitheagent-floating-panel[hidden] {display:none!important}
+.fredkitheagent-floating-header {display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 18px;color:#fff;background:#007f91;font-weight:650}
+.fredkitheagent-floating-close {appearance:none;border:0;background:transparent;color:#fff;font-size:28px;
+    cursor:pointer;line-height:1;padding:0 5px}
+.fredkitheagent-floating-frame {flex:1;width:100%;height:100%;border:0;background:#f5f7fa}
+@media(max-width:560px){.fredkitheagent-floating-root{right:12px;bottom:12px}
+    .fredkitheagent-floating-trigger{width:64px;height:64px;border-radius:20px}
+    .fredkitheagent-floating-icon{width:47px!important;height:47px!important}
+    .fredkitheagent-floating-panel{position:fixed;right:0;top:0;bottom:0;width:100vw;height:100dvh;border-radius:0}}
+
+/* The Moodle-local chat already has its own coloured header; overlay only a close control. */
+.fredkitheagent-floating-header {position:absolute;top:10px;right:10px;z-index:2;display:block;
+    padding:0;background:transparent;color:inherit}
+.fredkitheagent-floating-close {display:grid;place-items:center;width:40px;height:40px;border:0;
+    border-radius:50%;background:#fff;color:#263746;box-shadow:0 1px 7px rgba(0,0,0,.12);font-size:27px}
+
+
+/* FredKI The Agent alpha14: refreshed Moodle Block design (protected managed mode only).
+   All selectors are restricted to the block; no global Moodle theme overrides. */
+.block_fredkitheagent .card-body {padding:0.6rem!important}
+.block_fredkitheagent .fredki-next-card {
+    --fk-ink:#16284d;
+    --fk-muted:#70819f;
+    --fk-line:#e4e9f2;
+    --fk-soft:#f7f9fc;
+    --fk-purple:#635bff;
+    --fk-green:#15b887;
+    color:var(--fk-ink);
+    background:#fff;
+    border:1px solid var(--fk-line);
+    border-radius:32px;
+    padding:24px 22px 20px;
+    box-shadow:0 18px 45px rgba(24,39,75,.05);
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+    min-width:0;
+}
+.block_fredkitheagent .fredki-next-card * {box-sizing:border-box}
+.block_fredkitheagent .fredki-next-head {display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:16px;margin-bottom:14px}
+.block_fredkitheagent .fredki-next-statusrow {display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 18px}
+.block_fredkitheagent .fredki-next-orb {margin:8px;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 34% 28%,#7568ff 0,#3b31b8 34%,#161d75 72%,#111750 100%);box-shadow:inset 8px 12px 20px rgba(255,255,255,.16),0 0 0 10px rgba(126,104,255,.08);display:grid;place-items:center;position:relative;flex:none}
+.block_fredkitheagent .fredki-next-orb-eyes {font-size:17px;letter-spacing:8px;color:#8ef7ef;transform:translateX(4px)}
+.block_fredkitheagent .fredki-next-headcopy {min-width:0}
+.block_fredkitheagent .fredki-next-headcopy strong {display:block;font-size:clamp(22px,2.6vw,28px);font-weight:800;line-height:1.1;letter-spacing:-.02em;text-wrap:balance;overflow-wrap:break-word;word-break:normal;margin:0 0 6px}
+.block_fredkitheagent .fredki-next-headcopy small {display:block;font-size:14px;line-height:1.45;color:var(--fk-muted)}
+.block_fredkitheagent .fredki-next-status {display:inline-flex;align-items:center;gap:10px;white-space:nowrap;justify-self:start;padding:12px 22px;border-radius:999px;background:#edf8f3;color:#0f9b73;font-size:13px;font-weight:800;line-height:1}
+.block_fredkitheagent .fredki-next-status::before{content:'';width:14px;height:14px;border-radius:50%;background:#11bb89;box-shadow:0 0 0 4px rgba(17,187,137,.08)}
+.block_fredkitheagent .fredki-next-status.is-pending,.block_fredkitheagent .fredki-next-status.is-ready{background:#edf8f3;color:#0f9b73}
+.block_fredkitheagent .fredki-next-designlink {align-self:center;justify-self:start;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid transparent;background:transparent;color:#6f7d96;text-decoration:none;font-size:24px;line-height:1;margin-left:2px}
+.block_fredkitheagent .fredki-next-designlink:hover{background:#f7f9fc;border-color:var(--fk-line);color:#495a76}
+.block_fredkitheagent .fredki-next-success{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;padding:16px 18px;margin:18px 0;border-radius:28px;background:#f3f8f6;border:1px solid #e4efea;box-shadow:none}
+.block_fredkitheagent .fredki-next-check{width:74px;height:74px;border-radius:50%;background:#1cc49b;color:#fff;display:grid;place-items:center;font-size:32px;font-weight:800;box-shadow:none}
+.block_fredkitheagent .fredki-next-success strong{display:block;font-size:18px;line-height:1.25;margin-bottom:6px}
+.block_fredkitheagent .fredki-next-success p{margin:0;color:#647693;font-size:15px;line-height:1.5}
+.fredki-next-chatcheck{display:flex;align-items:center;gap:14px;margin:14px 0 10px;padding:18px 18px;border:1px solid var(--fk-line);border-radius:24px;background:#fff;cursor:pointer;color:#1f3358;font-weight:750;box-shadow:none}
+.fredki-next-chatcheck-input{width:18px;height:18px;accent-color:#655cff;cursor:pointer;flex:none}
+.fredki-next-chatcheck span{font-size:16px;line-height:1.35}
+.block_fredkitheagent .fredki-next-visibility-result{display:block;min-height:18px;margin:6px 2px 0;color:#6c7a92;font-size:12px}
+.block_fredkitheagent .fredki-next-card .fredkitheagent-actions{margin:0}
+.block_fredkitheagent .fredki-resync-quick{margin-top:8px;padding-top:6px}
+.block_fredkitheagent .fredki-resync-quick form{margin:0}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero{display:flex;align-items:center;justify-content:center;width:100%;margin:0;min-height:84px;padding:18px 22px;border:1px solid #dbe2ee;border-radius:26px;background:#fff;color:#4d55a1;box-shadow:0 10px 24px rgba(24,39,75,.10),0 2px 6px rgba(24,39,75,.04);font-size:17px;font-weight:800;letter-spacing:-.01em;text-align:center;line-height:1.35}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover,.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover{background:#fcfdff;transform:translateY(-1px)}
+.block_fredkitheagent .fredki-resync-fullhint{margin:16px 8px 2px;color:#70819f;font-size:14px;line-height:1.55}
+.block_fredkitheagent .fredki-next-action:focus-visible,.block_fredkitheagent .fredkitheagent-sync-hero:focus-visible,.block_fredkitheagent .fredki-next-designlink:focus-visible,.block_fredkitheagent .fredki-next-chatcheck:focus-within{outline:3px solid rgba(99,91,255,.24);outline-offset:2px}
+@media(max-width:450px){.block_fredkitheagent .fredki-next-card{padding:18px 16px;border-radius:24px}.block_fredkitheagent .fredki-next-head{column-gap:8px}.block_fredkitheagent .fredki-next-headcopy strong{font-size:22px}.block_fredkitheagent .fredki-next-orb{width:84px;height:84px}.block_fredkitheagent .fredki-next-check{width:64px;height:64px;font-size:28px}.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero{min-height:74px;font-size:15px;padding:16px}}
+/* Alpha 14.2: teacher toggle, participants launcher-only, right-edge chat with history and expand. */
+/* chatcheck styles unified above */
+
+.fredkitheagent-floating-root{position:fixed;right:22px;bottom:18px;z-index:11000;pointer-events:none}
+.fredkitheagent-floating-root > *{pointer-events:auto}
+.fredkitheagent-floating-panel{position:fixed;right:22px;bottom:106px;left:auto;top:auto;transform:none;width:min(540px,calc(100vw - 28px));height:min(80dvh,860px);background:#f5f7fa;border:1px solid #dfe5ef;border-radius:26px;box-shadow:0 28px 70px rgba(18,35,65,.22);overflow:hidden;z-index:11001;display:flex;flex-direction:column}
+.fredkitheagent-floating-panel.is-expanded{width:min(66vw,980px)}
+.fredkitheagent-floating-header{position:absolute;top:16px;left:16px;right:16px;z-index:3;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.fredkitheagent-floating-header button{pointer-events:auto;display:grid;place-items:center;width:48px;height:48px;border:0;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 8px 24px rgba(16,31,66,.12);color:#34465e;font-size:24px;cursor:pointer}
+.fredkitheagent-floating-header button:hover,.fredkitheagent-floating-header button:focus-visible{transform:translateY(-1px)}
+.fredkitheagent-floating-header > .fredkitheagent-floating-menu{margin-right:auto}
+.fredkitheagent-floating-header > .fredkitheagent-floating-expand{margin-left:auto;margin-right:10px}
+.fredkitheagent-floating-body{display:flex;min-height:0;height:100%}
+.fredkitheagent-floating-history{width:248px;flex:none;background:#fff;border-right:1px solid #e6ebf2;padding:84px 12px 12px;overflow:auto}
+.fredkitheagent-floating-history strong{display:block;font-size:14px;color:#20345c}.fredkitheagent-floating-history p{margin:6px 0 12px;font-size:12px;color:#75839b;line-height:1.45}
+.fredkitheagent-history-list{display:grid;gap:8px}.fredkitheagent-history-item{width:100%;text-align:left;border:1px solid #e2e7ef;border-radius:12px;background:#f9fbfd;padding:10px 12px;font-size:13px;color:#22365a;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.fredkitheagent-history-item:hover{background:#eef4ff}.fredkitheagent-history-empty{font-size:12px;color:#8693a8;margin:0}
+.fredkitheagent-floating-main{flex:1;min-width:0;height:100%}.fredkitheagent-floating-frame{display:block;width:100%;height:100%;border:0;background:#f5f7fa}
+@media(max-width:800px){.fredkitheagent-floating-panel{right:12px;bottom:88px;width:min(500px,calc(100vw - 18px));height:min(82dvh,840px)}.fredkitheagent-floating-panel.is-expanded{width:calc(100vw - 18px)}.fredkitheagent-floating-history{width:220px}}
+@media(max-width:560px){.fredkitheagent-floating-panel{right:0;bottom:0;width:100vw;height:100dvh;border-radius:0}.fredkitheagent-floating-panel.is-expanded{width:100vw}.fredkitheagent-floating-history{position:absolute;left:0;top:0;bottom:0;z-index:4;width:min(86vw,300px);box-shadow:10px 0 24px rgba(18,35,65,.14)}}
+
+
+/* Alpha 14.3: only teacher status and course-wide checkbox remain in the block. */
+.fredkitheagent-floating-root[hidden]{display:none!important}
+.block_fredkitheagent .fredki-next-visibility-result{display:block;font-size:12px;color:#62758b;padding:0 4px;min-height:0}
+.block_fredkitheagent .fredki-next-visibility-result:empty{display:none}
+.block_fredkitheagent .fredki-next-chatcheck-input:disabled{opacity:.55;cursor:wait}
+.block_fredkitheagent:has(> .card-body .fredkitheagent-floating-root):not(:has(.fredki-next-card, .fredkitheagent-brand-card)){display:none!important}
+
+/* editor entry styles unified above */
+
+/* Optional teacher-only material reconciliation. Keeps the ready card compact. */
+.block_fredkitheagent .fredki-resync-panel{margin-top:14px;border-top:1px solid #e6ebf2;padding-top:10px;color:#425572}
+.block_fredkitheagent .fredki-resync-panel>summary{cursor:pointer;list-style:none;font-size:13px;font-weight:700;color:#3e5480;display:flex;align-items:center;gap:7px;padding:6px 2px}
+.block_fredkitheagent .fredki-resync-panel>summary::before{content:'↻';color:#5f52e9;font-size:18px}
+.block_fredkitheagent .fredki-resync-panel>summary::-webkit-details-marker{display:none}
+.block_fredkitheagent .fredki-resync-panel p{font-size:12px;line-height:1.5;margin:9px 0;color:#63738b}
+.block_fredkitheagent .fredki-resync-primary,.block_fredkitheagent .fredki-resync-secondary{width:100%;min-height:42px;border-radius:12px;border:1px solid #dfe6f3;font-weight:750;font-size:13px;padding:10px 12px;cursor:pointer}
+.block_fredkitheagent .fredki-resync-primary{background:#f0efff;color:#5547bc}
+.block_fredkitheagent .fredki-resync-secondary{background:#fff;color:#435776}
+.block_fredkitheagent .fredki-resync-panel .fredki-resync-fullhint{margin-top:18px}
+
+.block_fredkitheagent .fredki-resync-quick{margin-top:8px}
+.block_fredkitheagent .fredki-resync-quick form{margin:0}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary{background:linear-gradient(180deg,#ffffff,#fbfbff);color:#4d5397;border:1px solid #d8dfec;border-radius:18px;box-shadow:0 10px 28px rgba(27,39,79,.08);min-height:58px;font-size:14px;font-weight:800}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover{background:linear-gradient(180deg,#fdfdff,#f6f7ff);transform:translateY(-1px)}
+.block_fredkitheagent .fredki-resync-panel{margin-top:4px;border-top:0;padding-top:0}
+.block_fredkitheagent .fredki-resync-panel>summary{font-size:11px;color:#78849a;font-weight:600}
+.block_fredkitheagent .fredki-resync-panel>summary::before{content:'⌄';font-size:13px;color:#78849a}
+
+
+.block_fredkitheagent .fredki-next-card::before{content:'';position:absolute;inset:0;border-radius:30px;padding:1px;background:linear-gradient(180deg,rgba(103,82,237,.16),rgba(24,40,77,.08));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.block_fredkitheagent .fredki-next-headcopy strong{text-wrap:balance}
+.block_fredkitheagent .fredki-resync-fullhint{font-size:12px;line-height:1.5;color:#6d7890;margin:10px 4px 0}
+.block_fredkitheagent .fredki-next-designlink{margin-left:2px}
+
+/* ==========================================================================
+   alpha14.13 redesign: calm, compact card for narrow block drawers.
+   Placed last on purpose; it supersedes the earlier .fredki-next-* rules.
+   ========================================================================== */
+.block_fredkitheagent:has(.fredki-next-card){background:transparent!important;border:0!important;box-shadow:none!important}
+.block_fredkitheagent:has(.fredki-next-card) > .card-body,
+.block_fredkitheagent:has(.fredki-next-card) .card-body{padding:0!important;background:transparent!important}
+.block_fredkitheagent .fredki-next-card{
+    --fk-ink:#1b2a4e;--fk-muted:#6b7a96;--fk-line:#e7eaf3;--fk-soft:#f6f7fb;--fk-purple:#6256ee;--fk-green:#12b886;
+    position:relative;padding:18px 16px 16px;border:1px solid var(--fk-line);border-radius:20px;background:#fff;
+    box-shadow:0 1px 2px rgba(24,39,75,.04),0 8px 24px rgba(24,39,75,.06);overflow:hidden;
+}
+.block_fredkitheagent .fredki-next-card::before{display:none!important}
+/* header: orb + name */
+.block_fredkitheagent .fredki-next-head{display:flex;align-items:center;gap:12px;margin:0 0 12px}
+.block_fredkitheagent .fredki-next-orb{width:46px;height:46px;margin:5px 5px 5px 4px;flex:none;box-shadow:inset 3px 5px 9px rgba(255,255,255,.18),0 0 0 5px rgba(98,86,238,.08)}
+.block_fredkitheagent .fredki-next-orb-eyes{font-size:9px;letter-spacing:4px;transform:translateX(2px)}
+.block_fredkitheagent .fredki-next-headcopy{flex:1 1 auto;min-width:0}
+.block_fredkitheagent .fredki-next-headcopy strong{display:block;margin:0 0 2px;font-size:17px;font-weight:750;line-height:1.2;letter-spacing:-.01em;color:var(--fk-ink);text-wrap:balance}
+.block_fredkitheagent .fredki-next-headcopy small{display:block;font-size:12.5px;line-height:1.35;color:var(--fk-muted)}
+/* status row: pill left, settings right */
+.block_fredkitheagent .fredki-next-statusrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px;padding:0}
+.block_fredkitheagent .fredki-next-status{gap:7px;padding:6px 12px 6px 10px;font-size:12px;font-weight:700;letter-spacing:.01em}
+.block_fredkitheagent .fredki-next-status::before{width:8px;height:8px;box-shadow:0 0 0 3px rgba(17,187,137,.16)}
+.block_fredkitheagent .fredki-next-designlink{width:32px;height:32px;margin:0;font-size:18px;color:#7a88a3;border-radius:10px}
+.block_fredkitheagent .fredki-next-designlink:hover{background:var(--fk-soft);border-color:transparent;color:var(--fk-purple)}
+/* success note */
+.block_fredkitheagent .fredki-next-success{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:#f1f9f6;border:1px solid #dff1ea}
+.block_fredkitheagent .fredki-next-check{width:32px;height:32px;flex:none;font-size:16px;font-weight:700}
+.block_fredkitheagent .fredki-next-success > div{min-width:0}
+.block_fredkitheagent .fredki-next-success strong{display:block;margin:0 0 2px;font-size:13.5px;font-weight:700;line-height:1.3;color:var(--fk-ink)}
+.block_fredkitheagent .fredki-next-success p{margin:0;font-size:12px;line-height:1.4;color:#5f7a72}
+/* chat toggle as switch */
+.block_fredkitheagent .fredki-next-chatcheck{display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;padding:11px 14px;border:1px solid var(--fk-line);border-radius:14px;background:#fff;box-shadow:none;cursor:pointer}
+.block_fredkitheagent .fredki-next-chatcheck span{font-size:13.5px;font-weight:650;line-height:1.3;color:var(--fk-ink)}
+.block_fredkitheagent .fredki-next-chatcheck-input{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:38px;height:22px;margin:0;border-radius:999px;background:#cfd6e4;transition:background .18s ease;cursor:pointer}
+.block_fredkitheagent .fredki-next-chatcheck-input::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(20,30,60,.3);transition:transform .18s ease}
+.block_fredkitheagent .fredki-next-chatcheck-input:checked{background:var(--fk-purple)}
+.block_fredkitheagent .fredki-next-chatcheck-input:checked::after{transform:translateX(16px)}
+.block_fredkitheagent .fredki-next-chatcheck:hover{border-color:#d5dbea}
+.block_fredkitheagent .fredki-next-visibility-result{margin:-6px 2px 10px;font-size:12px}
+/* primary action */
+.block_fredkitheagent .fredki-resync-quick{margin:0;padding:0}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,
+.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero{
+    display:flex;align-items:center;justify-content:center;width:100%;min-height:42px;margin:0;padding:10px 14px;
+    border:0;border-radius:12px;background:linear-gradient(180deg,#6f63f5,#5a4de6);color:#fff;
+    font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:0;line-height:1.25;text-align:center;
+    box-shadow:0 4px 12px rgba(98,86,238,.28);transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover,
+.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover{background:linear-gradient(180deg,#7a6ff7,#6155ea);color:#fff;transform:translateY(-1px);box-shadow:0 6px 16px rgba(98,86,238,.34)}
+.block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:active{transform:none;filter:brightness(.97)}
+.block_fredkitheagent .fredki-resync-fullhint{margin:10px 2px 0;font-size:11.5px;line-height:1.45;color:var(--fk-muted)}
+.block_fredkitheagent .fredki-next-intro strong{font-size:14px}
+.block_fredkitheagent .fredki-next-intro p{font-size:12.5px;color:var(--fk-muted)}
+@media(max-width:450px){
+    .block_fredkitheagent .fredki-next-card{padding:16px 14px 14px;border-radius:18px}
+    .block_fredkitheagent .fredki-next-headcopy strong{font-size:17px}
+    .block_fredkitheagent .fredki-next-orb{width:44px;height:44px}
+    .block_fredkitheagent .fredki-next-check{width:32px;height:32px;font-size:16px}
+    .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero{min-height:42px;font-size:13.5px;padding:10px 14px}
+}
+
+/* alpha14.15: delete single history entries / whole history */
+.fredkitheagent-history-row{position:relative;display:block}
+.fredkitheagent-history-row .fredkitheagent-history-item{padding-right:34px}
+.fredkitheagent-history-delete{position:absolute;top:6px;right:6px;width:24px;height:24px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:#8a97ad;font-size:17px;line-height:1;cursor:pointer;opacity:.75;transition:background .15s,color .15s,opacity .15s}
+.fredkitheagent-history-row:hover .fredkitheagent-history-delete,.fredkitheagent-history-delete:focus-visible{opacity:1}
+.fredkitheagent-history-delete:hover,.fredkitheagent-history-delete:focus-visible{background:#fde8e8;color:#c0392b;outline:none}
+.fredkitheagent-history-clear{margin-top:4px;padding:8px 10px;border:0;border-radius:10px;background:transparent;color:#8a97ad;font-size:12px;text-align:center;cursor:pointer}
+.fredkitheagent-history-clear:hover,.fredkitheagent-history-clear:focus-visible{background:#fde8e8;color:#c0392b;outline:none}
+
+/* ==========================================================================
+   alpha14.17: iPhone-style card. One big, light button; extras sit quietly
+   behind the gear. Uses its own fk-* classes; supersedes earlier next-card looks.
+   ========================================================================== */
+.block_fredkitheagent .fredki-next-card.fredki-ios{
+    --fk-accent:#5856d6;--fk-ink:#3f3e9a;--fk-tint:rgba(88,86,214,.12);--fk-tint-hover:rgba(88,86,214,.18);--fk-tint-line:rgba(88,86,214,.22);
+    --fk-text:#1c1c1e;--fk-muted:#6e6e73;--fk-hair:#ececf0;--fk-green:#34c759;
+    padding:20px 18px 12px;border:0;border-radius:28px;background:#fff;color:var(--fk-text);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.block_fredkitheagent .fredki-ios [hidden]{display:none!important}
+.fredki-ios .fk-head{display:flex;align-items:center;gap:12px}
+.fredki-ios .fk-orb{width:44px;height:44px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;gap:8px;
+    background:radial-gradient(circle at 34% 28%,#8f8bff 0,#4b46c9 38%,#1d1b78 100%)}
+.fredki-ios .fk-eye{width:4px;height:4px;border-radius:50%;background:#8ef7ef}
+.fredki-ios .fk-headcopy{min-width:0;flex:1 1 auto}
+.fredki-ios .fk-headcopy strong{display:block;font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.2;color:var(--fk-text)}
+.fredki-ios .fk-headcopy small{display:block;margin-top:1px;font-size:13px;line-height:1.35;color:var(--fk-muted)}
+.fredki-ios .fk-status{display:flex;align-items:center;gap:6px;margin-top:14px;font-size:13px;font-weight:500;color:#1f7a38}
+.fredki-ios .fk-dot{width:8px;height:8px;flex:none;border-radius:50%;background:#aeaeb2}
+.fredki-ios .fk-dot.is-ready{background:var(--fk-green)}
+.fredki-ios .fk-intro{margin:14px 0 0;font-size:14px;line-height:1.45;color:#3a3a3c}
+.fredki-ios form{margin:0}
+/* the one big, light button */
+.fredki-ios .fk-main{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:60px;margin-top:16px;padding:0 16px;
+    border:1px solid var(--fk-tint-line);border-radius:18px;background:var(--fk-tint);color:var(--fk-ink);box-shadow:none;
+    font:inherit;font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.2;cursor:pointer;transition:background .18s ease,transform .12s ease}
+.fredki-ios .fk-main:hover{background:var(--fk-tint-hover);color:var(--fk-ink)}
+.fredki-ios .fk-main:active{transform:scale(.985)}
+.fredki-ios .fk-main:focus-visible,.fredki-ios .fk-gear:focus-visible,.fredki-ios .fk-done:focus-visible,.fredki-ios .fk-rowbutton:focus-visible,.fredki-ios .fk-row-link:focus-visible{outline:3px solid rgba(88,86,214,.35);outline-offset:2px}
+.fredki-ios .fk-main .fk-icon{flex:none}
+.fredki-ios .fk-main.is-busy{cursor:progress;background:var(--fk-tint)}
+.fredki-ios .fk-main.is-busy .fk-icon{animation:fk-spin 1.1s linear infinite}
+.fredki-ios .fk-main.is-busy::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(88,86,214,.16),transparent);transform:translateX(-100%);animation:fk-sweep 1.8s ease-in-out infinite}
+.fredki-ios.is-busy .fk-footer,.fredki-ios.is-busy .fk-caption{opacity:.45}
+@keyframes fk-spin{to{transform:rotate(360deg)}}
+@keyframes fk-sweep{to{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){.fredki-ios .fk-main.is-busy .fk-icon,.fredki-ios .fk-main.is-busy::after{animation:none}}
+.fredki-ios .fk-caption{margin-top:10px;text-align:center;font-size:12.5px;line-height:1.4;color:var(--fk-muted)}
+.fredki-ios .fk-note{margin:8px 0 0;text-align:center;font-size:12.5px;color:#b3261e}
+.fredki-ios .fk-result{display:block;text-align:center;font-size:12px;color:var(--fk-muted)}
+.fredki-ios .fk-result:empty{display:none}
+.fredki-ios .fk-rule{height:1px;margin:14px 0 6px;background:var(--fk-hair)}
+/* quiet footer: switch + gear */
+.fredki-ios .fk-footer{display:flex;align-items:center;gap:8px;min-height:36px}
+.fredki-ios .fk-footer-status{font-size:13px;color:var(--fk-muted);gap:6px}
+.fredki-ios .fk-switchrow{display:flex;align-items:center;gap:10px;flex:1 1 auto;margin:0;cursor:pointer}
+.fredki-ios .fk-switchtext{flex:1 1 auto;font-size:13px;font-weight:400;color:var(--fk-muted)}
+.fredki-ios .fk-switch{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:40px;height:24px;margin:0;border:0;border-radius:12px;background:#d1d1d6;cursor:pointer;transition:background .18s ease}
+.fredki-ios .fk-switch::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s ease}
+.fredki-ios .fk-switch:checked{background:var(--fk-green)}
+.fredki-ios .fk-switch:checked::after{transform:translateX(16px)}
+.fredki-ios .fk-switch:focus-visible{outline:3px solid rgba(88,86,214,.35);outline-offset:2px}
+.fredki-ios .fk-switch:disabled{opacity:.55;cursor:wait}
+.fredki-ios .fk-gear{display:grid;place-items:center;flex:none;width:36px;height:36px;margin:0 -8px 0 0;padding:0;border:0;border-radius:10px;background:transparent;color:var(--fk-muted);cursor:pointer}
+.fredki-ios .fk-gear:hover{background:#f2f2f7;color:var(--fk-text)}
+.fredki-ios .fk-gear .fk-icon{width:20px;height:20px;stroke-width:1.8}
+/* settings sheet */
+.fredki-ios .fk-sheethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.fredki-ios .fk-sheettitle{margin:0;font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--fk-text)}
+.fredki-ios .fk-done{padding:8px 4px;border:0;background:transparent;color:var(--fk-accent);font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.fredki-ios .fk-group{margin-bottom:12px;border-radius:14px;background:#f2f2f7;overflow:hidden}
+.fredki-ios .fk-row{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 14px;font-size:15px;color:var(--fk-text);text-decoration:none}
+.fredki-ios .fk-row + .fk-row{border-top:1px solid #e3e3e8}
+.fredki-ios .fk-row-link:hover{background:#ebebf0;color:var(--fk-text);text-decoration:none}
+.fredki-ios .fk-row-link .fk-icon{width:16px;height:16px;color:#aeaeb2;flex:none}
+.fredki-ios .fk-rowtext{flex:1 1 auto;min-width:0}
+.fredki-ios .fk-rowtitle{display:block;font-size:15px;color:var(--fk-text)}
+.fredki-ios .fk-rowdesc{display:block;font-size:12.5px;line-height:1.35;color:var(--fk-muted)}
+.fredki-ios .fk-row-form form{flex:none}
+.fredki-ios .fk-rowbutton{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:0;border-radius:999px;background:var(--fk-tint);color:var(--fk-ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.fredki-ios .fk-rowbutton:hover{background:var(--fk-tint-hover)}
+.fredki-ios .fk-rowbutton .fk-icon{display:none}
+.fredki-ios .fk-value{flex:none;color:var(--fk-muted);font-variant-numeric:tabular-nums;font-size:14px}
+.fredki-ios .fk-row-fact{min-height:40px}
+.fredki-ios .fk-sheetnote{margin:-2px 14px 8px;font-size:12.5px;line-height:1.4;color:var(--fk-muted)}
+
+/* Activation: inactive block card and activation page (iPhone look). */
+.fredki-ios .fk-dot.is-waiting{background:#ff9f0a}
+.fredki-ios .fk-status.is-waiting{color:#8a5a00}
+.fredki-ios a.fk-main,.fredki-ios a.fk-main:hover,.fredki-ios a.fk-main:focus{text-decoration:none}
+.fredki-ios .fk-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:#f2f2f7;font-size:13.5px;line-height:1.45;color:#3a3a3c}
+.fk-act{--fk-accent:#5856d6;--fk-ink:#3f3e9a;--fk-tint:rgba(88,86,214,.12);--fk-tint-hover:rgba(88,86,214,.18);--fk-tint-line:rgba(88,86,214,.22);
+    max-width:520px;margin:8px 0 24px;padding:26px 24px 22px;border-radius:28px;background:#fff;color:#1c1c1e;
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.07);
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.fk-act .fk-head{display:flex;align-items:center;gap:14px}
+.fk-act .fk-orb{width:52px;height:52px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;gap:9px;
+    background:radial-gradient(circle at 34% 28%,#8f8bff 0,#4b46c9 38%,#1d1b78 100%)}
+.fk-act .fk-eye{width:5px;height:5px;border-radius:50%;background:#8ef7ef}
+.fk-act .fk-headcopy strong{display:block;font-size:20px;font-weight:650;letter-spacing:-.01em;line-height:1.2}
+.fk-act .fk-headcopy small{display:block;margin-top:2px;font-size:14px;color:#6e6e73}
+.fk-act .fk-steps{display:flex;align-items:flex-start;margin:26px 0 8px;padding:0;list-style:none}
+.fk-act .fk-step{flex:1 1 0;position:relative;text-align:center;font-size:13px;color:#8e8e93}
+.fk-act .fk-step::before{content:'';position:absolute;top:13px;left:-50%;width:100%;height:2px;background:#e5e5ea}
+.fk-act .fk-step:first-child::before{display:none}
+.fk-act .fk-step.is-done::before,.fk-act .fk-step.is-current::before{background:#34c759}
+.fk-act .fk-bubble{position:relative;z-index:1;display:grid;place-items:center;width:28px;height:28px;margin:0 auto 6px;border-radius:50%;
+    background:#e5e5ea;color:#fff;font-size:13px;font-weight:700}
+.fk-act .fk-step.is-done .fk-bubble{background:#34c759}
+.fk-act .fk-step.is-current .fk-bubble{background:#ff9f0a;box-shadow:0 0 0 5px rgba(255,159,10,.18)}
+.fk-act .fk-step.is-current{color:#1c1c1e;font-weight:600}
+.fk-act .fk-step.is-done{color:#1f7a38}
+.fk-act .fk-actbody{margin-top:18px}
+.fk-act .fk-actbody p{margin:0 0 12px;font-size:14.5px;line-height:1.5;color:#3a3a3c}
+.fk-act label{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:#6e6e73}
+.fk-act input[type=email]{box-sizing:border-box;width:100%;height:48px;border-radius:14px;border:1px solid #d1d1d6;padding:0 14px;font-size:16px;box-shadow:none}
+.fk-act input[type=email]:focus{border-color:var(--fk-accent);box-shadow:0 0 0 4px rgba(88,86,214,.15);outline:none}
+.fk-act .fk-actbutton{display:flex;align-items:center;justify-content:center;width:100%;height:56px;margin-top:14px;border:1px solid var(--fk-tint-line);
+    border-radius:18px;background:var(--fk-tint);color:var(--fk-ink);font-size:17px;font-weight:600;cursor:pointer;transition:background .18s ease}
+.fk-act .fk-actbutton:hover{background:var(--fk-tint-hover)}
+.fk-act .fk-caption{margin-top:10px;text-align:center;font-size:12.5px;color:#6e6e73}
+.fk-act .fk-actok{padding:14px 16px;border-radius:16px;background:#e8f6ec;color:#1f7a38;font-size:14.5px;font-weight:500}
+.fk-act .fk-actwarn{padding:14px 16px;border-radius:16px;background:#fff4e0;color:#8a5a00;font-size:14.5px}
+.fk-act details{margin-top:22px;padding-top:14px;border-top:1px solid #ececf0;font-size:13.5px;color:#6e6e73}
+.fk-act summary{cursor:pointer}
