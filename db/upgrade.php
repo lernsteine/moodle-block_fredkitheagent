@@ -166,5 +166,16 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         upgrade_block_savepoint(true, 202610222302, 'fredkitheagent');
     }
 
+    // Table names must carry the full component prefix (block_fredkitheagent*).
+    if ($oldversion < 202610240700) {
+        foreach (['fredkitheagent', 'fredkitheagent_map', 'fredkitheagent_design'] as $oldname) {
+            $oldtable = new xmldb_table($oldname);
+            if ($dbman->table_exists($oldtable) && !$dbman->table_exists(new xmldb_table('block_' . $oldname))) {
+                $dbman->rename_table($oldtable, 'block_' . $oldname);
+            }
+        }
+        upgrade_block_savepoint(true, 202610240700, 'fredkitheagent');
+    }
+
     return true;
 }

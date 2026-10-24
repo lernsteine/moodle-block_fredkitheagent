@@ -30,6 +30,8 @@ namespace block_fredkitheagent;
  * @package    block_fredkitheagent
  * @copyright  2026 lernsteine.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @covers \block_fredkitheagent\local\course_binding_guard
  */
 final class course_binding_guard_test extends \advanced_testcase {
     /**

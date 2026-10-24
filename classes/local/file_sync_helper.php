@@ -61,7 +61,7 @@ class file_sync_helper {
             $currenthashes[] = $pathnamehash;
             $metatags = manual_sync_service::get_moodle_activity_profile_tags($file);
             $metahash = sha1($metatags);
-            $existing = $DB->get_record('fredkitheagent_map', ['activityid' => $activityid, 'pathnamehash' => $pathnamehash]);
+            $existing = $DB->get_record('block_fredkitheagent_map', ['activityid' => $activityid, 'pathnamehash' => $pathnamehash]);
 
             if (!$existing) {
                 $record = (object)[
@@ -78,13 +78,13 @@ class file_sync_helper {
                     'timemodified' => time(),
                 ];
                 try {
-                    $DB->insert_record('fredkitheagent_map', $record);
+                    $DB->insert_record('block_fredkitheagent_map', $record);
                     $stats['created']++;
                 } catch (\dml_exception $e) {
                     // Idempotent rescan: if the same generated file was already mapped by a
                     // previous/in-parallel run, update that existing row instead of failing the
                     // activity save with a duplicate key database error.
-                    $existing = $DB->get_record('fredkitheagent_map', [
+                    $existing = $DB->get_record('block_fredkitheagent_map', [
                         'activityid' => $activityid,
                         'pathnamehash' => $pathnamehash,
                     ], '*', IGNORE_MISSING);
@@ -101,7 +101,7 @@ class file_sync_helper {
                             $existing->lastresult = 'created';
                         }
                         $existing->timemodified = time();
-                        $DB->update_record('fredkitheagent_map', $existing);
+                        $DB->update_record('block_fredkitheagent_map', $existing);
                         $stats['updated']++;
                     } else {
                         throw $e;
@@ -127,7 +127,7 @@ class file_sync_helper {
                 $existing->lastresult = 'created';
                 $existing->lasterror = null;
                 $existing->timemodified = time();
-                $DB->update_record('fredkitheagent_map', $existing);
+                $DB->update_record('block_fredkitheagent_map', $existing);
                 $stats['created']++;
             } else if ($changed) {
                 $existing->filename = $file->get_filename();
@@ -140,7 +140,7 @@ class file_sync_helper {
                 $existing->lastresult = 'updated';
                 $existing->lasterror = null;
                 $existing->timemodified = time();
-                $DB->update_record('fredkitheagent_map', $existing);
+                $DB->update_record('block_fredkitheagent_map', $existing);
                 $stats['updated']++;
             } else if ($tagchanged) {
                 if (property_exists($existing, 'metahash')) {
@@ -150,24 +150,24 @@ class file_sync_helper {
                 $existing->lastresult = 'tagsupdated';
                 $existing->lasterror = null;
                 $existing->timemodified = time();
-                $DB->update_record('fredkitheagent_map', $existing);
+                $DB->update_record('block_fredkitheagent_map', $existing);
                 $stats['updated']++;
             } else {
                 if (empty($oldmetahash) && property_exists($existing, 'metahash')) {
                     $existing->metahash = $metahash;
                     $existing->timemodified = time();
-                    $DB->update_record('fredkitheagent_map', $existing);
+                    $DB->update_record('block_fredkitheagent_map', $existing);
                 }
                 if (empty($existing->lastresult)) {
                     $existing->lastresult = 'skipped';
                     $existing->timemodified = time();
-                    $DB->update_record('fredkitheagent_map', $existing);
+                    $DB->update_record('block_fredkitheagent_map', $existing);
                 }
                 $stats['skipped']++;
             }
         }
 
-        $known = $DB->get_records('fredkitheagent_map', ['activityid' => $activityid]);
+        $known = $DB->get_records('block_fredkitheagent_map', ['activityid' => $activityid]);
         foreach ($known as $record) {
             if (
                 !in_array($record->pathnamehash, $currenthashes, true) &&
@@ -176,7 +176,7 @@ class file_sync_helper {
                 $record->status = 'deleted';
                 $record->lastresult = 'deleted';
                 $record->timemodified = time();
-                $DB->update_record('fredkitheagent_map', $record);
+                $DB->update_record('block_fredkitheagent_map', $record);
                 $stats['deleted']++;
             }
         }

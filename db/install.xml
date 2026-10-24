@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
     <TABLES>
-        <TABLE NAME="fredkitheagent" COMMENT="Course records for FredKI The Agent">
+        <TABLE NAME="block_fredkitheagent" COMMENT="Course records for FredKI The Agent">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -32,7 +32,7 @@
                 <INDEX NAME="course_uix" UNIQUE="true" FIELDS="course"/>
             </INDEXES>
         </TABLE>
-        <TABLE NAME="fredkitheagent_map" COMMENT="Maps generated course content files to FredKI documents">
+        <TABLE NAME="block_fredkitheagent_map" COMMENT="Maps generated course content files to FredKI documents">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -53,14 +53,14 @@
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="activity_fk" TYPE="foreign" FIELDS="activityid" REFTABLE="fredkitheagent" REFFIELDS="id"/>
+                <KEY NAME="activity_fk" TYPE="foreign" FIELDS="activityid" REFTABLE="block_fredkitheagent" REFFIELDS="id"/>
             </KEYS>
             <INDEXES>
                 <INDEX NAME="pathnamehash_uix" UNIQUE="true" FIELDS="activityid, pathnamehash"/>
                 <INDEX NAME="status_ix" UNIQUE="false" FIELDS="status"/>
             </INDEXES>
         </TABLE>
-        <TABLE NAME="fredkitheagent_design" COMMENT="Optional visual settings for one course agent; no chat content">
+        <TABLE NAME="block_fredkitheagent_design" COMMENT="Optional visual settings for one course agent; no chat content">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

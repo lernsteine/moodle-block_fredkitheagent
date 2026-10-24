@@ -51,7 +51,7 @@ try {
     }
 
     // Update a single existing course mapping; never create or modify the agent itself.
-    $DB->set_field('fredkitheagent', 'agentcoursevisible', $visible, ['id' => $record->id, 'course' => $courseid]);
+    $DB->set_field('block_fredkitheagent', 'agentcoursevisible', $visible, ['id' => $record->id, 'course' => $courseid]);
     echo json_encode(['ok' => true, 'visible' => (bool)$visible]);
 } catch (\Throwable $e) {
     http_response_code(403);

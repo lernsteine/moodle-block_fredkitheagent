@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_sesskey();
     $reset = optional_param('resetdesign', 0, PARAM_BOOL);
     if ($reset) {
-        $DB->delete_records('fredkitheagent_design', ['courseid' => $courseid]);
+        $DB->delete_records('block_fredkitheagent_design', ['courseid' => $courseid]);
         $fs = get_file_storage();
         $fs->delete_area_files($context->id, 'block_fredkitheagent', 'courselogo', 0);
         redirect($PAGE->url, get_string('designreset', 'block_fredkitheagent'));
@@ -107,16 +107,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imageext = $extensions[$mime];
         $imagepath = $upload['tmp_name'];
     }
-    $existing = $DB->get_record('fredkitheagent_design', ['courseid' => $courseid]);
+    $existing = $DB->get_record('block_fredkitheagent_design', ['courseid' => $courseid]);
     // A replaced course agent must not silently reuse the previous agent's avatar.
     if ($existing && !hash_equals((string)$existing->agentid, (string)$new->agentid)) {
         get_file_storage()->delete_area_files($context->id, 'block_fredkitheagent', 'courselogo', 0);
     }
     if ($existing) {
         $new->id = $existing->id;
-        $DB->update_record('fredkitheagent_design', $new);
+        $DB->update_record('block_fredkitheagent_design', $new);
     } else {
-        $DB->insert_record('fredkitheagent_design', $new);
+        $DB->insert_record('block_fredkitheagent_design', $new);
     }
     $fs = get_file_storage();
     if ($imagepath !== '') {

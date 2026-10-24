@@ -40,10 +40,10 @@ class course_agent_manager {
      */
     public static function get_record(int $courseid): ?\stdClass {
         global $DB;
-        if ($courseid <= 0 || !$DB->get_manager()->table_exists('fredkitheagent')) {
+        if ($courseid <= 0 || !$DB->get_manager()->table_exists('block_fredkitheagent')) {
             return null;
         }
-        return $DB->get_record('fredkitheagent', ['course' => $courseid], '*', IGNORE_MISSING) ?: null;
+        return $DB->get_record('block_fredkitheagent', ['course' => $courseid], '*', IGNORE_MISSING) ?: null;
     }
 
 
@@ -54,7 +54,7 @@ class course_agent_manager {
      */
     public static function clear_error(int $courseid): void {
         global $DB;
-        if ($courseid <= 0 || !$DB->get_manager()->table_exists('fredkitheagent')) {
+        if ($courseid <= 0 || !$DB->get_manager()->table_exists('block_fredkitheagent')) {
             return;
         }
         $rec = self::get_record($courseid);
@@ -66,7 +66,7 @@ class course_agent_manager {
             $rec->status = (!empty($rec->agentid)) ? 'ready' : (!empty($rec->knowledgeid) ? 'knowledge_created' : 'new');
         }
         $rec->timemodified = time();
-        $DB->update_record('fredkitheagent', $rec);
+        $DB->update_record('block_fredkitheagent', $rec);
     }
 
     /**
@@ -102,7 +102,7 @@ class course_agent_manager {
             'managedtargetid' => null,
             'verifiedat' => null,
         ];
-        $rec->id = $DB->insert_record('fredkitheagent', $rec);
+        $rec->id = $DB->insert_record('block_fredkitheagent', $rec);
         return $rec;
     }
 }

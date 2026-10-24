@@ -78,7 +78,7 @@ try {
     // an attempted upload. A failed run must be safely retryable.
     $rec->lasterror = null;
     $rec->timemodified = time();
-    $DB->update_record('fredkitheagent', $rec);
+    $DB->update_record('block_fredkitheagent', $rec);
 
     $stage = get_string('syncstagedocuments', 'block_fredkitheagent');
     $stats = \block_fredkitheagent\local\managed_content_sync::run(
@@ -123,7 +123,7 @@ try {
     $rec->lasterror = $documentcomplete ? null :
         (string)($stats['warning'] ?? get_string('syncmaterialpending', 'block_fredkitheagent'));
     $rec->timemodified = time();
-    $DB->update_record('fredkitheagent', $rec);
+    $DB->update_record('block_fredkitheagent', $rec);
 
     $notice = get_string('syncnotice', 'block_fredkitheagent', (object)[
         'found' => (int)($stats['found'] ?? 0),
@@ -153,7 +153,7 @@ try {
             $failed->status = 'agent_error';
             $failed->lasterror = get_string('syncerrorstage', 'block_fredkitheagent', (object)['stage' => $stage, 'code' => $code]);
             $failed->timemodified = time();
-            $DB->update_record('fredkitheagent', $failed);
+            $DB->update_record('block_fredkitheagent', $failed);
         }
     } catch (\Throwable $storeerror) {
         debugging('[FredKI The Agent] Could not persist failed stage: ' . get_class($storeerror), DEBUG_DEVELOPER);

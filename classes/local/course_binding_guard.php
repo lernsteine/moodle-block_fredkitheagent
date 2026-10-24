@@ -82,12 +82,12 @@ final class course_binding_guard {
         if ($courseid < 2 || trim($knowledgeid) === '') {
             throw new \UnexpectedValueException('Missing course knowledge ID.');
         }
-        if (!$DB->get_manager()->table_exists(new \xmldb_table('fredkitheagent'))) {
+        if (!$DB->get_manager()->table_exists(new \xmldb_table('block_fredkitheagent'))) {
             return;
         }
         if (
             $DB->record_exists_select(
-                'fredkitheagent',
+                'block_fredkitheagent',
                 'course <> :course AND knowledgeid = :knowledgeid',
                 ['course' => $courseid, 'knowledgeid' => $knowledgeid]
             )
@@ -110,11 +110,11 @@ final class course_binding_guard {
      */
     public static function assert_available(int $courseid, string $knowledgeid, string $agentid): void {
         global $DB;
-        if (!$DB->get_manager()->table_exists(new \xmldb_table('fredkitheagent'))) {
+        if (!$DB->get_manager()->table_exists(new \xmldb_table('block_fredkitheagent'))) {
             return;
         }
         $others = $DB->get_records_select(
-            'fredkitheagent',
+            'block_fredkitheagent',
             'course <> :course AND (knowledgeid = :knowledgeid OR agentid = :agentid)',
             ['course' => $courseid, 'knowledgeid' => $knowledgeid, 'agentid' => $agentid],
             '',

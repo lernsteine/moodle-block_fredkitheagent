@@ -68,7 +68,7 @@ final class managed_content_sync {
             }
             $oldtarget = trim((string)($record->managedtargetid ?? ''));
             if ($oldtarget !== $targetid) {
-                $existingmaps = $DB->get_records('fredkitheagent_map', ['activityid' => $record->id]);
+                $existingmaps = $DB->get_records('block_fredkitheagent_map', ['activityid' => $record->id]);
                 foreach ($existingmaps as $existingmap) {
                     // Do not resurrect deleted source documents.
                     if (in_array($existingmap->status, ['deleted', 'removed'], true)) {
@@ -80,13 +80,13 @@ final class managed_content_sync {
                     $existingmap->fredki_source_file_id = null;
                     $existingmap->lasterror = null;
                     $existingmap->timemodified = time();
-                    $DB->update_record('fredkitheagent_map', $existingmap);
+                    $DB->update_record('block_fredkitheagent_map', $existingmap);
                 }
                 $record->managedtargetid = $targetid;
-                $DB->update_record('fredkitheagent', $record);
+                $DB->update_record('block_fredkitheagent', $record);
             }
             $scanseconds = round(microtime(true) - $started, 2);
-            $maps = $DB->get_records('fredkitheagent_map', ['activityid' => $record->id]);
+            $maps = $DB->get_records('block_fredkitheagent_map', ['activityid' => $record->id]);
             foreach ($maps as $map) {
                 if ($map->status === 'deleted') {
                     try {
@@ -95,12 +95,12 @@ final class managed_content_sync {
                         $map->lastresult = 'deleted';
                         $map->lasterror = null;
                         $map->timemodified = time();
-                        $DB->update_record('fredkitheagent_map', $map);
+                        $DB->update_record('block_fredkitheagent_map', $map);
                         $counts['deleted']++;
                     } catch (\Throwable $e) {
                         $map->lasterror = get_string('syncdeletepending', 'block_fredkitheagent');
                         $map->timemodified = time();
-                        $DB->update_record('fredkitheagent_map', $map);
+                        $DB->update_record('block_fredkitheagent_map', $map);
                         $counts['failed']++;
                     }
                     continue;
@@ -124,7 +124,7 @@ final class managed_content_sync {
                 if (!$file || $file->is_directory()) {
                     $map->status = 'error';
                     $map->lasterror = 'Moodle-Datei fehlt';
-                    $DB->update_record('fredkitheagent_map', $map);
+                    $DB->update_record('block_fredkitheagent_map', $map);
                     $counts['failed']++;
                     continue;
                 }
@@ -153,7 +153,7 @@ final class managed_content_sync {
                     $map->lasterror = null;
                     $map->timesynced = time();
                     $map->timemodified = time();
-                    $DB->update_record('fredkitheagent_map', $map);
+                    $DB->update_record('block_fredkitheagent_map', $map);
                     $counts[$out['state'] === 'unchanged' ? 'unchanged' : 'synced']++;
                     $counts['verified']++;
                 } catch (\Throwable $e) {
@@ -164,7 +164,7 @@ final class managed_content_sync {
                     $code = $e instanceof managed_api_diagnostic_exception ? $e->getMessage() : 'DIAG-SYNC-INTERNAL';
                     $map->lasterror = get_string('syncuploadfailed', 'block_fredkitheagent', $code);
                     $map->timemodified = time();
-                    $DB->update_record('fredkitheagent_map', $map);
+                    $DB->update_record('block_fredkitheagent_map', $map);
                     $counts['failed']++;
                 } finally {
                     if ($tmp && is_file($tmp)) {
@@ -176,7 +176,7 @@ final class managed_content_sync {
             $counts['remoteconfirmed'] = $counts['synced'] + $counts['unchanged'];
             $counts['total_seconds'] = round(microtime(true) - $started, 2);
             $counts['found'] = (int)$DB->count_records_select(
-                'fredkitheagent_map',
+                'block_fredkitheagent_map',
                 'activityid = :aid AND status <> :removed AND status <> :deleted',
                 ['aid' => $record->id, 'removed' => 'removed', 'deleted' => 'deleted']
             );
@@ -199,7 +199,7 @@ final class managed_content_sync {
                     'nofiles' => (int)($stats['resourceswithoutfiles'] ?? 0),
                 ]);
             }
-            $record->documentcount = $DB->count_records('fredkitheagent_map', [
+            $record->documentcount = $DB->count_records('block_fredkitheagent_map', [
                 'activityid' => $record->id, 'status' => 'synced',
             ]);
             $complete = import_completion::successful($counts + $stats, (int)$record->documentcount)
@@ -212,7 +212,7 @@ final class managed_content_sync {
             $record->status = 'sync_pending'; // Agent confirmation occurs after the document import.
             if ($counts['failed']) {
                 $firsterror = $DB->get_field_select(
-                    'fredkitheagent_map',
+                    'block_fredkitheagent_map',
                     'lasterror',
                     'activityid = :aid AND status = :status',
                     ['aid' => $record->id, 'status' => 'error'],
@@ -226,7 +226,7 @@ final class managed_content_sync {
                 $record->lasterror = $counts['warning'] ??
                     (!$complete ? get_string('syncnotcomplete', 'block_fredkitheagent') : null);
             }
-            $DB->update_record('fredkitheagent', $record);
+            $DB->update_record('block_fredkitheagent', $record);
             return array_merge($stats, $counts);
         } finally {
             $lock->release();

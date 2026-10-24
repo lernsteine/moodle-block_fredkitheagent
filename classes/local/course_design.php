@@ -42,7 +42,7 @@ final class course_design {
         if (!$mapping || empty($mapping->agentid)) {
             return null;
         }
-        $record = $DB->get_record('fredkitheagent_design', ['courseid' => $courseid]);
+        $record = $DB->get_record('block_fredkitheagent_design', ['courseid' => $courseid]);
         if (!$record || !hash_equals((string)$mapping->agentid, (string)$record->agentid)) {
             return null; // A changed agent never inherits another agent's appearance.
         }

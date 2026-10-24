@@ -25,6 +25,8 @@
 namespace block_fredkitheagent;
 /**
  * Full Moodle scan; delta transfer unless an explicit complete server recheck is requested.
+ *
+ * @covers \block_fredkitheagent\local\sync_policy
  */
 final class sync_policy_test extends \advanced_testcase {
     /**

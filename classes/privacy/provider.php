@@ -40,19 +40,19 @@ class provider implements
      * @return collection The result.
      */
     public static function get_metadata(collection $collection): collection {
-        $collection->add_database_table('fredkitheagent', [
+        $collection->add_database_table('block_fredkitheagent', [
             'course' => 'privacy:metadata:fredkitheagent:course',
             'knowledgeid' => 'privacy:metadata:fredkitheagent:knowledgeid',
             'agentid' => 'privacy:metadata:fredkitheagent:agentid',
             'fredkichaturl' => 'privacy:metadata:fredkitheagent:chaturl',
             'lasterror' => 'privacy:metadata:fredkitheagent:lasterror',
         ], 'privacy:metadata:fredkitheagent');
-        $collection->add_database_table('fredkitheagent_map', [
+        $collection->add_database_table('block_fredkitheagent_map', [
             'filename' => 'privacy:metadata:map:filename',
             'fredki_document_id' => 'privacy:metadata:map:documentid',
             'lasterror' => 'privacy:metadata:map:lasterror',
         ], 'privacy:metadata:map');
-        $collection->add_database_table('fredkitheagent_design', [
+        $collection->add_database_table('block_fredkitheagent_design', [
             'courseid' => 'privacy:metadata:design:course',
             'agentid' => 'privacy:metadata:design:agent',
             'welcometext' => 'privacy:metadata:design:text',
