@@ -334,13 +334,19 @@ class block_fredkitheagent extends block_base {
             );
             $content .= html_writer::div(s(get_string('iossetupnote', $pn)), 'fk-caption');
             if ($rec && !empty($rec->lasterror)) {
-                $nomaterial = \block_fredkitheagent\local\import_completion::waiting_for_material($rec);
-                $detail = $nomaterial
-                    ? substr((string)$rec->lasterror, strlen(\block_fredkitheagent\local\import_completion::NOMATERIAL_PREFIX))
-                    : (string)$rec->lasterror;
+                $completion = \block_fredkitheagent\local\import_completion::class;
+                $heading = 'nextsyncfailed';
+                $detail = (string)$rec->lasterror;
+                if ($completion::waiting_for_material($rec)) {
+                    $heading = 'nextnomaterial';
+                    $detail = substr($detail, strlen($completion::NOMATERIAL_PREFIX));
+                } else if ($completion::is_partial($rec)) {
+                    $heading = 'nextpartial';
+                    $detail = substr($detail, strlen($completion::PARTIAL_PREFIX));
+                }
                 $content .= html_writer::tag(
                     'p',
-                    get_string($nomaterial ? 'nextnomaterial' : 'nextsyncfailed', $pn) .
+                    get_string($heading, $pn) .
                     html_writer::tag('small', s($detail), ['class' => 'fk-detail']),
                     ['class' => 'fk-note']
                 );

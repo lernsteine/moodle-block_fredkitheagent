@@ -56,13 +56,15 @@ final class managed_content_sync {
      * @param \stdClass $record The record.
      * @param bool $trustedprior The trustedprior.
      * @param bool $fullcheck The fullcheck.
+     * @param float $budget Seconds after which no further document is started (0 = unlimited).
      * @return array The result.
      */
     public static function run(
         \stdClass $course,
         \stdClass $record,
         bool $trustedprior = false,
-        bool $fullcheck = false
+        bool $fullcheck = false,
+        float $budget = 0.0
     ): array {
         global $DB;
         $lockfactory = \core\lock\lock_config::get_lock_factory('block_fredkitheagent');
@@ -72,11 +74,14 @@ final class managed_content_sync {
         }
         try {
             $started = microtime(true);
+            $deadline = $budget > 0 ? $started + $budget : 0.0;
             // The original importer builds file/HTML representations of visible
             // resource, folder, page, label, glossary, book, lesson etc.
             $importer = new course_content_importer();
             $stats = $importer->import_course_content($course, $record, null, true);
-            $counts = ['synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0];
+            $counts = [
+                'synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0, 'deferred' => 0,
+            ];
             // An old Moodle-to-FredKI mapping does NOT prove that its document
             // exists in a newly provisioned central knowledge base. On the
             // first run against this target, re-queue every extant source.
@@ -107,6 +112,10 @@ final class managed_content_sync {
             $maps = $DB->get_records('block_fredkitheagent_map', ['activityid' => $record->id]);
             foreach ($maps as $map) {
                 if ($map->status === 'deleted') {
+                    if ($deadline > 0 && microtime(true) > $deadline) {
+                        $counts['deferred']++; // Continued by the next click; nothing is lost.
+                        continue;
+                    }
                     try {
                         self::with_retry(static function () use ($course, $map): array {
                             return managed_gateway::delete_document((int)$course->id, (string)$map->pathnamehash);
@@ -140,6 +149,10 @@ final class managed_content_sync {
                 if (sync_policy::can_reuse($map, $trustedprior, $fullcheck, time())) {
                     $counts['cached']++;
                     $counts['verified']++; // Confirmed remotely in an earlier successful run.
+                    continue;
+                }
+                if ($deadline > 0 && microtime(true) > $deadline) {
+                    $counts['deferred']++; // Stays pending; the next sync resumes here.
                     continue;
                 }
                 $file = get_file_storage()->get_file_by_hash((string)$map->pathnamehash);
@@ -212,6 +225,12 @@ final class managed_content_sync {
                 + (int)($stats['scorm'] ?? 0);
             if ($counts['found'] > 0 && $counts['verified'] === 0 && !$counts['failed']) {
                 $counts['warning'] = get_string('syncwarningunconfirmed', 'block_fredkitheagent');
+            }
+            if ($counts['deferred'] > 0 && !$counts['failed']) {
+                $counts['warning'] = import_completion::PARTIAL_PREFIX . get_string('syncpartial', 'block_fredkitheagent', (object)[
+                    'done' => (int)$counts['verified'],
+                    'total' => (int)$counts['found'],
+                ]);
             }
             if ($counts['found'] === 0 || !empty($stats['emptycapture'])) {
                 // Zero is a diagnostic result, not a successful import claim.

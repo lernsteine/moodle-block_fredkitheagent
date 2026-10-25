@@ -31,6 +31,19 @@ final class import_completion {
     /** @var string Marker at the start of lasterror when the sync found no participant-visible material. */
     public const NOMATERIAL_PREFIX = 'DIAG-NO-MATERIAL: ';
 
+    /** @var string Marker at the start of lasterror when a run stopped at its time budget and must be continued. */
+    public const PARTIAL_PREFIX = 'DIAG-PARTIAL: ';
+
+    /**
+     * Whether the last run stopped at its time budget (not an error; the next sync continues).
+     *
+     * @param \stdClass|null $record The record.
+     * @return bool The result.
+     */
+    public static function is_partial(?\stdClass $record): bool {
+        return $record !== null && str_starts_with((string)($record->lasterror ?? ''), self::PARTIAL_PREFIX);
+    }
+
     /**
      * Whether the last run ended because no participant-visible material was found.
      *

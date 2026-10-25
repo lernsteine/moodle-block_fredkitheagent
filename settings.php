@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(
-        'block_fredkitheagent/managed_api_url_unlock',
-        get_string('settingapiunlock', 'block_fredkitheagent'),
-        get_string('settingapiunlock_desc', 'block_fredkitheagent'),
-        0
+        'block_fredkitheagent/managed_api_url_lock',
+        get_string('settingapilock', 'block_fredkitheagent'),
+        get_string('settingapilock_desc', 'block_fredkitheagent'),
+        1
     ));
     $settings->add(new admin_setting_configtext(
         'block_fredkitheagent/managed_api_url',
@@ -37,7 +37,14 @@ if ($ADMIN->fulltree) {
         'https://bildungbleibt.de/fredki-hub/api/v1/index.php',
         PARAM_URL
     ));
-    $settings->hide_if('block_fredkitheagent/managed_api_url', 'block_fredkitheagent/managed_api_url_unlock', 'notchecked');
+    $settings->hide_if('block_fredkitheagent/managed_api_url', 'block_fredkitheagent/managed_api_url_lock', 'checked');
+    $settings->add(new admin_setting_configtext(
+        'block_fredkitheagent/sync_time_budget',
+        get_string('settingsyncbudget', 'block_fredkitheagent'),
+        get_string('settingsyncbudget_desc', 'block_fredkitheagent'),
+        30,
+        PARAM_INT
+    ));
     $settings->add(new admin_setting_heading(
         'block_fredkitheagent/managedactivation',
         get_string('settingactivationheading', 'block_fredkitheagent'),

@@ -38,6 +38,12 @@ $fullcheck = optional_param('fullcheck', 0, PARAM_INT) ? true : false;
 // current document is re-validated against the FredKI service so that missing
 // knowledge-base documents are uploaded again even if the local mapping exists.
 
+// A sync may take longer than the web server's proxy timeout. Let PHP finish what it started even
+// if the browser connection is cut, and give the run a time budget after which it reports progress.
+\core_php_time_limit::raise(600);
+ignore_user_abort(true);
+$budget = (float)max(10, min(120, (int)get_config('block_fredkitheagent', 'sync_time_budget') ?: 30));
+
 $stage = get_string('syncstageregister', 'block_fredkitheagent');
 $stats = null;
 try {
@@ -84,11 +90,21 @@ try {
         $course,
         $rec,
         $trustedprior,
-        $fullcheck
+        $fullcheck,
+        $budget
     );
     $rec = \block_fredkitheagent\local\course_agent_manager::get_record($courseid);
     if (!$rec) {
         throw new \UnexpectedValueException(get_string('syncrecorddisappeared', 'block_fredkitheagent'));
+    }
+
+    if ((int)($stats['deferred'] ?? 0) > 0 && (int)($stats['failed'] ?? 0) === 0) {
+        // Time budget reached: report progress now and continue with the next click.
+        \core\notification::warning(get_string('syncnoticepartial', 'block_fredkitheagent', (object)[
+            'done' => (int)($stats['verified'] ?? 0),
+            'total' => (int)($stats['found'] ?? 0),
+        ]));
+        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     }
 
     // The central server must issue a new agent ID for a new course, while

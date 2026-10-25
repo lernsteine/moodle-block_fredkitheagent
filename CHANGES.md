@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.6 (2026-10-25)
+
+* Fewer "Gateway Timeout" errors: a synchronisation now stops uploading after a configurable time budget
+  (default 30 seconds, setting "Time budget per synchronisation") and reports its progress. The next click continues;
+  documents already confirmed are not sent again. The run itself is no longer cancelled when the browser connection drops.
+* Licence server address: the setting is now "Keep the licence server address locked" and is ticked by default, so the
+  address field stays hidden until an administrator unticks it.
+
 ## 1.2.5 (2026-10-25)
 
 * More robust re-synchronisation: after a failed or empty run the next sync reuses every document the server has

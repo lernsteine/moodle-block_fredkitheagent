@@ -83,7 +83,13 @@ final class managed_gateway {
      */
     private static function api_address(): string {
         $custom = '';
-        if (!empty(get_config(self::COMPONENT, 'managed_api_url_unlock'))) {
+        // Locked unless an administrator has explicitly cleared the lock. Installations that only
+        // know the former "unlock" option keep their previous choice; otherwise the lock applies.
+        $lock = get_config(self::COMPONENT, 'managed_api_url_lock');
+        $locked = $lock === false
+            ? empty(get_config(self::COMPONENT, 'managed_api_url_unlock'))
+            : !empty($lock);
+        if (!$locked) {
             $custom = trim((string)get_config(self::COMPONENT, 'managed_api_url'));
         }
         return $custom !== '' ? $custom : self::DEFAULT_API_URL;

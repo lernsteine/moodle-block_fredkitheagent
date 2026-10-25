@@ -30,6 +30,22 @@ namespace block_fredkitheagent;
  */
 final class sync_policy_test extends \advanced_testcase {
     /**
+     * A run that stopped at its time budget is recognised as partial, not as a failure.
+     *
+     * @covers \block_fredkitheagent\local\import_completion::is_partial
+     */
+    public function test_partial_run_is_detected(): void {
+        $prefix = \block_fredkitheagent\local\import_completion::PARTIAL_PREFIX;
+        $this->assertTrue(\block_fredkitheagent\local\import_completion::is_partial(
+            (object)['lasterror' => $prefix . '3 of 9']
+        ));
+        $this->assertFalse(\block_fredkitheagent\local\import_completion::is_partial(
+            (object)['lasterror' => 'DIAG-TIMEOUT']
+        ));
+        $this->assertFalse(\block_fredkitheagent\local\import_completion::is_partial(null));
+    }
+
+    /**
      * A run without visible material is reported as waiting for material, not as a connection failure.
      *
      * @covers \block_fredkitheagent\local\import_completion::waiting_for_material
