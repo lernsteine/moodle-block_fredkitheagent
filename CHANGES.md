@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.5 (2026-10-25)
+
+* More robust re-synchronisation: after a failed or empty run the next sync reuses every document the server has
+  already acknowledged instead of uploading the whole course again.
+* The course structure is read fresh at the start of every sync, so material that was just deleted or shown/hidden is
+  not judged from a stale cache.
+* If no material is visible to participants, the block now says so in plain words (make material visible and sync
+  again) instead of the generic "connection could not be completed" message. Registration and course agent are kept.
+
 ## 1.2.4 (2026-10-25)
 
 * Synchronisation after deleting course material: a failed or slow document transfer or deletion is now repeated once

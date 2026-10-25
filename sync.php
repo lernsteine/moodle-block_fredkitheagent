@@ -66,12 +66,11 @@ try {
     }
     \block_fredkitheagent\local\course_binding_guard::assert_knowledge_available($courseid, $knowledgeid);
 
-    // Retain a prior confirmed snapshot only if it belongs to the SAME target.
-    // The importer scans every visible Moodle resource on every manual sync.
+    // Retain prior acknowledgements only if they belong to the SAME target. Every map row is
+    // additionally validated individually (document id, no error, unchanged content), so a
+    // failed or empty previous run does not force a complete re-upload on the next attempt.
     $trustedprior = (string)($rec->managedtargetid ?? '') === $knowledgeid &&
-        (string)($rec->knowledgeid ?? '') === $knowledgeid &&
-        (int)($rec->verifiedat ?? 0) > 0 &&
-        (int)($rec->timesynced ?? 0) > 0;
+        (string)($rec->knowledgeid ?? '') === $knowledgeid;
     $rec->knowledgeid = $knowledgeid;
     $rec->status = 'sync_pending';
     // Do not clear known server ownership IDs or a verified snapshot BEFORE
@@ -139,6 +138,8 @@ try {
     }
     if ($documentcomplete && \block_fredkitheagent\local\import_completion::chat_ready($rec)) {
         \core\notification::success($notice);
+    } else if (\block_fredkitheagent\local\import_completion::waiting_for_material($rec)) {
+        \core\notification::warning(get_string('syncnoticenomaterial', 'block_fredkitheagent'));
     } else {
         \core\notification::warning($notice . ' ' . get_string('syncnoticeincomplete', 'block_fredkitheagent'));
     }

@@ -30,6 +30,21 @@ namespace block_fredkitheagent;
  */
 final class sync_policy_test extends \advanced_testcase {
     /**
+     * A run without visible material is reported as waiting for material, not as a connection failure.
+     *
+     * @covers \block_fredkitheagent\local\import_completion::waiting_for_material
+     */
+    public function test_waiting_for_material_is_detected(): void {
+        $prefix = \block_fredkitheagent\local\import_completion::NOMATERIAL_PREFIX;
+        $this->assertTrue(\block_fredkitheagent\local\import_completion::waiting_for_material(
+            (object)['lasterror' => $prefix . 'No importable material']
+        ));
+        $this->assertFalse(\block_fredkitheagent\local\import_completion::waiting_for_material(
+            (object)['lasterror' => 'DIAG-DOCUMENT-DELETE-200-queued']
+        ));
+        $this->assertFalse(\block_fredkitheagent\local\import_completion::waiting_for_material(null));
+    }
+    /**
      * Acknowledged.
      *
      * @return \stdClass The result.

@@ -334,10 +334,14 @@ class block_fredkitheagent extends block_base {
             );
             $content .= html_writer::div(s(get_string('iossetupnote', $pn)), 'fk-caption');
             if ($rec && !empty($rec->lasterror)) {
+                $nomaterial = \block_fredkitheagent\local\import_completion::waiting_for_material($rec);
+                $detail = $nomaterial
+                    ? substr((string)$rec->lasterror, strlen(\block_fredkitheagent\local\import_completion::NOMATERIAL_PREFIX))
+                    : (string)$rec->lasterror;
                 $content .= html_writer::tag(
                     'p',
-                    get_string('nextsyncfailed', $pn) .
-                    html_writer::tag('small', s((string)$rec->lasterror), ['class' => 'fk-detail']),
+                    get_string($nomaterial ? 'nextnomaterial' : 'nextsyncfailed', $pn) .
+                    html_writer::tag('small', s($detail), ['class' => 'fk-detail']),
                     ['class' => 'fk-note']
                 );
             }

@@ -62,6 +62,9 @@ class course_content_importer {
         $this->textfiles = [];
         $this->capturedpaths = [];
 
+        // Deleting or hiding material just before a sync must not be answered from a stale
+        // per-request course cache; always scan the current course structure.
+        get_fast_modinfo($course, 0, true);
         $modinfo = get_fast_modinfo($course);
         $counters = [
             'scannedactivities' => 0,

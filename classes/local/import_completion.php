@@ -28,6 +28,21 @@ namespace block_fredkitheagent\local;
  * Central decision for completion of an authorised course-material import.
  */
 final class import_completion {
+    /** @var string Marker at the start of lasterror when the sync found no participant-visible material. */
+    public const NOMATERIAL_PREFIX = 'DIAG-NO-MATERIAL: ';
+
+    /**
+     * Whether the last run ended because no participant-visible material was found.
+     *
+     * That is a state the teacher can resolve in Moodle, not a connection failure.
+     *
+     * @param \stdClass|null $record The record.
+     * @return bool The result.
+     */
+    public static function waiting_for_material(?\stdClass $record): bool {
+        return $record !== null && str_starts_with((string)($record->lasterror ?? ''), self::NOMATERIAL_PREFIX);
+    }
+
     /**
      * A completed import must have inspected a nonempty, accessible snapshot
      * and received remote acknowledgements for all current documents.

@@ -215,13 +215,17 @@ final class managed_content_sync {
             }
             if ($counts['found'] === 0 || !empty($stats['emptycapture'])) {
                 // Zero is a diagnostic result, not a successful import claim.
-                $counts['warning'] = get_string('syncwarningnone', 'block_fredkitheagent', (object)[
-                    'scanned' => (int)($stats['scannedactivities'] ?? 0),
-                    'eligible' => (int)($stats['eligibleactivities'] ?? 0),
-                    'restricted' => (int)($stats['restrictedactivities'] ?? 0),
-                    'resource' => (int)($stats['resourceactivities'] ?? 0),
-                    'nofiles' => (int)($stats['resourceswithoutfiles'] ?? 0),
-                ]);
+                $counts['warning'] = import_completion::NOMATERIAL_PREFIX . get_string(
+                    'syncwarningnone',
+                    'block_fredkitheagent',
+                    (object)[
+                        'scanned' => (int)($stats['scannedactivities'] ?? 0),
+                        'eligible' => (int)($stats['eligibleactivities'] ?? 0),
+                        'restricted' => (int)($stats['restrictedactivities'] ?? 0),
+                        'resource' => (int)($stats['resourceactivities'] ?? 0),
+                        'nofiles' => (int)($stats['resourceswithoutfiles'] ?? 0),
+                    ]
+                );
             }
             $record->documentcount = $DB->count_records('block_fredkitheagent_map', [
                 'activityid' => $record->id, 'status' => 'synced',
