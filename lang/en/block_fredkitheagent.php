@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['actpendingcaption'] = 'We are reviewing your registration. You do not need to register again.';
+$string['actpendingcaption'] = 'Our team member has been notified and will activate your access shortly. You do not need to register again.';
 $string['actstepapproval'] = 'Approval';
 $string['actstepready'] = 'Ready';
 $string['actstepregister'] = 'Register';
@@ -69,7 +69,7 @@ $string['glossaryentries'] = 'Glossary entries';
 $string['iosagent'] = 'Course agent';
 $string['iosbindingnote'] = 'For checking: every course has its own agent and its own knowledge base.';
 $string['iosbusy'] = 'Syncing …';
-$string['ioschat'] = 'Chat in course';
+$string['ioschat'] = 'Make the agent visible now';
 $string['ioscontinue'] = 'Finish setup';
 $string['iosdesign'] = 'Agent appearance';
 $string['iosdocs'] = 'Documents';
@@ -164,6 +164,8 @@ $string['selection'] = 'Selection';
 $string['settingaccentcolor'] = 'Accent colour';
 $string['settingactivationheading'] = 'Activation of this Moodle site';
 $string['settingactivationlink'] = 'Open activation / write e-mail';
+$string['settingapiunlock'] = 'Allow editing the licence server address';
+$string['settingapiunlock_desc'] = 'Leave this off. The address of the FredKI licence server is preconfigured and locked to prevent mistakes. Only tick the box if the provider has told you to use a different address; the address field then appears.';
 $string['settingapiurl'] = 'FredKI licence server – API';
 $string['settingapiurl_desc'] = 'Preconfigured HTTPS address of the FredKI licence server. Course data is sent to this service; see the privacy information of this plugin.';
 $string['settingappearanceheading'] = 'Design of the protected chat window';

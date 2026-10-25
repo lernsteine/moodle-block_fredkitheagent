@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.3 (2026-10-25)
+
+* Maturity set to stable.
+* The block now appears in the "add a block" list of every theme (Classic listed it without a title and hid it);
+  the title inside the course stays hidden.
+* The licence server address is locked by default; it can only be edited after ticking "Allow editing the licence
+  server address", and is ignored otherwise.
+* Clearer wording: approval step ("Our team member has been notified ...") and the chat switch
+  ("Make the agent visible now").
+
 ## 1.2.2 (2026-10-24)
 
 * Database tables are now prefixed with the component name (`block_fredkitheagent`, `block_fredkitheagent_map`,

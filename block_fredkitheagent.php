@@ -34,9 +34,15 @@ class block_fredkitheagent extends block_base {
      * Init.
      */
     public function init(): void {
-        // Kein sichtbarer Moodle-Blocktitel: Die FredKI-Karte enthält das Branding selbst.
-        // Der Header bleibt technisch vorhanden, damit Moodle im Bearbeitungsmodus
-        // Verschieben/Löschen/Konfigurieren weiterhin anzeigen kann.
+        // The plugin name is needed for the "add a block" menus of every theme (Classic lists blocks by this title).
+        $this->title = get_string('pluginname', 'block_fredkitheagent');
+    }
+
+    /**
+     * Hides the visible block title once the block exists in a course: the FredKI card carries its own branding.
+     * The header stays technically present so that Moodle still offers move/delete in editing mode.
+     */
+    public function specialization(): void {
         $this->title = '';
     }
 

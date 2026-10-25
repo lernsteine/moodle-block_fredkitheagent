@@ -76,6 +76,20 @@ final class managed_gateway {
     }
 
     /**
+     * The licence server API address. The default is always used unless an administrator has explicitly
+     * unlocked the address field in the plugin settings.
+     *
+     * @return string The address.
+     */
+    private static function api_address(): string {
+        $custom = '';
+        if (!empty(get_config(self::COMPONENT, 'managed_api_url_unlock'))) {
+            $custom = trim((string)get_config(self::COMPONENT, 'managed_api_url'));
+        }
+        return $custom !== '' ? $custom : self::DEFAULT_API_URL;
+    }
+
+    /**
      * One-time registration: store both returned credentials server-side, never render them.
      *
      * @param string $email The email.
@@ -474,7 +488,7 @@ final class managed_gateway {
      * @return string The result.
      */
     private static function document_url(string $action): string {
-        $base = trim((string)(get_config(self::COMPONENT, 'managed_api_url') ?: self::DEFAULT_API_URL));
+        $base = self::api_address();
         $url = parse_url($base);
         if (
             !is_array($url) || empty($url['host']) ||
@@ -591,7 +605,7 @@ final class managed_gateway {
     private static function request(string $route, array $body, bool $authenticated = true): array {
         global $CFG;
         require_once($CFG->libdir . '/filelib.php');
-        $configured = trim((string)(get_config(self::COMPONENT, 'managed_api_url') ?: self::DEFAULT_API_URL));
+        $configured = self::api_address();
         if ($configured === '') {
             throw new managed_api_diagnostic_exception('DIAG-CONFIG: Licence server API address is not configured.');
         }
