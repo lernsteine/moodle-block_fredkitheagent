@@ -334,7 +334,12 @@ class block_fredkitheagent extends block_base {
             );
             $content .= html_writer::div(s(get_string('iossetupnote', $pn)), 'fk-caption');
             if ($rec && !empty($rec->lasterror)) {
-                $content .= html_writer::tag('p', get_string('nextsyncfailed', $pn), ['class' => 'fk-note']);
+                $content .= html_writer::tag(
+                    'p',
+                    get_string('nextsyncfailed', $pn) .
+                    html_writer::tag('small', s((string)$rec->lasterror), ['class' => 'fk-detail']),
+                    ['class' => 'fk-note']
+                );
             }
             $content .= html_writer::div('', 'fk-rule');
             $content .= html_writer::div(

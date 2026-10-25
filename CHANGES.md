@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.4 (2026-10-25)
+
+* Synchronisation after deleting course material: a failed or slow document transfer or deletion is now repeated once
+  automatically within the same run, so a second click is no longer needed.
+* Deleting a document that no longer exists on the server counts as success.
+* If a transfer still fails, the block shows the diagnostic code (for example `DIAG-DOCUMENT-DELETE-200-queued`) so the
+  cause can be identified.
+
 ## 1.2.3 (2026-10-25)
 
 * Maturity set to stable.

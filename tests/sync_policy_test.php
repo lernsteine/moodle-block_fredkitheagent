@@ -87,4 +87,17 @@ final class sync_policy_test extends \advanced_testcase {
             2000003600
         ));
     }
+
+    /**
+     * Test only transient gateway problems are retried within one synchronisation.
+     */
+    public function test_only_transient_gateway_errors_are_retried(): void {
+        $diag = \block_fredkitheagent\local\managed_api_diagnostic_exception::class;
+        $this->assertTrue(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-DOCUMENT-DELETE-200-queued')));
+        $this->assertTrue(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-DOCUMENT-HTTP-NETWORK')));
+        $this->assertTrue(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-FK-CREATE-HTTP-500')));
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-CONFIG: invalid address')));
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-403: denied')));
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::is_retryable(new \RuntimeException('local failure')));
+    }
 }

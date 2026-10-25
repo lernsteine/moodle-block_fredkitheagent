@@ -475,10 +475,17 @@ final class managed_gateway {
         $info = $curl->get_info();
         $http = (int)($info['http_code'] ?? 0);
         $parsed = json_decode((string)$raw, true);
-        if ($curl->get_errno() || $http < 200 || $http >= 300 || ($parsed['state'] ?? '') !== 'deleted') {
-            throw new managed_api_diagnostic_exception('DIAG-DOCUMENT-DELETE-' . ($http ?: 'NETWORK'));
+        if (!$curl->get_errno() && $http === 404) {
+            // The document is already gone on the server: deleting twice is not an error.
+            return ['state' => 'deleted'];
         }
-        return $parsed;
+        $state = is_array($parsed) ? (string)($parsed['state'] ?? '') : '';
+        $acceptable = in_array($state, ['deleted', 'not_found', 'already_deleted'], true);
+        if (!$curl->get_errno() && $http >= 200 && $http < 300 && $acceptable) {
+            return ['state' => 'deleted'];
+        }
+        $suffix = preg_match('/^[a-z_]{1,20}$/D', $state) ? '-' . $state : '';
+        throw new managed_api_diagnostic_exception('DIAG-DOCUMENT-DELETE-' . ($http ?: 'NETWORK') . $suffix);
     }
 
     /**

@@ -32,6 +32,24 @@ namespace block_fredkitheagent\local;
  */
 final class managed_content_sync {
     /**
+     * Run a gateway call and repeat it once after a short pause when the failure looks transient.
+     *
+     * @param callable $operation The call to run.
+     * @return array The result of the call.
+     */
+    private static function with_retry(callable $operation): array {
+        try {
+            return $operation();
+        } catch (\Throwable $e) {
+            if (!sync_policy::is_retryable($e)) {
+                throw $e;
+            }
+            sleep(3);
+            return $operation();
+        }
+    }
+
+    /**
      * Run.
      *
      * @param \stdClass $course The course record.
@@ -90,7 +108,9 @@ final class managed_content_sync {
             foreach ($maps as $map) {
                 if ($map->status === 'deleted') {
                     try {
-                        managed_gateway::delete_document((int)$course->id, (string)$map->pathnamehash);
+                        self::with_retry(static function () use ($course, $map): array {
+                            return managed_gateway::delete_document((int)$course->id, (string)$map->pathnamehash);
+                        });
                         $map->status = 'removed';
                         $map->lastresult = 'deleted';
                         $map->lasterror = null;
@@ -98,7 +118,9 @@ final class managed_content_sync {
                         $DB->update_record('block_fredkitheagent_map', $map);
                         $counts['deleted']++;
                     } catch (\Throwable $e) {
-                        $map->lasterror = get_string('syncdeletepending', 'block_fredkitheagent');
+                        $deletecode = $e instanceof managed_api_diagnostic_exception ? $e->getMessage() : 'DIAG-SYNC-INTERNAL';
+                        debugging('[FredKI The Agent] delete failed: ' . $deletecode, DEBUG_DEVELOPER);
+                        $map->lasterror = get_string('syncdeletepending', 'block_fredkitheagent', $deletecode);
                         $map->timemodified = time();
                         $DB->update_record('block_fredkitheagent_map', $map);
                         $counts['failed']++;
@@ -134,14 +156,16 @@ final class managed_content_sync {
                         throw new \RuntimeException('Moodle-Datei konnte nicht vorbereitet werden.');
                     }
                     $source = self::source_url($file, $course);
-                    $out = managed_gateway::upload_document(
-                        (int)$course->id,
-                        (string)$map->pathnamehash,
-                        (string)$file->get_contenthash(),
-                        $tmp,
-                        (string)$file->get_filename(),
-                        $source
-                    );
+                    $out = self::with_retry(static function () use ($course, $map, $file, $tmp, $source): array {
+                        return managed_gateway::upload_document(
+                            (int)$course->id,
+                            (string)$map->pathnamehash,
+                            (string)$file->get_contenthash(),
+                            $tmp,
+                            (string)$file->get_filename(),
+                            $source
+                        );
+                    });
                     // An HTTP 200 without a persistent remote document ID is not proof.
                     if (empty($out['document_id']) || !is_string($out['document_id'])) {
                         throw new \RuntimeException('Remote document acknowledgement missing.');

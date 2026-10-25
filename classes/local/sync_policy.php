@@ -28,6 +28,29 @@ namespace block_fredkitheagent\local;
  */
 final class sync_policy {
     /**
+     * Whether a failed transfer is worth one more attempt within the same synchronisation.
+     *
+     * Configuration, authorisation and local errors never are; transient gateway or network
+     * problems may be.
+     *
+     * @param \Throwable $e The error.
+     * @return bool True if a second attempt makes sense.
+     */
+    public static function is_retryable(\Throwable $e): bool {
+        if (!($e instanceof managed_api_diagnostic_exception)) {
+            return false;
+        }
+        $message = $e->getMessage();
+        $permanent = ['DIAG-CONFIG', 'DIAG-LOCAL', 'DIAG-BLOCK', 'DIAG-401', 'DIAG-403', 'DIAG-COURSE', 'DIAG-AGENT', 'DIAG-CHAT'];
+        foreach ($permanent as $prefix) {
+            if (str_starts_with($message, $prefix)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Can reuse.
      *
      * @param \stdClass $map The map.
