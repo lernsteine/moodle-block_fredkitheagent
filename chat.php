@@ -43,6 +43,10 @@ if ($embedded) {
 }
 // Load in the page footer, after the chat markup exists.
 // The script also waits for DOMContentLoaded as a second safeguard.
+$PAGE->requires->strings_for_js(
+    ['chatdetached', 'chaterrorempty', 'chaterrorload', 'chatshowfullanswer'],
+    'block_fredkitheagent'
+);
 $PAGE->requires->js(new moodle_url(
     '/blocks/fredkitheagent/course_chat.js',
     ['v' => 202610240201]

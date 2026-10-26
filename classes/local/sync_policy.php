@@ -51,6 +51,41 @@ final class sync_policy {
     }
 
     /**
+     * Whether a document was already handled earlier in the SAME staged synchronisation.
+     *
+     * A long synchronisation is split into several requests. Documents acknowledged since
+     * the first request started are not sent again, also not during a full check.
+     *
+     * @param \stdClass $map The map.
+     * @param int $since Start of the staged synchronisation (0 = not staged).
+     * @return bool True if the acknowledgement can be reused.
+     */
+    public static function acknowledged_since(\stdClass $map, int $since): bool {
+        return $since > 0
+            && (string)($map->status ?? '') === 'synced'
+            && (int)($map->timesynced ?? 0) >= $since
+            && preg_match('/^[A-Za-z0-9_-]{8,100}$/D', (string)($map->fredki_document_id ?? '')) === 1
+            && trim((string)($map->lasterror ?? '')) === '';
+    }
+
+    /**
+     * Whether a document already failed earlier in the SAME staged synchronisation.
+     *
+     * It is not retried again in later stages, so a permanently failing file can never
+     * keep the staged synchronisation running forever. The next synchronisation retries it.
+     *
+     * @param \stdClass $map The map.
+     * @param int $since Start of the staged synchronisation (0 = not staged).
+     * @return bool True if the file failed in this synchronisation.
+     */
+    public static function failed_since(\stdClass $map, int $since): bool {
+        return $since > 0
+            && (string)($map->status ?? '') === 'error'
+            && (string)($map->lastresult ?? '') === 'error'
+            && (int)($map->timemodified ?? 0) >= $since;
+    }
+
+    /**
      * Can reuse.
      *
      * @param \stdClass $map The map.

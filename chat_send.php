@@ -68,6 +68,17 @@ try {
     }
     echo json_encode(['ok' => true, 'answer' => $answer], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 } catch (\Throwable $e) {
+    if (
+        $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
+            && $e->getCode() === 410
+    ) {
+        // The administrator disconnected this course; hide the chat until it is set up again.
+        \block_fredkitheagent\local\course_agent_manager::mark_detached($courseid);
+        http_response_code(410);
+        echo json_encode(['ok' => false, 'error_code' => 'COURSE_DETACHED',
+            'error' => get_string('chatdetached', 'block_fredkitheagent')], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
     // Return only allowlisted diagnostic categories, never raw upstream text.
     $empty = $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
         && $e->getCode() === 424;

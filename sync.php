@@ -34,31 +34,69 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 $context = context_course::instance($courseid);
 require_capability('moodle/course:update', $context);
 $fullcheck = optional_param('fullcheck', 0, PARAM_INT) ? true : false;
+$continuing = optional_param('continue', 0, PARAM_INT) ? true : false;
+// Long synchronisations run in stages, so no stage exceeds the timeout of a web server
+// or proxy in front of Moodle. The stage state lives in the teacher's session only.
+$requeststart = microtime(true);
+// Seconds per stage (setting "Time budget per synchronisation", 10 to 120, default 30). Let PHP finish
+// a started stage even if the browser connection is cut, so no transfer is left half done.
+$stagebudget = (float)max(10, min(120, (int)get_config('block_fredkitheagent', 'sync_time_budget') ?: 30));
+\core_php_time_limit::raise(600);
+ignore_user_abort(true);
+if (!isset($SESSION->fredki_theagent_sync) || !is_array($SESSION->fredki_theagent_sync)) {
+    $SESSION->fredki_theagent_sync = [];
+}
+$stagestate = $SESSION->fredki_theagent_sync[$courseid] ?? null;
+if (!$continuing || !is_array($stagestate) || (int)($stagestate['since'] ?? 0) < time() - 6 * HOURSECS) {
+    $stagestate = ['since' => time(), 'fullcheck' => $fullcheck, 'synced' => 0, 'unchanged' => 0, 'deleted' => 0, 'stages' => 0];
+}
+$fullcheck = !empty($stagestate['fullcheck']);
 // Always inspect every Moodle course source. When fullcheck is requested, every
 // current document is re-validated against the FredKI service so that missing
 // knowledge-base documents are uploaded again even if the local mapping exists.
 
-// A sync may take longer than the web server's proxy timeout. Let PHP finish what it started even
-// if the browser connection is cut, and give the run a time budget after which it reports progress.
-\core_php_time_limit::raise(600);
-ignore_user_abort(true);
-$budget = (float)max(10, min(120, (int)get_config('block_fredkitheagent', 'sync_time_budget') ?: 30));
+// A course agent deleted directly in FredKI is replaced by the licence server. Accept the new
+// agent only if the server verified that the agent Moodle knows no longer exists there.
+$acceptreplacedagent = static function (\stdClass $rec, array $response): void {
+    $serveragent = (string)($response['agent_id'] ?? '');
+    $replaced = $response['replaced_agent_ids'] ?? [];
+    if (
+        !empty($rec->agentid) && $serveragent !== '' && !hash_equals((string)$rec->agentid, $serveragent)
+            && is_array($replaced) && in_array((string)$rec->agentid, $replaced, true)
+    ) {
+        $rec->agentid = $serveragent;
+        \core\notification::info(get_string('agentreplaced', 'block_fredkitheagent'));
+    }
+};
 
 $stage = get_string('syncstageregister', 'block_fredkitheagent');
 $stats = null;
 try {
     // Register/locate course by installation id + Moodle course id; never by domain alone.
-    \block_fredkitheagent\local\managed_gateway::ensure_course_registered($course);
+    $registered = \block_fredkitheagent\local\managed_gateway::ensure_course_registered($course);
+    if (!empty($registered['binding_reset_applied'])) {
+        // The administrator deleted the previous agent and knowledge base and released the course.
+        \core\notification::info(get_string('coursebindingreset', 'block_fredkitheagent'));
+    }
     $stage = get_string('syncstageknowledge', 'block_fredkitheagent');
     $prepared = \block_fredkitheagent\local\managed_gateway::prepare_or_provision_knowledge($course);
     $rec = \block_fredkitheagent\local\course_agent_manager::ensure_record($course);
     $knowledgeid = (string)$prepared['knowledge_id'];
     if (!empty($rec->knowledgeid) && !hash_equals((string)$rec->knowledgeid, $knowledgeid)) {
-        throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
-            'DIAG-COURSE-BINDING-CHANGED: The licence server returned a different course knowledge base.'
-        );
+        $replaced = $prepared['replaced_knowledge_ids'] ?? [];
+        if (!is_array($replaced) || !in_array((string)$rec->knowledgeid, $replaced, true)) {
+            throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
+                'DIAG-COURSE-BINDING-CHANGED: The licence server returned a different course knowledge base.'
+            );
+        }
+        // The previous knowledge base verifiably no longer exists in FredKI (for example deleted
+        // there by hand). Accept the replacement; all material is transferred again and the
+        // licence server reconnects the existing course agent to the new knowledge base.
+        $rec->knowledgeid = $knowledgeid;
+        \core\notification::info(get_string('knowledgereplaced', 'block_fredkitheagent'));
     }
     if (($prepared['binding_verified'] ?? false) === true) {
+        $acceptreplacedagent($rec, $prepared);
         \block_fredkitheagent\local\course_binding_guard::assert_stable(
             $rec,
             $knowledgeid,
@@ -91,56 +129,66 @@ try {
         $rec,
         $trustedprior,
         $fullcheck,
-        $budget
+        $requeststart + $stagebudget,
+        (int)$stagestate['since']
     );
+    $stagestate['stages']++;
+    foreach (['synced', 'unchanged', 'deleted'] as $counter) {
+        $stagestate[$counter] += (int)($stats[$counter] ?? 0);
+    }
+    // Creating a new course agent can take a while on its own. If this request has already
+    // used most of its time, the agent step gets a short stage of its own.
+    $needsagent = ($prepared['binding_verified'] ?? false) !== true;
+    $agentstage = (int)($stats['remaining'] ?? 0) === 0 && $needsagent && empty($stagestate['agentstage'])
+        && microtime(true) - $requeststart > 10.0;
+    if ($agentstage) {
+        $stagestate['agentstage'] = 1;
+    }
+    if ((int)($stats['remaining'] ?? 0) > 0 || $agentstage) {
+        // Not finished yet: show progress and continue automatically with the next stage.
+        $SESSION->fredki_theagent_sync[$courseid] = $stagestate;
+        $total = max(1, (int)($stats['found'] ?? 0));
+        $done = max(0, $total - (int)$stats['remaining']);
+        $PAGE->set_url(new moodle_url('/blocks/fredkitheagent/sync.php', ['courseid' => $courseid]));
+        $PAGE->set_context($context);
+        $PAGE->set_pagelayout('incourse');
+        $PAGE->set_title(get_string('syncprogresstitle', 'block_fredkitheagent'));
+        $PAGE->set_heading(format_string($course->fullname));
+        $PAGE->requires->js_init_code(
+            "setTimeout(function(){var f=document.getElementById('fredki-sync-continue');if(f){f.submit();}},400);"
+        );
+        $progresstext = get_string(
+            $agentstage ? 'syncprogressagent' : 'syncprogress',
+            'block_fredkitheagent',
+            (object)['done' => $done, 'total' => $total]
+        );
+        $hidden = ['courseid' => $courseid, 'sesskey' => sesskey(), 'continue' => 1, 'fullcheck' => $fullcheck ? 1 : 0];
+        echo $OUTPUT->header();
+        echo $OUTPUT->heading(get_string('syncprogresstitle', 'block_fredkitheagent'));
+        echo html_writer::tag('p', s($progresstext));
+        echo html_writer::tag('progress', '', ['max' => $total, 'value' => $done, 'class' => 'w-100']);
+        echo html_writer::tag('p', s(get_string('syncprogresshint', 'block_fredkitheagent')), ['class' => 'text-muted']);
+        echo html_writer::start_tag('form', [
+            'method' => 'post',
+            'id' => 'fredki-sync-continue',
+            'action' => new moodle_url('/blocks/fredkitheagent/sync.php'),
+        ]);
+        foreach ($hidden as $name => $value) {
+            echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $name, 'value' => $value]);
+        }
+        echo html_writer::tag(
+            'button',
+            s(get_string('syncprogresscontinue', 'block_fredkitheagent')),
+            ['type' => 'submit', 'class' => 'btn btn-secondary']
+        );
+        echo html_writer::end_tag('form');
+        echo $OUTPUT->footer();
+        exit;
+    }
+    unset($SESSION->fredki_theagent_sync[$courseid]);
     $rec = \block_fredkitheagent\local\course_agent_manager::get_record($courseid);
     if (!$rec) {
         throw new \UnexpectedValueException(get_string('syncrecorddisappeared', 'block_fredkitheagent'));
-    }
-
-    if ((int)($stats['deferred'] ?? 0) > 0 && (int)($stats['failed'] ?? 0) === 0) {
-        // Time budget reached: continue automatically with the next stage as long as progress is made.
-        $done = (int)($stats['verified'] ?? 0);
-        $total = (int)($stats['found'] ?? 0);
-        $stagenumber = optional_param('stage', 0, PARAM_INT) + 1;
-        $previousdone = optional_param('prevdone', -1, PARAM_INT);
-        if ($stagenumber < 40 && $done > $previousdone) {
-            $PAGE->set_url(new moodle_url('/blocks/fredkitheagent/sync.php'), ['courseid' => $courseid]);
-            $PAGE->set_context($context);
-            $PAGE->set_pagelayout('incourse');
-            $PAGE->set_course($course);
-            $PAGE->set_title(get_string('pluginname', 'block_fredkitheagent'));
-            $PAGE->set_heading($course->fullname);
-            $PAGE->requires->js_init_code(
-                'setTimeout(function(){var f=document.getElementById("fredki-continue");if(f){f.submit();}},1200);'
-            );
-            echo $OUTPUT->header();
-            echo $OUTPUT->heading(get_string('pluginname', 'block_fredkitheagent'), 3);
-            echo html_writer::tag('p', s(get_string('syncautocontinue', 'block_fredkitheagent', (object)[
-                'stage' => $stagenumber,
-                'done' => $done,
-                'total' => $total,
-            ])));
-            echo html_writer::start_tag('form', [
-                'method' => 'post',
-                'action' => (new moodle_url('/blocks/fredkitheagent/sync.php'))->out(false),
-                'id' => 'fredki-continue',
-            ]);
-            foreach (['courseid' => $courseid, 'sesskey' => sesskey(), 'stage' => $stagenumber, 'prevdone' => $done] as $n => $v) {
-                echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $n, 'value' => $v]);
-            }
-            echo html_writer::tag('button', s(get_string('syncautobutton', 'block_fredkitheagent')), [
-                'type' => 'submit', 'class' => 'btn btn-primary',
-            ]);
-            echo html_writer::end_tag('form');
-            echo $OUTPUT->footer();
-            exit;
-        }
-        \core\notification::warning(get_string('syncnoticepartial', 'block_fredkitheagent', (object)[
-            'done' => $done,
-            'total' => $total,
-        ]));
-        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     }
 
     // The central server must issue a new agent ID for a new course, while
@@ -150,6 +198,7 @@ try {
         ? ['knowledge_id' => $knowledgeid, 'agent_id' => (string)$prepared['agent_id'],
            'binding_verified' => true, 'provision_state' => 'ready']
         : \block_fredkitheagent\local\managed_gateway::provision_course($course);
+    $acceptreplacedagent($rec, $result);
     if (!hash_equals($knowledgeid, (string)$result['knowledge_id'])) {
         throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
             'DIAG-COURSE-BINDING-CHANGED: The agent points to a different knowledge base.'
@@ -176,14 +225,17 @@ try {
     $rec->timemodified = time();
     $DB->update_record('block_fredkitheagent', $rec);
 
+    // Totals over all stages; documents sent in earlier stages appear as transferred, not as cached.
+    $earlier = (int)$stagestate['synced'] - (int)($stats['synced'] ?? 0)
+        + (int)$stagestate['unchanged'] - (int)($stats['unchanged'] ?? 0);
     $notice = get_string('syncnotice', 'block_fredkitheagent', (object)[
         'found' => (int)($stats['found'] ?? 0),
-        'synced' => (int)($stats['synced'] ?? 0),
-        'unchanged' => (int)($stats['unchanged'] ?? 0),
-        'cached' => (int)($stats['cached'] ?? 0),
-        'deleted' => (int)($stats['deleted'] ?? 0),
+        'synced' => (int)$stagestate['synced'],
+        'unchanged' => (int)$stagestate['unchanged'],
+        'cached' => max(0, (int)($stats['cached'] ?? 0) - $earlier),
+        'deleted' => (int)$stagestate['deleted'],
         'failed' => (int)($stats['failed'] ?? 0),
-        'seconds' => (int)ceil((float)($stats['total_seconds'] ?? 0)),
+        'seconds' => max(1, time() - (int)$stagestate['since']),
     ]);
     if ($fullcheck) {
         $notice .= ' ' . get_string('syncnoticefull', 'block_fredkitheagent');
@@ -197,6 +249,16 @@ try {
     }
     redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
 } catch (\Throwable $e) {
+    unset($SESSION->fredki_theagent_sync[$courseid]);
+    if (
+        $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
+            && $e->getCode() === 410
+    ) {
+        // Disconnected by the licence server administrator: not an error of the teacher.
+        \block_fredkitheagent\local\course_agent_manager::mark_detached($courseid);
+        \core\notification::warning(get_string('coursedetachednotice', 'block_fredkitheagent'));
+        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+    }
     $code = \block_fredkitheagent\local\managed_gateway::safe_error($e);
     // Keep stable IDs and previous snapshots. Never delete knowledge bases,
     // agent or document mappings because of an HTTP timeout.
