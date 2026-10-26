@@ -30,15 +30,25 @@ are based on the materials of that course only.
 ## Requirements
 
 * Moodle 4.5 or later.
-* **An external service is required.** The plugin does not contain any AI model. It talks to the
-  FredKI licence/gateway server operated by LERNSTEINE® (lernsteine.com). A site administrator has
-  to register the Moodle site once (Site administration → Plugins → Blocks → FredKI The Agent →
-  "Open activation"). Registration is reviewed manually and starts a seven-day trial; continued use
-  needs a licence from the provider. The plugin is GPL, the hosted service is a separate, commercial
-  offer.
+* **A hosted service is required** (see "Costs" below). The plugin does not contain any AI model. It
+  talks to the FredKI licence/gateway server operated by LERNSTEINE® (lernsteine.com), which provides
+  the knowledge bases, the AI agents and the language models.
 * Outgoing HTTPS from the Moodle server to the gateway (default
-  `https://bildungbleibt.de/fredki-hub/api/v1/index.php`, changeable in the plugin settings).
+  `https://bildungbleibt.de/fredki-hub/api/v1/index.php`; the address is locked in the plugin
+  settings and only needs to be changed if the provider asks you to).
 * Moodle's "cURL blocked hosts" security setting must not block the gateway host.
+
+## Costs
+
+* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key,
+  paywall or purchase flow inside the plugin.
+* A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
+  FredKI The Agent → "Open activation"). The registration is reviewed and approved manually.
+* After approval, a **free 7-day trial** of the hosted FredKI service starts.
+* Continued use after the trial requires a **paid hosting subscription** from LERNSTEINE®.
+  Prices and conditions: contact info@lernsteine.com.
+* Without an active subscription the plugin stays installed, but course synchronisation and chat
+  are paused.
 
 ## Installation
 
@@ -78,8 +88,9 @@ does not grant any right to use them for other products.
 
 ## Support
 
-Please use the issue tracker of the plugin repository. The provider's contact data are shown on the
-plugin's page in the Moodle plugins directory / Marketplace.
+Please report bugs and feature requests in the issue tracker:
+https://github.com/lernsteine/moodle-block_fredkitheagent/issues
+Questions about the hosted service, trial and subscription: info@lernsteine.com
 
 ---
 
@@ -89,4 +100,6 @@ plugin's page in the Moodle plugins directory / Marketplace.
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig registriert
-und manuell freigeschaltet (7 Tage Test). Das Plugin steht unter GPL v3 oder später.
+und manuell freigeschaltet. Danach läuft eine kostenlose Testphase von 7 Tagen; für die weitere
+Nutzung ist ein kostenpflichtiges Hosting-Abo bei LERNSTEINE® nötig. Das Plugin selbst ist kostenlos
+und steht unter GPL v3 oder später.
