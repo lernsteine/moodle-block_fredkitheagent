@@ -12,6 +12,19 @@
 /** Persist FredKI chatbot visibility per Moodle course; no second chat instance. */
 (function () {
     'use strict';
+    /**
+     * Language string from Moodle (lang/<lang>/block_fredkitheagent.php), English fallback.
+     *
+     * @param {string} key The string identifier.
+     * @param {string} fallback English text if the string was not passed to the page.
+     * @return {string} The text.
+     */
+    function str(key, fallback) {
+        if (window.M && M.str && M.str.block_fredkitheagent && M.str.block_fredkitheagent[key]) {
+            return M.str.block_fredkitheagent[key];
+        }
+        return fallback;
+    }
     function initialise() {
         document.querySelectorAll('[data-fredki-next-card="1"]').forEach(function (root) {
             if (root.dataset.visibilityReady === '1') { return; }
@@ -60,7 +73,7 @@
             checkbox.addEventListener('change', function () {
                 var requested = checkbox.checked;
                 checkbox.disabled = true;
-                if (message) { message.textContent = 'Wird gespeichert …'; }
+                if (message) { message.textContent = str('visibilitysaving', 'Saving …'); }
                 var body = new URLSearchParams({
                     courseid: courseid,
                     sesskey: sesskey,
@@ -90,11 +103,13 @@
                         detail: {enabled: requested, courseid: courseid}
                     }));
                     if (message) {
-                        message.textContent = requested ? 'Chat ist für den Kurs sichtbar.' : 'Chat ist für den Kurs ausgeblendet.';
+                        message.textContent = requested
+                            ? str('visibilityshown', 'The chat is visible in the course.')
+                            : str('visibilityhidden', 'The chat is hidden in the course.');
                     }
                 }).catch(function () {
                     checkbox.checked = !requested;
-                    if (message) { message.textContent = 'Speichern fehlgeschlagen. Bitte erneut versuchen.'; }
+                    if (message) { message.textContent = str('visibilityfailed', 'Saving failed. Please try again.'); }
                 }).finally(function () {
                     checkbox.disabled = false;
                 });

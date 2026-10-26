@@ -237,7 +237,7 @@ final class managed_gateway {
                 throw $e;
             }
             try {
-                return self::register_course($course);
+                return self::apply_binding_reset($courseid, self::register_course($course));
             } catch (managed_api_diagnostic_exception $registererror) {
                 if ($registererror->getCode() !== 409) {
                     throw $registererror;
@@ -277,6 +277,42 @@ final class managed_gateway {
                 'DIAG-COURSE-STATUS: The licence server course status is incomplete.'
             );
         }
+        return self::apply_binding_reset($courseid, $response);
+    }
+
+    /**
+     * Forget the local binding if the licence server reports that the administrator
+     * deleted the previous course agent and knowledge base and released the course.
+     *
+     * The flag is only honoured as a strict boolean true, and only while the locally
+     * stored IDs still differ from the IDs the server reports for the new binding. The
+     * server keeps the flag until the new agent is ready; this comparison makes the reset
+     * happen exactly once, also across several synchronisation stages. The result carries
+     * 'binding_reset_applied' so the caller can inform the teacher.
+     *
+     * @param int $courseid The course id.
+     * @param array $response The licence server response.
+     * @return array The response.
+     */
+    private static function apply_binding_reset(int $courseid, array $response): array {
+        $response['binding_reset_applied'] = false;
+        if (($response['binding_reset'] ?? false) !== true) {
+            return $response;
+        }
+        $local = course_agent_manager::get_record($courseid);
+        if (!$local) {
+            return $response;
+        }
+        $serverknowledge = is_string($response['knowledge_id'] ?? null) ? $response['knowledge_id'] : '';
+        $serveragent = is_string($response['agent_id'] ?? null) ? $response['agent_id'] : '';
+        $localknowledge = (string)($local->knowledgeid ?? '');
+        $localagent = (string)($local->agentid ?? '');
+        $stale = (string)$local->status === 'detached'
+            || ($localknowledge !== '' && $localknowledge !== $serverknowledge)
+            || ($localagent !== '' && $localagent !== $serveragent);
+        if ($stale) {
+            $response['binding_reset_applied'] = course_agent_manager::reset_binding($courseid);
+        }
         return $response;
     }
 
@@ -288,8 +324,14 @@ final class managed_gateway {
      */
     public static function prepare_knowledge(\stdClass $course): array {
         self::require_active();
+        // Report the knowledge base Moodle still knows. The licence server confirms it as
+        // replaced only if it verifiably no longer exists in this customer's folder.
+        $local = course_agent_manager::get_record((int)$course->id);
+        $known = $local ? (string)($local->knowledgeid ?? '') : '';
         $out = self::request('courses/prepare-knowledge', [
             'installation_id' => self::get_installation_id(), 'course_id' => (int)$course->id,
+            'known_knowledge_id' => $known,
+            'known_agent_id' => $local ? (string)($local->agentid ?? '') : '',
         ]);
         // A previously provisioned course may be returned as 'ready' instead of
         // 'knowledge_ready'. It is acceptable only with verified agent binding.
@@ -358,10 +400,15 @@ final class managed_gateway {
     public static function provision_course(\stdClass $course): array {
         self::require_active();
         $out = null;
+        // Report the course agent Moodle still knows; the licence server confirms a
+        // replacement only if that agent verifiably no longer exists in FredKI.
+        $local = course_agent_manager::get_record((int)$course->id);
+        $knownagent = $local ? (string)($local->agentid ?? '') : '';
         for ($attempt = 0; $attempt < 3; $attempt++) {
             try {
                 $out = self::request('courses/provision', [
                     'installation_id' => self::get_installation_id(), 'course_id' => (int)$course->id,
+                    'known_agent_id' => $knownagent,
                 ]);
                 break;
             } catch (managed_api_diagnostic_exception $e) {
@@ -682,6 +729,15 @@ final class managed_gateway {
                 }
             } else {
                 $errorresponse = json_decode((string)$raw, true);
+                if (
+                    $code === 410 && is_array($errorresponse)
+                        && ($errorresponse['error_code'] ?? '') === 'FK-COURSE-DETACHED'
+                ) {
+                    throw new managed_api_diagnostic_exception(
+                        'DIAG-COURSE-DETACHED: The FredKI administrator disconnected this course.',
+                        410
+                    );
+                }
                 if ($route === 'chat/send' && $code === 424) {
                     throw new managed_api_diagnostic_exception(
                         'DIAG-CHAT-EMPTY: FredKI produced no answer text; check the AI model and agent workflow.',
@@ -748,6 +804,7 @@ final class managed_gateway {
                         default => 'DIAG-HTTP-409: Request conflict on the licence server (' . $route . ').',
                     },
                     415 => 'DIAG-415: The licence server rejected the JSON request format.',
+                    410 => 'DIAG-COURSE-DETACHED: The FredKI administrator disconnected this course.',
                     429 => 'DIAG-429: Too many registration attempts. Rate limit reached.',
                     503 => 'DIAG-503: Licence server temporarily not ready. Check the initial setup and the PHP error log.',
                 ];

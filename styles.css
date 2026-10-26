@@ -787,14 +787,6 @@
     }
 }
 
-/* FredKI MaxKB mobile chat button */
-@media (max-width: 768px) {
-  [id^="maxkb-"] .maxkb-chat-button {
-    transform: translateY(-110px) scale(0.7) !important;
-    transform-origin: bottom right !important;
-  }
-}
-
 /* Managed-mode iframe: content is rendered by the Moodle-local FredKI ChatCustom plugin. */
 /* The course block only contains a launcher; never a nested Moodle page. */
 /* Standalone protected chat link, without floating overlays. */
@@ -1151,6 +1143,7 @@
 .fk-act .fk-actbutton:hover{background:var(--fk-tint-hover)}
 .fk-act .fk-caption{margin-top:10px;text-align:center;font-size:12.5px;color:#6e6e73}
 .fk-act .fk-actok{padding:14px 16px;border-radius:16px;background:#e8f6ec;color:#1f7a38;font-size:14.5px;font-weight:500}
+.fk-act .fk-actok p{margin:0}.fk-act .fk-actok p+p{margin-top:10px}
 .fk-act .fk-actwarn{padding:14px 16px;border-radius:16px;background:#fff4e0;color:#8a5a00;font-size:14.5px}
 .fk-act details{margin-top:22px;padding-top:14px;border-top:1px solid #ececf0;font-size:13.5px;color:#6e6e73}
 .fk-act summary{cursor:pointer}

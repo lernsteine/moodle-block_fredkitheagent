@@ -131,4 +131,31 @@ final class sync_policy_test extends \advanced_testcase {
         $this->assertFalse(\block_fredkitheagent\local\sync_policy::is_retryable(new $diag('DIAG-403: denied')));
         $this->assertFalse(\block_fredkitheagent\local\sync_policy::is_retryable(new \RuntimeException('local failure')));
     }
+
+    /**
+     * Test documents acknowledged earlier in the same staged synchronisation are not sent again.
+     */
+    public function test_staged_sync_reuses_documents_of_earlier_stages(): void {
+        $map = $this->acknowledged();
+        $map->timesynced = 2000000100;
+        $this->assertTrue(\block_fredkitheagent\local\sync_policy::acknowledged_since($map, 2000000000));
+        // Acknowledged before this synchronisation started: decided by can_reuse() only.
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::acknowledged_since($map, 2000000200));
+        // Not staged at all.
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::acknowledged_since($map, 0));
+        $map->lasterror = 'DIAG-FK-CREATE-HTTP-500';
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::acknowledged_since($map, 2000000000));
+    }
+
+    /**
+     * Test a file that failed in this staged synchronisation is not retried in later stages.
+     */
+    public function test_staged_sync_does_not_retry_failed_file(): void {
+        $map = (object)['status' => 'error', 'lastresult' => 'error', 'timemodified' => 2000000100];
+        $this->assertTrue(\block_fredkitheagent\local\sync_policy::failed_since($map, 2000000000));
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::failed_since($map, 2000000200));
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::failed_since($map, 0));
+        $map->status = 'pending';
+        $this->assertFalse(\block_fredkitheagent\local\sync_policy::failed_since($map, 2000000000));
+    }
 }

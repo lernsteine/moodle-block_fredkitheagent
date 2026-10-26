@@ -142,12 +142,16 @@ if (!$registered) {
         // Mail is only a fallback if the host's outbound mail transport fails.
         global $CFG;
         $domain = (string)parse_url((string)$CFG->wwwroot, PHP_URL_HOST);
-        $mail = 'mailto:info@lernsteine.com?subject=' . rawurlencode('FredKI – Freigabeanfrage')
-            . '&body=' . rawurlencode('Bitte meine Moodle-Installation freigeben: ' . $domain);
+        $mail = 'mailto:info@lernsteine.com?subject=' . rawurlencode(get_string('activationmailsubject', $pn))
+            . '&body=' . rawurlencode(get_string('activationmailbody', $pn, $domain));
         echo html_writer::link($mail, get_string('managedmailfallback', $pn), ['class' => 'fk-actbutton']);
     }
 } else if ($active) {
-    echo html_writer::div(get_string('managedapproved', $pn), 'fk-actok');
+    echo html_writer::div(
+        html_writer::tag('p', s(get_string('managedapproved', $pn))) .
+        html_writer::tag('p', html_writer::tag('strong', s(get_string('managedapprovedslogan', $pn)))),
+        'fk-actok'
+    );
     if (!empty($status['trial_ends_at'])) {
         echo html_writer::div(
             s(get_string('managedtrialend', $pn) . ': ' . userdate((int)$status['trial_ends_at'])),

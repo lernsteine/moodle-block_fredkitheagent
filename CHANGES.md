@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.3.0 (2026-10-26)
+
+* Staged synchronisation reworked: each stage uses the time budget from the settings, the next stage starts
+  automatically with a progress page ("35 of 80 course materials transferred"). Documents acknowledged in an earlier
+  stage are not sent again, also during the full check of the first setup. A file that fails is not retried within
+  the same run, so the synchronisation always finishes; setting up a new course agent gets its own short stage.
+* Courses disconnected by the FredKI administrator (licence server 13.15 or later) are recognised: the block shows
+  "Disconnected by the administrator", the chat is hidden. After the administrator releases the course, the next
+  synchronisation forgets the previous agent and knowledge base once and sets the course up anew; course design and
+  the chat switch are kept.
+* A knowledge base or course agent deleted directly in FredKI is replaced cleanly (licence server 13.17 or later):
+  Moodle accepts the replacement only if the server verified that the old resource no longer exists.
+* New wording after activation, with "AI can be this simple." as a separate line.
+* Moodle Marketplace preparation: all JavaScript texts come from the language files, the approval e-mail and the
+  "Moodle file is missing" message are translatable, a global style rule for MaxKB chat buttons was removed and
+  `version.php` declares the supported Moodle versions (4.5 to 5.1).
+* PHPUnit tests for disconnecting, resetting a binding and staged synchronisation.
+
 ## 1.2.7 (2026-10-26)
 
 * A synchronisation that reaches its time budget now continues automatically with the next stage (progress page
