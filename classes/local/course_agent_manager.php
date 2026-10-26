@@ -70,6 +70,66 @@ class course_agent_manager {
     }
 
     /**
+     * Mark a course as disconnected by the licence server administrator.
+     *
+     * Chat and the management card react to the status 'detached'. Stored IDs are kept
+     * unchanged; they are only discarded when the licence server explicitly reports a
+     * binding reset (see reset_binding()).
+     *
+     * @param int $courseid The course id.
+     */
+    public static function mark_detached(int $courseid): void {
+        global $DB;
+        $rec = self::get_record($courseid);
+        if (!$rec || $rec->status === 'detached') {
+            return;
+        }
+        $rec->status = 'detached';
+        $rec->lasterror = null;
+        $rec->timemodified = time();
+        $DB->update_record('block_fredkitheagent', $rec);
+    }
+
+    /**
+     * Forget the previous FredKI binding of one course.
+     *
+     * Only called when the licence server reports that the administrator deleted the
+     * previous agent and knowledge base and released the course again. Removes the
+     * document mapping and the stored IDs. The record row, the chat visibility switch
+     * and the course design (colours, logo) are kept, so the next synchronisation sets
+     * up a fresh binding with the teacher's settings.
+     *
+     * @param int $courseid The course id.
+     * @return bool True if a previous binding was reset.
+     */
+    public static function reset_binding(int $courseid): bool {
+        global $DB;
+        $rec = self::get_record($courseid);
+        if (!$rec) {
+            return false;
+        }
+        $hadbinding = !empty($rec->knowledgeid) || !empty($rec->agentid) || $rec->status === 'detached';
+        $transaction = $DB->start_delegated_transaction();
+        $DB->delete_records('block_fredkitheagent_map', ['activityid' => (int)$rec->id]);
+        $rec->knowledgeid = '';
+        $rec->knowledgebasename = '';
+        $rec->agentid = '';
+        $rec->fredkiembedcode = '';
+        $rec->fredkichaturl = '';
+        $rec->status = 'new';
+        $rec->documentcount = 0;
+        $rec->tagcount = 0;
+        $rec->lasterror = null;
+        $rec->timesynced = null;
+        $rec->managedtargetid = null;
+        $rec->verifiedat = null;
+        $rec->timemodified = time();
+        $DB->update_record('block_fredkitheagent', $rec);
+        $transaction->allow_commit();
+        return $hadbinding;
+    }
+
+    /**
      * Ensure record.
      *
      * @param \stdClass $course The course record.

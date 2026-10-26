@@ -12,6 +12,19 @@
 /* Protected Moodle-local FredKI chat. Never submit a traditional HTML page inside the iframe. */
 (function () {
     'use strict';
+    /**
+     * Language string from Moodle (lang/<lang>/block_fredkitheagent.php), English fallback.
+     *
+     * @param {string} key The string identifier.
+     * @param {string} fallback English text if the string was not passed to the page.
+     * @return {string} The text.
+     */
+    function str(key, fallback) {
+        if (window.M && M.str && M.str.block_fredkitheagent && M.str.block_fredkitheagent[key]) {
+            return M.str.block_fredkitheagent[key];
+        }
+        return fallback;
+    }
 
 
     /* ------------------------------------------------------------------
@@ -265,7 +278,7 @@
             var skip = document.createElement('button');
             skip.type = 'button';
             skip.className = 'fredki-reveal-skip';
-            skip.textContent = 'Ganze Antwort anzeigen';
+            skip.textContent = str('chatshowfullanswer', 'Show full answer');
             node.insertAdjacentElement('afterend', skip);
             var perword = Math.min(110, Math.max(65, 8000 / pieces.length));
             var count = 0;
@@ -351,6 +364,11 @@
                         if (payload && payload.error_code === 'CHAT_EMPTY') {
                             throw new Error('CHAT_EMPTY');
                         }
+                        if (payload && payload.error_code === 'COURSE_DETACHED') {
+                            var detached = new Error('COURSE_DETACHED');
+                            detached.text = typeof payload.error === 'string' ? payload.error : '';
+                            throw detached;
+                        }
                         throw new Error('Unexpected chat response');
                     }
                     return payload;
@@ -364,12 +382,18 @@
                 }
                 return revealAnswer(waiting, answer.answer);
             }).catch(function (error) {
+                if (error && error.message === 'COURSE_DETACHED') {
+                    finishTyping(waiting, error.text || str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
+                    input.disabled = true;
+                    return;
+                }
                 finishTyping(waiting, error && error.message === 'CHAT_EMPTY'
-                    ? 'FredKI hat keinen Antworttext erzeugt. Bitte das KI-Sprachmodell und den Antwortknoten des Kursagenten prüfen.'
-                    : 'Die Antwort konnte nicht geladen werden. Bitte versuche es erneut.');
+                    ? str('chaterrorempty', 'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.')
+                    : str('chaterrorload', 'The answer could not be loaded. Please try again.'));
             }).finally(function () {
                 busy = false;
-                button.disabled = false;
+                // Stays disabled only after the course was disconnected by the administrator.
+                button.disabled = input.disabled;
                 list.scrollTop = list.scrollHeight;
                 input.focus();
             });

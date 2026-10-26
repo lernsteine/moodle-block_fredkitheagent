@@ -1,5 +1,48 @@
 # Changelog
 
+## 1.3.0 (2026-10-26)
+
+* Preparation for the Moodle Marketplace: all texts shown by the JavaScript of the block and the chat now come from the
+  language files (no hard-coded German texts any more); the approval e-mail and the "Moodle file is missing" message
+  are translatable as well.
+* Removed a global style rule for MaxKB chat buttons that could affect other pages; the plugin no longer embeds such
+  buttons.
+* `version.php` declares the supported Moodle versions (4.5 to 5.1).
+
+## 1.2.9 (2026-10-26)
+
+* A course agent that was deleted directly in FredKI is now replaced cleanly as well. Moodle reports the agent it
+  knows; the licence server (13.17 or later) confirms the replacement only if that agent verifiably no longer exists in
+  the customer's folder. Previously this ended in `DIAG-COURSE-BINDING-CHANGED` at the step "assign course agent".
+
+## 1.2.8 (2026-10-26)
+
+* A course knowledge base that was deleted directly in FredKI is now replaced cleanly. Moodle reports the knowledge
+  base it knows; the licence server (13.16 or later) confirms the replacement only if that knowledge base verifiably no
+  longer exists in the customer's folder. Moodle then accepts the new knowledge base, transfers all material again and
+  keeps the course agent, which the licence server reconnects. Previously this ended in `DIAG-COURSE-BINDING-CHANGED`.
+
+## 1.2.7 (2026-10-26)
+
+* Large courses no longer run into a "Gateway Timeout": the synchronisation now works in stages of about
+  25 seconds. Between stages Moodle shows the progress ("35 of 80 course materials transferred") and continues
+  automatically. Documents already transferred in an earlier stage are not sent again; a file that fails is not
+  retried within the same run, so the synchronisation always finishes. Setting up a new course agent gets its own
+  short stage when needed.
+* PHPUnit tests for staged synchronisation.
+
+## 1.2.6 (2026-10-26)
+
+* Courses disconnected by the FredKI administrator (licence server 13.15 or later) are recognised: the block shows
+  "Disconnected by the administrator" instead of `DIAG-HTTP-410`, the chat is hidden for learners and an open chat
+  window shows a plain message.
+* When the administrator releases such a course again, the next synchronisation ("Check again") forgets the previous
+  agent and knowledge base automatically and sets the course up anew. Course design and the chat visibility switch are
+  kept. No manual reset in Moodle is needed, and no orphaned resources are created on the FredKI server.
+* PHPUnit tests for disconnecting and resetting a course binding.
+* New wording after activation: explains that the block "FredKI The Agent" is added to a course and that synchronised
+  material becomes the agent's knowledge base ("AI can be this simple.").
+
 ## 1.2.5 (2026-10-25)
 
 * More robust re-synchronisation: after a failed or empty run the next sync reuses every document the server has

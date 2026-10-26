@@ -56,13 +56,17 @@ final class managed_content_sync {
      * @param \stdClass $record The record.
      * @param bool $trustedprior The trustedprior.
      * @param bool $fullcheck The fullcheck.
-     * @return array The result.
+     * @param float $deadline Unix time (microtime) after which no further transfer starts; 0 = no limit.
+     * @param int $since Start of a staged synchronisation spanning several requests; 0 = single request.
+     * @return array The result. 'remaining' > 0 means: call again to continue.
      */
     public static function run(
         \stdClass $course,
         \stdClass $record,
         bool $trustedprior = false,
-        bool $fullcheck = false
+        bool $fullcheck = false,
+        float $deadline = 0.0,
+        int $since = 0
     ): array {
         global $DB;
         $lockfactory = \core\lock\lock_config::get_lock_factory('block_fredkitheagent');
@@ -76,7 +80,13 @@ final class managed_content_sync {
             // resource, folder, page, label, glossary, book, lesson etc.
             $importer = new course_content_importer();
             $stats = $importer->import_course_content($course, $record, null, true);
-            $counts = ['synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0];
+            $counts = ['synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0,
+                'remaining' => 0];
+            // At least one transfer per request, so every stage makes progress even after a slow scan.
+            $transfers = 0;
+            $outoftime = static function () use ($deadline, &$transfers): bool {
+                return $deadline > 0 && $transfers > 0 && microtime(true) >= $deadline;
+            };
             // An old Moodle-to-FredKI mapping does NOT prove that its document
             // exists in a newly provisioned central knowledge base. On the
             // first run against this target, re-queue every extant source.
@@ -107,6 +117,11 @@ final class managed_content_sync {
             $maps = $DB->get_records('block_fredkitheagent_map', ['activityid' => $record->id]);
             foreach ($maps as $map) {
                 if ($map->status === 'deleted') {
+                    if ($outoftime()) {
+                        $counts['remaining']++;
+                        continue;
+                    }
+                    $transfers++;
                     try {
                         self::with_retry(static function () use ($course, $map): array {
                             return managed_gateway::delete_document((int)$course->id, (string)$map->pathnamehash);
@@ -137,15 +152,27 @@ final class managed_content_sync {
                 // The importer has just examined EVERY visible Moodle source and marked
                 // changed/new ones pending. Reuse ONLY a prior centrally acknowledged
                 // document from the same remote knowledge base. No seven-day shortcut.
-                if (sync_policy::can_reuse($map, $trustedprior, $fullcheck, time())) {
+                if (
+                    sync_policy::can_reuse($map, $trustedprior, $fullcheck, time())
+                        || sync_policy::acknowledged_since($map, $since)
+                ) {
                     $counts['cached']++;
-                    $counts['verified']++; // Confirmed remotely in an earlier successful run.
+                    $counts['verified']++; // Confirmed remotely in an earlier run or stage.
                     continue;
                 }
+                if (sync_policy::failed_since($map, $since)) {
+                    $counts['failed']++; // Already tried in this staged synchronisation.
+                    continue;
+                }
+                if ($outoftime()) {
+                    $counts['remaining']++;
+                    continue;
+                }
+                $transfers++;
                 $file = get_file_storage()->get_file_by_hash((string)$map->pathnamehash);
                 if (!$file || $file->is_directory()) {
                     $map->status = 'error';
-                    $map->lasterror = 'Moodle-Datei fehlt';
+                    $map->lasterror = get_string('syncfilemissing', 'block_fredkitheagent');
                     $DB->update_record('block_fredkitheagent_map', $map);
                     $counts['failed']++;
                     continue;
@@ -230,6 +257,17 @@ final class managed_content_sync {
             $record->documentcount = $DB->count_records('block_fredkitheagent_map', [
                 'activityid' => $record->id, 'status' => 'synced',
             ]);
+            if ($counts['remaining'] > 0) {
+                // Stage finished in time; more documents follow in the next request.
+                // Neither an error nor a completed import: the chat stays locked meanwhile.
+                $record->timesynced = null;
+                $record->verifiedat = null;
+                $record->status = 'sync_pending';
+                $record->lasterror = null;
+                $record->timemodified = time();
+                $DB->update_record('block_fredkitheagent', $record);
+                return array_merge($stats, $counts);
+            }
             $complete = import_completion::successful($counts + $stats, (int)$record->documentcount)
                 && $counts['verified'] === $counts['found'];
             // A failed/empty import must never unlock protected course knowledge.

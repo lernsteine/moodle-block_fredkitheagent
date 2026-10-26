@@ -127,6 +127,10 @@ class block_fredkitheagent extends block_base {
         }
         if ($canmanage) {
             $this->content->text = $this->render_managed_learning_card(true, $rec);
+            $this->page->requires->strings_for_js(
+                ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'],
+                'block_fredkitheagent'
+            );
             $this->page->requires->js(new moodle_url(
                 '/blocks/fredkitheagent/learning_card.js',
                 ['v' => 202610240400]
@@ -282,7 +286,25 @@ class block_fredkitheagent extends block_base {
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
 
-        if ($ready) {
+        if ($rec && (string)$rec->status === 'detached') {
+            // Disconnected by the licence server administrator. Nothing the teacher must repair;
+            // once the course is released, the next check sets it up anew automatically.
+            $content .= html_writer::div(
+                html_writer::span('', 'fk-dot is-waiting') . s(get_string('coursedetachedstatus', $pn)),
+                'fk-status is-waiting'
+            );
+            $content .= html_writer::tag('p', s(get_string('coursedetachedintro', $pn)), ['class' => 'fk-intro']);
+            if ($canmanage) {
+                $content .= $this->render_ios_sync_form(
+                    false,
+                    get_string('coursedetachedretry', $pn),
+                    get_string('iosbusy', $pn),
+                    'refresh',
+                    'fk-main'
+                );
+                $content .= html_writer::div(s(get_string('coursedetachedhint', $pn)), 'fk-caption');
+            }
+        } else if ($ready) {
             $status = $docs > 0 ? get_string('iosready', $pn, $docs) : get_string('nextready', $pn);
             $content .= html_writer::div(html_writer::span('', 'fk-dot is-ready') . s($status), 'fk-status');
             $content .= $this->render_ios_sync_form(
