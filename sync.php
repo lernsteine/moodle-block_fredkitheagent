@@ -99,10 +99,46 @@ try {
     }
 
     if ((int)($stats['deferred'] ?? 0) > 0 && (int)($stats['failed'] ?? 0) === 0) {
-        // Time budget reached: report progress now and continue with the next click.
+        // Time budget reached: continue automatically with the next stage as long as progress is made.
+        $done = (int)($stats['verified'] ?? 0);
+        $total = (int)($stats['found'] ?? 0);
+        $stagenumber = optional_param('stage', 0, PARAM_INT) + 1;
+        $previousdone = optional_param('prevdone', -1, PARAM_INT);
+        if ($stagenumber < 40 && $done > $previousdone) {
+            $PAGE->set_url(new moodle_url('/blocks/fredkitheagent/sync.php'), ['courseid' => $courseid]);
+            $PAGE->set_context($context);
+            $PAGE->set_pagelayout('incourse');
+            $PAGE->set_course($course);
+            $PAGE->set_title(get_string('pluginname', 'block_fredkitheagent'));
+            $PAGE->set_heading($course->fullname);
+            $PAGE->requires->js_init_code(
+                'setTimeout(function(){var f=document.getElementById("fredki-continue");if(f){f.submit();}},1200);'
+            );
+            echo $OUTPUT->header();
+            echo $OUTPUT->heading(get_string('pluginname', 'block_fredkitheagent'), 3);
+            echo html_writer::tag('p', s(get_string('syncautocontinue', 'block_fredkitheagent', (object)[
+                'stage' => $stagenumber,
+                'done' => $done,
+                'total' => $total,
+            ])));
+            echo html_writer::start_tag('form', [
+                'method' => 'post',
+                'action' => (new moodle_url('/blocks/fredkitheagent/sync.php'))->out(false),
+                'id' => 'fredki-continue',
+            ]);
+            foreach (['courseid' => $courseid, 'sesskey' => sesskey(), 'stage' => $stagenumber, 'prevdone' => $done] as $n => $v) {
+                echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $n, 'value' => $v]);
+            }
+            echo html_writer::tag('button', s(get_string('syncautobutton', 'block_fredkitheagent')), [
+                'type' => 'submit', 'class' => 'btn btn-primary',
+            ]);
+            echo html_writer::end_tag('form');
+            echo $OUTPUT->footer();
+            exit;
+        }
         \core\notification::warning(get_string('syncnoticepartial', 'block_fredkitheagent', (object)[
-            'done' => (int)($stats['verified'] ?? 0),
-            'total' => (int)($stats['found'] ?? 0),
+            'done' => $done,
+            'total' => $total,
         ]));
         redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.7 (2026-10-26)
+
+* A synchronisation that reaches its time budget now continues automatically with the next stage (progress page
+  with a "Continue now" button as fallback) until all documents are confirmed; it stops if a stage makes no progress.
+* New wording on the activation page once the site is approved: add the block to a course and one click turns all
+  course materials into the chatbot knowledge.
+
 ## 1.2.6 (2026-10-25)
 
 * Fewer "Gateway Timeout" errors: a synchronisation now stops uploading after a configurable time budget
