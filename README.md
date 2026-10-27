@@ -34,7 +34,7 @@ are based on the materials of that course only.
   talks to the FredKI licence/gateway server operated by LERNSTEINE® (lernsteine.com), which provides
   the knowledge bases, the AI agents and the language models.
 * Outgoing HTTPS from the Moodle server to the gateway (default
-  `https://bildungbleibt.de/fredki-hub/api/v1/index.php`; the address is locked in the plugin
+  `https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php`; the address is locked in the plugin
   settings and only needs to be changed if the provider asks you to).
 * Moodle's "cURL blocked hosts" security setting must not block the gateway host.
 

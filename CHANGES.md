@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.1 (2026-10-27)
+
+* The FredKI licence server moved to `https://fredki-theagent.lernsteine.de/fredki-hub/`. Sites with the locked
+  default address switch automatically; a stored copy of the former default address is updated during the upgrade.
+  An address entered deliberately by the administrator is kept.
+
 ## 1.4.0 (2026-10-27)
 
 * Packages and booking (licence server 13.18 or later): the activation page shows "Book a package – test 7 days

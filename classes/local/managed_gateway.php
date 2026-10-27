@@ -38,7 +38,7 @@ final class managed_gateway {
     private const COMPONENT = 'block_fredkitheagent';
 
     /** @var string Default HTTPS endpoint of the FredKI licence server (disclosed in the privacy metadata). */
-    private const DEFAULT_API_URL = 'https://bildungbleibt.de/fredki-hub/api/v1/index.php';
+    private const DEFAULT_API_URL = 'https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php';
 
     /**
      * Valid only for one PHP request; prevents repeated license HTTP checks per uploaded document.

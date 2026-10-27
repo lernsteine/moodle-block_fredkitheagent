@@ -34,7 +34,7 @@ if ($ADMIN->fulltree) {
         'block_fredkitheagent/managed_api_url',
         get_string('settingapiurl', 'block_fredkitheagent'),
         get_string('settingapiurl_desc', 'block_fredkitheagent'),
-        'https://bildungbleibt.de/fredki-hub/api/v1/index.php',
+        'https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php',
         PARAM_URL
     ));
     $settings->hide_if('block_fredkitheagent/managed_api_url', 'block_fredkitheagent/managed_api_url_lock', 'checked');

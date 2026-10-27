@@ -44,14 +44,14 @@ final class activation_state_test extends \basic_testcase {
             'plan' => 'Bis 10 Kurse',
             'course_limit' => 10,
             'courses_used' => 3,
-            'checkout_url' => 'https://bildungbleibt.de/fredki-hub/buchen.php?i=' . $id . '&t=' . $token,
-            'manage_url' => 'https://bildungbleibt.de/fredki-hub/abo.php?i=' . $id . '&t=' . $token,
-        ], 'bildungbleibt.de');
+            'checkout_url' => 'https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=' . $id . '&t=' . $token,
+            'manage_url' => 'https://fredki-theagent.lernsteine.de/fredki-hub/abo.php?i=' . $id . '&t=' . $token,
+        ], 'fredki-theagent.lernsteine.de');
         $this->assertSame('Bis 10 Kurse', $result['plan']);
         $this->assertSame(10, $result['course_limit']);
         $this->assertSame(3, $result['courses_used']);
-        $this->assertStringStartsWith('https://bildungbleibt.de/fredki-hub/buchen.php?', $result['checkout_url']);
-        $this->assertStringStartsWith('https://bildungbleibt.de/fredki-hub/abo.php?', $result['manage_url']);
+        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?', $result['checkout_url']);
+        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/fredki-hub/abo.php?', $result['manage_url']);
     }
 
     /**
@@ -62,15 +62,15 @@ final class activation_state_test extends \basic_testcase {
     public function test_foreign_or_unsafe_links_are_rejected(): void {
         $unsafe = [
             'https://evil.example/fredki-hub/buchen.php?i=1&t=2',
-            'http://bildungbleibt.de/fredki-hub/buchen.php?i=1&t=2',
-            'https://bildungbleibt.de:8443/fredki-hub/buchen.php?i=1&t=2',
-            'https://user@bildungbleibt.de/fredki-hub/buchen.php?i=1&t=2',
+            'http://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t=2',
+            'https://fredki-theagent.lernsteine.de:8443/fredki-hub/buchen.php?i=1&t=2',
+            'https://user@fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t=2',
             'javascript:alert(1)',
-            'https://bildungbleibt.de/fredki-hub/buchen.php?i=1&t="><script>',
+            'https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t="><script>',
             42,
         ];
         foreach ($unsafe as $url) {
-            $result = activation_state::billing_from_server(['checkout_url' => $url], 'bildungbleibt.de');
+            $result = activation_state::billing_from_server(['checkout_url' => $url], 'fredki-theagent.lernsteine.de');
             $this->assertNull($result['checkout_url']);
         }
     }
@@ -83,10 +83,10 @@ final class activation_state_test extends \basic_testcase {
     public function test_missing_or_invalid_values(): void {
         $this->assertSame([
             'plan' => null, 'course_limit' => null, 'courses_used' => null, 'checkout_url' => null, 'manage_url' => null,
-        ], activation_state::billing_from_server([], 'bildungbleibt.de'));
+        ], activation_state::billing_from_server([], 'fredki-theagent.lernsteine.de'));
         $result = activation_state::billing_from_server(
             ['plan' => '<b>x</b>', 'course_limit' => '10', 'courses_used' => -1],
-            'bildungbleibt.de'
+            'fredki-theagent.lernsteine.de'
         );
         $this->assertNull($result['plan']);
         $this->assertNull($result['course_limit']);
