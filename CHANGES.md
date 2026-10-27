@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0 (2026-10-27)
+
+* Packages and booking (licence server 13.18 or later): the activation page shows "Book a package – test 7 days
+  free" while the site waits for approval, and "Manage subscription" with package and course usage once a
+  subscription exists. Existing testers can book from the activation page as well. Links are accepted only as
+  https links to the configured licence server.
+* Course limit of the booked package: if it is reached, synchronising a new course shows a clear message instead of
+  an error; connected courses keep working.
+* PHPUnit tests for the package fields of the status response.
+
 ## 1.3.0 (2026-10-26)
 
 * Staged synchronisation reworked: each stage uses the time budget from the settings, the next stage starts

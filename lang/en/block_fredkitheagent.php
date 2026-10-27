@@ -22,9 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['actbookbutton'] = 'Book a package – test 7 days free';
+$string['actbookintro'] = 'Choose a package, store a payment method and test FredKI free of charge for 7 days. After the booking and the automatic domain check, this site is approved within a few minutes. No charge if you cancel during the trial.';
+$string['actbooknowbutton'] = 'Book a package now';
 $string['activationmailbody'] = 'Please approve my Moodle installation: {$a}';
 $string['activationmailsubject'] = 'FredKI – approval request';
+$string['actmanagebutton'] = 'Manage subscription';
 $string['actpendingcaption'] = 'Our team member has been notified and will activate your access shortly. You do not need to register again.';
+$string['actpendingmanual'] = 'Alternatively, our team can approve the site manually.';
+$string['actplan'] = 'Package: {$a->plan} · Courses with course agent: {$a->used} of {$a->limit}';
 $string['actstepapproval'] = 'Approval';
 $string['actstepready'] = 'Ready';
 $string['actstepregister'] = 'Register';
@@ -60,6 +66,7 @@ $string['coursedetachedintro'] = 'The FredKI administrator has disconnected this
 $string['coursedetachednotice'] = 'This course has been disconnected from FredKI by the administrator. Chat and synchronisation are paused until the administrator releases the course again.';
 $string['coursedetachedretry'] = 'Check again';
 $string['coursedetachedstatus'] = 'Disconnected by the administrator';
+$string['courselimitnotice'] = 'The course limit of the booked FredKI package has been reached, so this course could not be connected. Courses that are already connected keep working. A site administrator can book a larger package on the FredKI activation page (Manage subscription).';
 $string['debuglog'] = 'Enable debug log';
 $string['designaccentcolor'] = 'Accent colour';
 $string['designbackgroundcolor'] = 'Background colour';

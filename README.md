@@ -40,15 +40,26 @@ are based on the materials of that course only.
 
 ## Costs
 
-* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key,
-  paywall or purchase flow inside the plugin.
+* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key and
+  no payment inside Moodle.
 * A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
-  FredKI The Agent → "Open activation"). The registration is reviewed and approved manually.
-* After approval, a **free 7-day trial** of the hosted FredKI service starts.
-* Continued use after the trial requires a **paid hosting subscription** from LERNSTEINE®.
-  Prices and conditions: contact info@lernsteine.com.
+  FredKI The Agent → "Open activation"). The activation page links to the booking page of the
+  hosted service, where a package is chosen and paid via Stripe (card, PayPal, SEPA direct debit).
+* Every package starts with a **free 7-day trial**; the first charge is made when the trial ends.
+  Cancelling during the trial is free of charge.
+* Packages of the hosted FredKI service (monthly, prices excl. VAT; consumers see gross prices):
+
+  | Package | Courses with a course agent | Price per month (net) |
+  |---|---|---|
+  | Starter | up to 5 | 29 € |
+  | 10 | up to 10 | 49 € |
+  | 25 | up to 25 | 99 € |
+  | 50 | up to 50 | 179 € |
+
+* When the course limit is reached, further courses cannot be connected; connected courses keep
+  working. The package can be changed at any time via "Manage subscription".
 * Without an active subscription the plugin stays installed, but course synchronisation and chat
-  are paused.
+  are paused. Questions: info@lernsteine.com
 
 ## Installation
 
@@ -100,6 +111,7 @@ Questions about the hosted service, trial and subscription: info@lernsteine.com
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig registriert
-und manuell freigeschaltet. Danach läuft eine kostenlose Testphase von 7 Tagen; für die weitere
-Nutzung ist ein kostenpflichtiges Hosting-Abo bei LERNSTEINE® nötig. Das Plugin selbst ist kostenlos
+und nach Buchung eines Pakets automatisch freigeschaltet. Jedes Paket beginnt mit 7 Tagen kostenlosem
+Test; danach ist es ein monatliches Hosting-Abo bei LERNSTEINE® (Starter bis 5 Kurse 29 €, bis 10 Kurse
+49 €, bis 25 Kurse 99 €, bis 50 Kurse 179 €, jeweils netto pro Monat). Das Plugin selbst ist kostenlos
 und steht unter GPL v3 oder später.

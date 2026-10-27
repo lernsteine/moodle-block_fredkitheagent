@@ -102,6 +102,12 @@ $registered = $gateway::is_registered();
 $active = in_array($state, ['trial_active', 'licensed', 'setup_pending'], true);
 // Position in the three-step journey: 1 = register, 2 = approval, 3 = ready.
 $position = !$registered ? 1 : ($active ? 3 : 2);
+// Package links come from the licence server and are already restricted to its https host.
+$checkouturl = (string)($status['checkout_url'] ?? '');
+$manageurl = (string)($status['manage_url'] ?? '');
+$serverbutton = static function (string $url, string $label): string {
+    return html_writer::link($url, s($label), ['class' => 'fk-actbutton', 'target' => '_blank', 'rel' => 'noopener noreferrer']);
+};
 echo html_writer::start_div('fk-act');
 echo html_writer::start_div('fk-head');
 echo html_writer::div(html_writer::span('', 'fk-eye') . html_writer::span('', 'fk-eye'), 'fk-orb', ['aria-hidden' => 'true']);
@@ -135,7 +141,13 @@ if (!$registered) {
         'value' => get_string('managedregisterbutton', $pn), 'class' => 'fk-actbutton']);
     echo html_writer::end_tag('form');
 } else if ($state === 'pending') {
-    echo html_writer::tag('p', get_string('actpendingcaption', $pn));
+    if ($checkouturl !== '') {
+        echo html_writer::tag('p', s(get_string('actbookintro', $pn)));
+        echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
+        echo html_writer::tag('p', s(get_string('actpendingmanual', $pn)), ['class' => 'fk-caption']);
+    } else {
+        echo html_writer::tag('p', get_string('actpendingcaption', $pn));
+    }
     $mailstatus = (string)($status['notification_status'] ?? 'unknown');
     if ($mailstatus === 'failed') {
         echo html_writer::div(get_string('managednotificationfailed', $pn), 'fk-actwarn');
@@ -158,8 +170,25 @@ if (!$registered) {
             'fk-caption'
         );
     }
+    if (!empty($status['plan']) && !empty($status['course_limit'])) {
+        echo html_writer::div(s(get_string('actplan', $pn, (object)[
+            'plan' => $status['plan'], 'used' => (int)($status['courses_used'] ?? 0), 'limit' => (int)$status['course_limit'],
+        ])), 'fk-caption');
+    }
+    if ($checkouturl !== '') {
+        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    }
+    if ($manageurl !== '') {
+        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
+    }
 } else {
     echo html_writer::div(get_string('managednotactive', $pn) . ': ' . s($state), 'fk-actwarn');
+    if ($checkouturl !== '') {
+        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    }
+    if ($manageurl !== '') {
+        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
+    }
 }
 echo html_writer::end_div();
 // Technical diagnostics and connection reset are not part of the normal customer journey.

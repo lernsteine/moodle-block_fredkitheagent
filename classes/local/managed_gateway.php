@@ -142,6 +142,10 @@ final class managed_gateway {
         }
         $response = self::request('installations/status', ['installation_id' => self::get_installation_id()]);
         $parsed = activation_state::from_server($response);
+        $parsed += activation_state::billing_from_server(
+            $response,
+            (string)parse_url(self::api_address(), PHP_URL_HOST)
+        );
         $parsed['active'] = activation_state::can_use($parsed, time());
         // Never cache failures: an unreachable/invalid license must fail closed.
         self::$requeststatus = $parsed;
@@ -736,6 +740,15 @@ final class managed_gateway {
                     throw new managed_api_diagnostic_exception(
                         'DIAG-COURSE-DETACHED: The FredKI administrator disconnected this course.',
                         410
+                    );
+                }
+                if (
+                    $route === 'courses/register' && $code === 402 && is_array($errorresponse)
+                        && ($errorresponse['error_code'] ?? '') === 'FK-COURSE-LIMIT'
+                ) {
+                    throw new managed_api_diagnostic_exception(
+                        'DIAG-COURSE-LIMIT: The course limit of the booked FredKI package is reached.',
+                        402
                     );
                 }
                 if ($route === 'chat/send' && $code === 424) {

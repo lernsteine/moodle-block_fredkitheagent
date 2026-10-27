@@ -22,9 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['actbookbutton'] = 'Paket buchen – 7 Tage kostenlos testen';
+$string['actbookintro'] = 'Wähle ein Paket, hinterlege eine Zahlungsart und teste FredKI 7 Tage kostenlos. Nach der Buchung und der automatischen Domainprüfung ist diese Seite in wenigen Minuten freigeschaltet. Kündigst du in der Testphase, entstehen keine Kosten.';
+$string['actbooknowbutton'] = 'Jetzt Paket buchen';
 $string['activationmailbody'] = 'Bitte meine Moodle-Installation freigeben: {$a}';
 $string['activationmailsubject'] = 'FredKI – Freigabeanfrage';
+$string['actmanagebutton'] = 'Abo verwalten';
 $string['actpendingcaption'] = 'Unsere Mitarbeiterin ist informiert und schaltet den Zugang in Kürze frei. Du musst dich nicht erneut registrieren.';
+$string['actpendingmanual'] = 'Alternativ kann unser Team die Seite auch von Hand freischalten.';
+$string['actplan'] = 'Paket: {$a->plan} · Kurse mit Kursagent: {$a->used} von {$a->limit}';
 $string['actstepapproval'] = 'Freigabe';
 $string['actstepready'] = 'Fertig';
 $string['actstepregister'] = 'Registrieren';
@@ -60,6 +66,7 @@ $string['coursedetachedintro'] = 'Der FredKI-Administrator hat diesen Kurs getre
 $string['coursedetachednotice'] = 'Dieser Kurs wurde vom Administrator von FredKI getrennt. Chat und Synchronisierung ruhen, bis der Administrator den Kurs wieder freigibt.';
 $string['coursedetachedretry'] = 'Erneut prüfen';
 $string['coursedetachedstatus'] = 'Vom Administrator getrennt';
+$string['courselimitnotice'] = 'Das Kurslimit des gebuchten FredKI-Pakets ist erreicht, deshalb konnte dieser Kurs nicht verbunden werden. Bereits verbundene Kurse laufen weiter. Eine Website-Administratorin oder ein Website-Administrator kann auf der FredKI-Freischaltungsseite unter „Abo verwalten“ ein größeres Paket buchen.';
 $string['debuglog'] = 'Debug-Log aktivieren';
 $string['designaccentcolor'] = 'Akzentfarbe';
 $string['designbackgroundcolor'] = 'Hintergrundfarbe';
