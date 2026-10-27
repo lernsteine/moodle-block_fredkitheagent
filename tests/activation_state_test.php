@@ -44,14 +44,14 @@ final class activation_state_test extends \basic_testcase {
             'plan' => 'Bis 10 Kurse',
             'course_limit' => 10,
             'courses_used' => 3,
-            'checkout_url' => 'https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=' . $id . '&t=' . $token,
-            'manage_url' => 'https://fredki-theagent.lernsteine.de/fredki-hub/abo.php?i=' . $id . '&t=' . $token,
+            'checkout_url' => 'https://fredki-theagent.lernsteine.de/buchen.php?i=' . $id . '&t=' . $token,
+            'manage_url' => 'https://fredki-theagent.lernsteine.de/abo.php?i=' . $id . '&t=' . $token,
         ], 'fredki-theagent.lernsteine.de');
         $this->assertSame('Bis 10 Kurse', $result['plan']);
         $this->assertSame(10, $result['course_limit']);
         $this->assertSame(3, $result['courses_used']);
-        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?', $result['checkout_url']);
-        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/fredki-hub/abo.php?', $result['manage_url']);
+        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/buchen.php?', $result['checkout_url']);
+        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/abo.php?', $result['manage_url']);
     }
 
     /**
@@ -66,7 +66,7 @@ final class activation_state_test extends \basic_testcase {
             'https://fredki-theagent.lernsteine.de:8443/fredki-hub/buchen.php?i=1&t=2',
             'https://user@fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t=2',
             'javascript:alert(1)',
-            'https://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t="><script>',
+            'https://fredki-theagent.lernsteine.de/buchen.php?i=1&t="><script>',
             42,
         ];
         foreach ($unsafe as $url) {

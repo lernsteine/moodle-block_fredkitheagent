@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.2 (2026-10-27)
+
+* The licence server subdomain serves the API at its root: `https://fredki-theagent.lernsteine.de/api/v1/index.php`.
+  Stored copies of the former default addresses are updated during the upgrade.
+
 ## 1.4.1 (2026-10-27)
 
 * The FredKI licence server moved to `https://fredki-theagent.lernsteine.de/fredki-hub/`. Sites with the locked
