@@ -30,7 +30,6 @@ $string['activationmailbody'] = 'Please approve my Moodle installation: {$a}';
 $string['activationmailsubject'] = 'FredKI – approval request';
 $string['actmanagebutton'] = 'Manage subscription';
 $string['actpendingcaption'] = 'Our team member has been notified and will activate your access shortly. You do not need to register again.';
-$string['actpendingmanual'] = 'Alternatively, our team can approve the site manually.';
 $string['actplan'] = 'Package: {$a->plan} · Courses with course agent: {$a->used} of {$a->limit}';
 $string['actstepapproval'] = 'Approval';
 $string['actstepready'] = 'Ready';

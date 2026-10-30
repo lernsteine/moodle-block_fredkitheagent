@@ -151,7 +151,6 @@ if (!$registered) {
     if ($checkouturl !== '') {
         echo html_writer::tag('p', s(get_string('actbookintro', $pn)));
         echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
-        echo html_writer::tag('p', s(get_string('actpendingmanual', $pn)), ['class' => 'fk-caption']);
     } else {
         echo html_writer::tag('p', get_string('actpendingcaption', $pn));
     }

@@ -30,7 +30,6 @@ $string['activationmailbody'] = 'Bitte meine Moodle-Installation freigeben: {$a}
 $string['activationmailsubject'] = 'FredKI – Freigabeanfrage';
 $string['actmanagebutton'] = 'Abo verwalten';
 $string['actpendingcaption'] = 'Unsere Mitarbeiterin ist informiert und schaltet den Zugang in Kürze frei. Du musst dich nicht erneut registrieren.';
-$string['actpendingmanual'] = 'Alternativ kann unser Team die Seite auch von Hand freischalten.';
 $string['actplan'] = 'Paket: {$a->plan} · Kurse mit Kursagent: {$a->used} von {$a->limit}';
 $string['actstepapproval'] = 'Freigabe';
 $string['actstepready'] = 'Fertig';

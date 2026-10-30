@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.4 (2026-10-30)
+
+* Activation page: while the licence server offers booking, only "Book a package" is shown; the hint about manual
+  approval by the FredKI team was removed (licence server 13.18 approves automatically after booking).
+
 ## 1.4.3 (2026-10-30)
 
 * Activation page: reloading the page no longer sends the last action (registration, connection test) again; the
