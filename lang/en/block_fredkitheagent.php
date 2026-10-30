@@ -25,6 +25,7 @@
 $string['actbookbutton'] = 'Book a package – test 7 days free';
 $string['actbookintro'] = 'Choose a package, store a payment method and test FredKI free of charge for 7 days. After the booking and the automatic domain check, this site is approved within a few minutes. No charge if you cancel during the trial.';
 $string['actbooknowbutton'] = 'Book a package now';
+$string['actionfailed'] = 'The action could not be completed. Please test the licence server connection under "Advanced connection settings"; if it fails again, check the Moodle PHP error log.';
 $string['activationmailbody'] = 'Please approve my Moodle installation: {$a}';
 $string['activationmailsubject'] = 'FredKI – approval request';
 $string['actmanagebutton'] = 'Manage subscription';

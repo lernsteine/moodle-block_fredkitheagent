@@ -25,6 +25,7 @@
 $string['actbookbutton'] = 'Paket buchen – 7 Tage kostenlos testen';
 $string['actbookintro'] = 'Wähle ein Paket, hinterlege eine Zahlungsart und teste FredKI 7 Tage kostenlos. Nach der Buchung und der automatischen Domainprüfung ist diese Seite in wenigen Minuten freigeschaltet. Kündigst du in der Testphase, entstehen keine Kosten.';
 $string['actbooknowbutton'] = 'Jetzt Paket buchen';
+$string['actionfailed'] = 'Die Aktion konnte nicht ausgeführt werden. Bitte unter „Erweiterte Verbindungseinstellungen“ die Verbindung zum Lizenzserver prüfen; schlägt es erneut fehl, das PHP-Fehlerprotokoll von Moodle ansehen.';
 $string['activationmailbody'] = 'Bitte meine Moodle-Installation freigeben: {$a}';
 $string['activationmailsubject'] = 'FredKI – Freigabeanfrage';
 $string['actmanagebutton'] = 'Abo verwalten';

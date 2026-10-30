@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.3 (2026-10-30)
+
+* Activation page: reloading the page no longer sends the last action (registration, connection test) again; the
+  result is shown once after a redirect. Unexpected errors show a translated message instead of an English text.
+
 ## 1.4.2 (2026-10-27)
 
 * The licence server subdomain serves the API at its root: `https://fredki-theagent.lernsteine.de/api/v1/index.php`.

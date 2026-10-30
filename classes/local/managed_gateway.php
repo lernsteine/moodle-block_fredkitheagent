@@ -653,9 +653,11 @@ final class managed_gateway {
         if ($e instanceof managed_api_diagnostic_exception) {
             return $e->getMessage();
         }
+        if ($e instanceof \moodle_exception && $e->errorcode === 'alreadyregistered') {
+            return get_string('alreadyregistered', self::COMPONENT);
+        }
         debugging('[FredKI activation] unexpected exception: ' . get_class($e), DEBUG_DEVELOPER);
-        return 'The action could not be completed. Please check the connection status; ' .
-            'if it fails again, check the Moodle PHP error log.';
+        return get_string('actionfailed', self::COMPONENT);
     }
 
     /**

@@ -69,6 +69,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     } catch (\Throwable $e) {
         $error = $gateway::safe_error($e);
     }
+    // A diagnostic or registration error is obsolete once the licence server reports the site as active.
+    if ($error !== '' && in_array($action, ['diagnose', 'register'], true)) {
+        try {
+            $current = $gateway::status();
+            if (in_array((string)($current['state'] ?? ''), ['trial_active', 'licensed', 'setup_pending'], true)) {
+                $error = '';
+            }
+        } catch (\Throwable $statuserror) {
+            debugging('[FredKI activation status] ' . get_class($statuserror), DEBUG_DEVELOPER);
+        }
+    }
+    // Post/Redirect/Get: reloading the page must never send the action again.
+    $SESSION->block_fredkitheagent_activation = ['error' => $error, 'message' => $message];
+    redirect($PAGE->url);
+}
+if (!empty($SESSION->block_fredkitheagent_activation) && is_array($SESSION->block_fredkitheagent_activation)) {
+    $error = (string)($SESSION->block_fredkitheagent_activation['error'] ?? '');
+    $message = (string)($SESSION->block_fredkitheagent_activation['message'] ?? '');
+    unset($SESSION->block_fredkitheagent_activation);
 }
 $status = [];
 try {
@@ -78,18 +97,6 @@ try {
     $error = $error ?: get_string('managedstatusunavailable', 'block_fredkitheagent');
 }
 $state = (string)($status['state'] ?? 'unregistered');
-// An outdated connection test/registration error can remain on the same POST
-// even though the authoritative licence status says the site is active.
-// Only suppress those informational actions; never hide errors from reset or
-// an inactive/unreachable installation.
-if (
-    $error !== '' && in_array($state, ['trial_active', 'licensed', 'setup_pending'], true) &&
-        ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
-        in_array((string)($action ?? ''), ['diagnose', 'register'], true)
-) {
-    debugging('[FredKI activation] obsolete diagnostic result ignored: server status active', DEBUG_DEVELOPER);
-    $error = '';
-}
 echo $OUTPUT->header();
 $pn = 'block_fredkitheagent';
 if ($error !== '') {
