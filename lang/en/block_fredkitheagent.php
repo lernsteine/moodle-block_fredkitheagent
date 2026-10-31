@@ -56,6 +56,7 @@ $string['chatlogo'] = 'Chat logo';
 $string['chatneedsjavascript'] = 'JavaScript must be enabled for the FredKI chat.';
 $string['chatsend'] = 'Send';
 $string['chatshowfullanswer'] = 'Show full answer';
+$string['chattyping'] = 'FredKI is writing an answer';
 $string['chatwelcomedefault'] = 'Hello! I can help you study this course material.';
 $string['chatwelcometext'] = 'Welcome message';
 $string['coursebindingreset'] = 'The administrator has removed the previous FredKI connection of this course. The course is now set up anew; course material is transferred again.';

@@ -33,16 +33,16 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
 
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 202606081487) {
+    if ($oldversion < 2026060800) {
         $table = new xmldb_table('fredkitheagent_map');
         $field = new xmldb_field('metahash', XMLDB_TYPE_CHAR, '40', null, XMLDB_NOTNULL, null, null, 'filesize');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 202606081487, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026060800, 'fredkitheagent');
     }
 
-    if ($oldversion < 202607290001) {
+    if ($oldversion < 2026072900) {
         $table = new xmldb_table('fredkitheagent');
         foreach (['knowledgeid'] as $fieldname) {
             $field = new xmldb_field($fieldname, XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
@@ -76,19 +76,19 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
             $dbman->add_index($maptable, $index);
         }
 
-        upgrade_block_savepoint(true, 202607290001, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026072900, 'fredkitheagent');
     }
 
-    if ($oldversion < 202610120501) {
+    if ($oldversion < 2026101200) {
         $table = new xmldb_table('fredkitheagent');
         $field = new xmldb_field('managedtargetid', XMLDB_TYPE_CHAR, '64', null, null, null, null, 'timesynced');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 202610120501, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026101200, 'fredkitheagent');
     }
 
-    if ($oldversion < 202610120801) {
+    if ($oldversion < 2026101201) {
         $table = new xmldb_table('fredkitheagent');
         $field = new xmldb_field(
             'verifiedat',
@@ -103,12 +103,12 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_block_savepoint(true, 202610120801, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026101201, 'fredkitheagent');
     }
 
     // New course agents default to hidden until a teacher explicitly enables their chat.
     // Keep the values of existing courses unchanged (no surprise visibility change on upgrade).
-    if ($oldversion < 202610222100) {
+    if ($oldversion < 2026102200) {
         $table = new xmldb_table('fredkitheagent');
         $field = new xmldb_field(
             'agentcoursevisible',
@@ -123,11 +123,11 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         if ($dbman->field_exists($table, $field)) {
             $dbman->change_field_default($table, $field);
         }
-        upgrade_block_savepoint(true, 202610222100, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026102200, 'fredkitheagent');
     }
 
     // Optional per-course presentation: never modify stored agent or knowledge assignments.
-    if ($oldversion < 202610222300) {
+    if ($oldversion < 2026102201) {
         $table = new xmldb_table('fredkitheagent_design');
         if (!$dbman->table_exists($table)) {
             $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
@@ -153,43 +153,43 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
                 $dbman->add_index($table, $index);
             }
         }
-        upgrade_block_savepoint(true, 202610222300, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026102201, 'fredkitheagent');
     }
 
     // Finish upgrade to the corrected version even if no schema changes are needed.
-    if ($oldversion < 202610222301) {
-        upgrade_block_savepoint(true, 202610222301, 'fredkitheagent');
+    if ($oldversion < 2026102202) {
+        upgrade_block_savepoint(true, 2026102202, 'fredkitheagent');
     }
 
     // No schema change: fast, bounded incremental course sync and manual full check.
-    if ($oldversion < 202610222302) {
-        upgrade_block_savepoint(true, 202610222302, 'fredkitheagent');
+    if ($oldversion < 2026102203) {
+        upgrade_block_savepoint(true, 2026102203, 'fredkitheagent');
     }
 
     // Table names must carry the full component prefix (block_fredkitheagent*).
-    if ($oldversion < 202610240700) {
+    if ($oldversion < 2026102400) {
         foreach (['fredkitheagent', 'fredkitheagent_map', 'fredkitheagent_design'] as $oldname) {
             $oldtable = new xmldb_table($oldname);
             if ($dbman->table_exists($oldtable) && !$dbman->table_exists(new xmldb_table('block_' . $oldname))) {
                 $dbman->rename_table($oldtable, 'block_' . $oldname);
             }
         }
-        upgrade_block_savepoint(true, 202610240700, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026102400, 'fredkitheagent');
     }
 
     // 1.4.1: the FredKI licence server moved to fredki-theagent.lernsteine.de. A stored copy of the
     // former default address is replaced; an address the administrator entered deliberately is kept.
-    if ($oldversion < 202610271500) {
+    if ($oldversion < 2026102700) {
         $old = 'https://bildungbleibt.de/fredki-hub/api/v1/index.php';
         if (trim((string)get_config('block_fredkitheagent', 'managed_api_url')) === $old) {
             $new = 'https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php';
             set_config('managed_api_url', $new, 'block_fredkitheagent');
         }
-        upgrade_block_savepoint(true, 202610271500, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026102700, 'fredkitheagent');
     }
 
     // 1.4.2: the licence server subdomain serves the API at its root (without /fredki-hub/).
-    if ($oldversion < 202610271900) {
+    if ($oldversion < 2026102701) {
         $stored = trim((string)get_config('block_fredkitheagent', 'managed_api_url'));
         $former = [
             'https://bildungbleibt.de/fredki-hub/api/v1/index.php',
@@ -198,7 +198,7 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         if (in_array($stored, $former, true)) {
             set_config('managed_api_url', 'https://fredki-theagent.lernsteine.de/api/v1/index.php', 'block_fredkitheagent');
         }
-        upgrade_block_savepoint(true, 202610271900, 'fredkitheagent');
+        upgrade_block_savepoint(true, 2026102701, 'fredkitheagent');
     }
 
     return true;
