@@ -122,12 +122,14 @@ $vars = '--fredki-header:' . $header . ';--fredki-accent:' . $accent . ';--fredk
     ';--fredki-botbubble:' . $botbubble . ';--fredki-userbubble:' . $userbubble . ';';
 echo '<section class="fredki-course-chat" style="' . s($vars) . '" data-fredki-chat="1"'
     . ' data-courseid="' . (int)$courseid . '" data-endpoint="' . s($endpoint) . '" data-sesskey="' . s(sesskey()) . '"'
-    . ' data-threadid="' . s($threadid) . '">';
+    . ' data-threadid="' . s($threadid) . '"'
+    . ' data-typinglabel="' . s(get_string('chattyping', 'block_fredkitheagent')) . '">';
 echo '<header class="fredki-course-header">'
     . ($embedded ? '' : '<a href="' . s($backurl) . '" class="fredki-course-back">' .
         s(get_string('chatbackcourse', 'block_fredkitheagent')) . '</a>')
     . '<img src="' . s($logo) . '" alt="FredKI" class="fredki-course-logo">'
-    . '<div><strong>FredKI</strong><span>Dein Lernbegleiter · ' . s(format_string($course->fullname)) . '</span></div>'
+    . '<div><strong>FredKI</strong><span>' . s(get_string('nextsubtitle', 'block_fredkitheagent'))
+    . ' · ' . s(format_string($course->fullname)) . '</span></div>'
     . '</header>';
 echo '<div class="fredki-course-messages" id="fredki-course-messages" aria-live="polite">'
     . '<div class="fredki-course-message bot">' . nl2br(s($welcome)) . '</div></div>';

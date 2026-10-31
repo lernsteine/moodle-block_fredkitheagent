@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.1 (2026-10-31)
+
+* Chat window: the subtitle and the screen-reader label of the typing indicator now come from the language pack
+  (no hard-coded German text in the English interface).
+
 ## 1.5.0 (2026-10-31)
 
 * Merges 1.4.6–1.4.9 (block design, removal of hidden material) with the Moodle Marketplace preparation.

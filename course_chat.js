@@ -190,7 +190,7 @@
             var node = add('', 'bot');
             node.classList.add('fredki-typing');
             node.setAttribute('role', 'status');
-            node.setAttribute('aria-label', 'FredKI erstellt eine Antwort');
+            node.setAttribute('aria-label', root.dataset.typinglabel || 'FredKI');
             // Each dot is a real element so CSS can animate it with staggered delays.
             // DOM text is never parsed as HTML and no server response is interpreted as markup.
             for (var i = 0; i < 3; i++) {
