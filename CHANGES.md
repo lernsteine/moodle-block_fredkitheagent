@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.5 (2026-10-31)
+
+* Moodle Marketplace: the plugin ships with English only; German and other translations are provided through AMOS
+  (lang.moodle.org). README without prices (current packages and prices are shown on the booking page) and with the
+  booking-based activation steps.
+
 ## 1.4.4 (2026-10-30)
 
 * Activation page: while the licence server offers booking, only "Book a package" is shown; the hint about manual

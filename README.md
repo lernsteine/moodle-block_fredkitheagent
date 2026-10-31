@@ -47,19 +47,18 @@ are based on the materials of that course only.
   hosted service, where a package is chosen and paid via Stripe (card, PayPal, SEPA direct debit).
 * Every package starts with a **free 7-day trial**; the first charge is made when the trial ends.
   Cancelling during the trial is free of charge.
-* Packages of the hosted FredKI service (monthly, prices excl. VAT; consumers see gross prices):
-
-  | Package | Courses with a course agent | Price per month (net) |
-  |---|---|---|
-  | Starter | up to 5 | 29 € |
-  | 10 | up to 10 | 49 € |
-  | 25 | up to 25 | 99 € |
-  | 50 | up to 50 | 179 € |
-
+* The hosted service is offered as monthly packages that differ in the number of courses with a
+  course agent. Current packages and prices are shown on the booking page before anything is
+  ordered; prices are maintained by the provider and may change.
 * When the course limit is reached, further courses cannot be connected; connected courses keep
   working. The package can be changed at any time via "Manage subscription".
 * Without an active subscription the plugin stays installed, but course synchronisation and chat
   are paused. Questions: info@lernsteine.com
+
+## Languages
+
+The plugin ships with English. Translations, including German, are provided through Moodle's
+translation portal AMOS (lang.moodle.org) and installed with the Moodle language packs.
 
 ## Installation
 
@@ -68,8 +67,9 @@ are based on the materials of that course only.
 2. Run the Moodle upgrade.
 3. As administrator open *Site administration → Plugins → Blocks → FredKI The Agent → Open activation*,
    enter a contact e-mail address and register the site.
-4. After the provider has approved the site, add the block "FredKI The Agent" to a course and press
-   the large button.
+4. On the activation page choose "Book a package – test 7 days free". After the booking the site
+   is approved automatically within a few minutes.
+5. Add the block "FredKI The Agent" to a course and press the large button.
 
 ## Privacy
 
@@ -112,6 +112,6 @@ Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen ges
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig registriert
 und nach Buchung eines Pakets automatisch freigeschaltet. Jedes Paket beginnt mit 7 Tagen kostenlosem
-Test; danach ist es ein monatliches Hosting-Abo bei LERNSTEINE® (Starter bis 5 Kurse 29 €, bis 10 Kurse
-49 €, bis 25 Kurse 99 €, bis 50 Kurse 179 €, jeweils netto pro Monat). Das Plugin selbst ist kostenlos
+Test; danach ist es ein monatliches Hosting-Abo bei LERNSTEINE®. Die Pakete unterscheiden sich in der
+Zahl der Kurse mit Kursagent; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst ist kostenlos
 und steht unter GPL v3 oder später.
