@@ -79,6 +79,51 @@ final class activation_state {
     }
 
     /**
+     * Parse the optional package fields of the licence server (server 13.18 and later).
+     *
+     * Links are only accepted as https links to the configured licence server host, so a
+     * manipulated response can never send the administrator to a foreign page.
+     *
+     * @param array $data The status response.
+     * @param string $apihost Host name of the configured licence server.
+     * @return array plan, course_limit, courses_used, checkout_url, manage_url (null if absent or invalid).
+     */
+    public static function billing_from_server(array $data, string $apihost): array {
+        $plan = $data['plan'] ?? null;
+        $limit = $data['course_limit'] ?? null;
+        $used = $data['courses_used'] ?? null;
+        return [
+            'plan' => is_string($plan) && preg_match('/^[\p{L}\p{N} .+\-]{1,60}$/uD', $plan) ? $plan : null,
+            'course_limit' => is_int($limit) && $limit > 0 && $limit <= 100000 ? $limit : null,
+            'courses_used' => is_int($used) && $used >= 0 && $used <= 100000 ? $used : null,
+            'checkout_url' => self::server_link($data['checkout_url'] ?? null, $apihost),
+            'manage_url' => self::server_link($data['manage_url'] ?? null, $apihost),
+        ];
+    }
+
+    /**
+     * Accept only an https link to the licence server host.
+     *
+     * @param mixed $url The link from the server response.
+     * @param string $apihost Host name of the configured licence server.
+     * @return string|null The link or null.
+     */
+    private static function server_link($url, string $apihost): ?string {
+        if (!is_string($url) || strlen($url) > 500 || $apihost === '') {
+            return null;
+        }
+        $parts = parse_url($url);
+        if (
+            !is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || isset($parts['user']) || isset($parts['pass'])
+                || isset($parts['port']) || strtolower((string)($parts['host'] ?? '')) !== strtolower($apihost)
+                || !preg_match('~^https://[A-Za-z0-9.-]+/[A-Za-z0-9._/-]*\.php\?[A-Za-z0-9=&_-]+$~D', $url)
+        ) {
+            return null;
+        }
+        return $url;
+    }
+
+    /**
      * Can use.
      *
      * @param array $status The status.

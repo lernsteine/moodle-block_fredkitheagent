@@ -69,6 +69,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     } catch (\Throwable $e) {
         $error = $gateway::safe_error($e);
     }
+    // A diagnostic or registration error is obsolete once the licence server reports the site as active.
+    if ($error !== '' && in_array($action, ['diagnose', 'register'], true)) {
+        try {
+            $current = $gateway::status();
+            if (in_array((string)($current['state'] ?? ''), ['trial_active', 'licensed', 'setup_pending'], true)) {
+                $error = '';
+            }
+        } catch (\Throwable $statuserror) {
+            debugging('[FredKI activation status] ' . get_class($statuserror), DEBUG_DEVELOPER);
+        }
+    }
+    // Post/Redirect/Get: reloading the page must never send the action again.
+    $SESSION->block_fredkitheagent_activation = ['error' => $error, 'message' => $message];
+    redirect($PAGE->url);
+}
+if (!empty($SESSION->block_fredkitheagent_activation) && is_array($SESSION->block_fredkitheagent_activation)) {
+    $error = (string)($SESSION->block_fredkitheagent_activation['error'] ?? '');
+    $message = (string)($SESSION->block_fredkitheagent_activation['message'] ?? '');
+    unset($SESSION->block_fredkitheagent_activation);
 }
 $status = [];
 try {
@@ -78,18 +97,6 @@ try {
     $error = $error ?: get_string('managedstatusunavailable', 'block_fredkitheagent');
 }
 $state = (string)($status['state'] ?? 'unregistered');
-// An outdated connection test/registration error can remain on the same POST
-// even though the authoritative licence status says the site is active.
-// Only suppress those informational actions; never hide errors from reset or
-// an inactive/unreachable installation.
-if (
-    $error !== '' && in_array($state, ['trial_active', 'licensed', 'setup_pending'], true) &&
-        ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
-        in_array((string)($action ?? ''), ['diagnose', 'register'], true)
-) {
-    debugging('[FredKI activation] obsolete diagnostic result ignored: server status active', DEBUG_DEVELOPER);
-    $error = '';
-}
 echo $OUTPUT->header();
 $pn = 'block_fredkitheagent';
 if ($error !== '') {
@@ -102,6 +109,12 @@ $registered = $gateway::is_registered();
 $active = in_array($state, ['trial_active', 'licensed', 'setup_pending'], true);
 // Position in the three-step journey: 1 = register, 2 = approval, 3 = ready.
 $position = !$registered ? 1 : ($active ? 3 : 2);
+// Package links come from the licence server and are already restricted to its https host.
+$checkouturl = (string)($status['checkout_url'] ?? '');
+$manageurl = (string)($status['manage_url'] ?? '');
+$serverbutton = static function (string $url, string $label): string {
+    return html_writer::link($url, s($label), ['class' => 'fk-actbutton', 'target' => '_blank', 'rel' => 'noopener noreferrer']);
+};
 echo html_writer::start_div('fk-act');
 echo html_writer::start_div('fk-head');
 echo html_writer::div(html_writer::span('', 'fk-eye') . html_writer::span('', 'fk-eye'), 'fk-orb', ['aria-hidden' => 'true']);
@@ -135,7 +148,12 @@ if (!$registered) {
         'value' => get_string('managedregisterbutton', $pn), 'class' => 'fk-actbutton']);
     echo html_writer::end_tag('form');
 } else if ($state === 'pending') {
-    echo html_writer::tag('p', get_string('actpendingcaption', $pn));
+    if ($checkouturl !== '') {
+        echo html_writer::tag('p', s(get_string('actbookintro', $pn)));
+        echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
+    } else {
+        echo html_writer::tag('p', get_string('actpendingcaption', $pn));
+    }
     $mailstatus = (string)($status['notification_status'] ?? 'unknown');
     if ($mailstatus === 'failed') {
         echo html_writer::div(get_string('managednotificationfailed', $pn), 'fk-actwarn');
@@ -158,8 +176,25 @@ if (!$registered) {
             'fk-caption'
         );
     }
+    if (!empty($status['plan']) && !empty($status['course_limit'])) {
+        echo html_writer::div(s(get_string('actplan', $pn, (object)[
+            'plan' => $status['plan'], 'used' => (int)($status['courses_used'] ?? 0), 'limit' => (int)$status['course_limit'],
+        ])), 'fk-caption');
+    }
+    if ($checkouturl !== '') {
+        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    }
+    if ($manageurl !== '') {
+        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
+    }
 } else {
     echo html_writer::div(get_string('managednotactive', $pn) . ': ' . s($state), 'fk-actwarn');
+    if ($checkouturl !== '') {
+        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    }
+    if ($manageurl !== '') {
+        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
+    }
 }
 echo html_writer::end_div();
 // Technical diagnostics and connection reset are not part of the normal customer journey.

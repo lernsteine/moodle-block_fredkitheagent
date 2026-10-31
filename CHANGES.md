@@ -1,5 +1,70 @@
 # Changelog
 
+## 1.5.0 (2026-10-31)
+
+* Merges 1.4.6–1.4.9 (block design, removal of hidden material) with the Moodle Marketplace preparation.
+* Moodle Marketplace: the plugin ships with English only; German and other translations are provided through AMOS
+  (lang.moodle.org). README without prices (current packages and prices are shown on the booking page) and with the
+  booking-based activation steps.
+
+## 1.4.9 (2026-10-31)
+
+* Main button: the hover and focus state keeps the violet background (white text no longer turns white on white).
+
+## 1.4.8 (2026-10-31)
+
+* The main button is calmer: a soft violet gradient with a light shadow; only the progress animation remains.
+
+## 1.4.7 (2026-10-31)
+
+* Tidier block: the grey notice box is the only status hint; the extra "Not set up yet" line was removed.
+* The main button is redesigned (a calmer version followed in 1.4.8).
+* In editing mode the block uses the standard Moodle frame and header with the move/settings controls, like every
+  other block, instead of a floating card.
+
+## 1.4.6 (2026-10-31)
+
+* Hidden or deleted material now disappears from the knowledge base even when nothing else is visible any more
+  (before, an "empty" course snapshot kept all earlier documents). The notice states how many documents were removed.
+
+## 1.4.5 (2026-10-31)
+
+* Settings of the course block redesigned: "Agent appearance" is now a prominent, inviting entry at the top (icon,
+  short description, arrow). The technical details (course agent, knowledge base, documents, last synchronisation) and
+  the full check are collected behind a collapsed "Advanced" section. The full check button no longer breaks
+  the text into single syllables in narrow blocks.
+
+## 1.4.4 (2026-10-30)
+
+* Activation page: while the licence server offers booking, only "Book a package" is shown; the hint about manual
+  approval by the FredKI team was removed (licence server 13.18 approves automatically after booking).
+
+## 1.4.3 (2026-10-30)
+
+* Activation page: reloading the page no longer sends the last action (registration, connection test) again; the
+  result is shown once after a redirect. Unexpected errors show a translated message instead of an English text.
+
+## 1.4.2 (2026-10-27)
+
+* The licence server subdomain serves the API at its root: `https://fredki-theagent.lernsteine.de/api/v1/index.php`.
+  Stored copies of the former default addresses are updated during the upgrade.
+
+## 1.4.1 (2026-10-27)
+
+* The FredKI licence server moved to `https://fredki-theagent.lernsteine.de/fredki-hub/`. Sites with the locked
+  default address switch automatically; a stored copy of the former default address is updated during the upgrade.
+  An address entered deliberately by the administrator is kept.
+
+## 1.4.0 (2026-10-27)
+
+* Packages and booking (licence server 13.18 or later): the activation page shows "Book a package – test 7 days
+  free" while the site waits for approval, and "Manage subscription" with package and course usage once a
+  subscription exists. Existing testers can book from the activation page as well. Links are accepted only as
+  https links to the configured licence server.
+* Course limit of the booked package: if it is reached, synchronising a new course shows a clear message instead of
+  an error; connected courses keep working.
+* PHPUnit tests for the package fields of the status response.
+
 ## 1.3.0 (2026-10-26)
 
 * Staged synchronisation reworked: each stage uses the time budget from the settings, the next stage starts

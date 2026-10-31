@@ -38,7 +38,7 @@ final class managed_gateway {
     private const COMPONENT = 'block_fredkitheagent';
 
     /** @var string Default HTTPS endpoint of the FredKI licence server (disclosed in the privacy metadata). */
-    private const DEFAULT_API_URL = 'https://bildungbleibt.de/fredki-hub/api/v1/index.php';
+    private const DEFAULT_API_URL = 'https://fredki-theagent.lernsteine.de/api/v1/index.php';
 
     /**
      * Valid only for one PHP request; prevents repeated license HTTP checks per uploaded document.
@@ -142,6 +142,10 @@ final class managed_gateway {
         }
         $response = self::request('installations/status', ['installation_id' => self::get_installation_id()]);
         $parsed = activation_state::from_server($response);
+        $parsed += activation_state::billing_from_server(
+            $response,
+            (string)parse_url(self::api_address(), PHP_URL_HOST)
+        );
         $parsed['active'] = activation_state::can_use($parsed, time());
         // Never cache failures: an unreachable/invalid license must fail closed.
         self::$requeststatus = $parsed;
@@ -649,9 +653,11 @@ final class managed_gateway {
         if ($e instanceof managed_api_diagnostic_exception) {
             return $e->getMessage();
         }
+        if ($e instanceof \moodle_exception && $e->errorcode === 'alreadyregistered') {
+            return get_string('alreadyregistered', self::COMPONENT);
+        }
         debugging('[FredKI activation] unexpected exception: ' . get_class($e), DEBUG_DEVELOPER);
-        return 'The action could not be completed. Please check the connection status; ' .
-            'if it fails again, check the Moodle PHP error log.';
+        return get_string('actionfailed', self::COMPONENT);
     }
 
     /**
@@ -736,6 +742,15 @@ final class managed_gateway {
                     throw new managed_api_diagnostic_exception(
                         'DIAG-COURSE-DETACHED: The FredKI administrator disconnected this course.',
                         410
+                    );
+                }
+                if (
+                    $route === 'courses/register' && $code === 402 && is_array($errorresponse)
+                        && ($errorresponse['error_code'] ?? '') === 'FK-COURSE-LIMIT'
+                ) {
+                    throw new managed_api_diagnostic_exception(
+                        'DIAG-COURSE-LIMIT: The course limit of the booked FredKI package is reached.',
+                        402
                     );
                 }
                 if ($route === 'chat/send' && $code === 424) {

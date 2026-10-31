@@ -34,21 +34,31 @@ are based on the materials of that course only.
   talks to the FredKI licence/gateway server operated by LERNSTEINE® (lernsteine.com), which provides
   the knowledge bases, the AI agents and the language models.
 * Outgoing HTTPS from the Moodle server to the gateway (default
-  `https://bildungbleibt.de/fredki-hub/api/v1/index.php`; the address is locked in the plugin
+  `https://fredki-theagent.lernsteine.de/api/v1/index.php`; the address is locked in the plugin
   settings and only needs to be changed if the provider asks you to).
 * Moodle's "cURL blocked hosts" security setting must not block the gateway host.
 
 ## Costs
 
-* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key,
-  paywall or purchase flow inside the plugin.
+* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key and
+  no payment inside Moodle.
 * A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
-  FredKI The Agent → "Open activation"). The registration is reviewed and approved manually.
-* After approval, a **free 7-day trial** of the hosted FredKI service starts.
-* Continued use after the trial requires a **paid hosting subscription** from LERNSTEINE®.
-  Prices and conditions: contact info@lernsteine.com.
+  FredKI The Agent → "Open activation"). The activation page links to the booking page of the
+  hosted service, where a package is chosen and paid via Stripe (card, PayPal, SEPA direct debit).
+* Every package starts with a **free 7-day trial**; the first charge is made when the trial ends.
+  Cancelling during the trial is free of charge.
+* The hosted service is offered as monthly packages that differ in the number of courses with a
+  course agent. Current packages and prices are shown on the booking page before anything is
+  ordered; prices are maintained by the provider and may change.
+* When the course limit is reached, further courses cannot be connected; connected courses keep
+  working. The package can be changed at any time via "Manage subscription".
 * Without an active subscription the plugin stays installed, but course synchronisation and chat
-  are paused.
+  are paused. Questions: info@lernsteine.com
+
+## Languages
+
+The plugin ships with English. Translations, including German, are provided through Moodle's
+translation portal AMOS (lang.moodle.org) and installed with the Moodle language packs.
 
 ## Installation
 
@@ -57,8 +67,9 @@ are based on the materials of that course only.
 2. Run the Moodle upgrade.
 3. As administrator open *Site administration → Plugins → Blocks → FredKI The Agent → Open activation*,
    enter a contact e-mail address and register the site.
-4. After the provider has approved the site, add the block "FredKI The Agent" to a course and press
-   the large button.
+4. On the activation page choose "Book a package – test 7 days free". After the booking the site
+   is approved automatically within a few minutes.
+5. Add the block "FredKI The Agent" to a course and press the large button.
 
 ## Privacy
 
@@ -100,6 +111,7 @@ Questions about the hosted service, trial and subscription: info@lernsteine.com
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig registriert
-und manuell freigeschaltet. Danach läuft eine kostenlose Testphase von 7 Tagen; für die weitere
-Nutzung ist ein kostenpflichtiges Hosting-Abo bei LERNSTEINE® nötig. Das Plugin selbst ist kostenlos
+und nach Buchung eines Pakets automatisch freigeschaltet. Jedes Paket beginnt mit 7 Tagen kostenlosem
+Test; danach ist es ein monatliches Hosting-Abo bei LERNSTEINE®. Die Pakete unterscheiden sich in der
+Zahl der Kurse mit Kursagent; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst ist kostenlos
 und steht unter GPL v3 oder später.

@@ -243,7 +243,11 @@ try {
     if ($documentcomplete && \block_fredkitheagent\local\import_completion::chat_ready($rec)) {
         \core\notification::success($notice);
     } else if (\block_fredkitheagent\local\import_completion::waiting_for_material($rec)) {
-        \core\notification::warning(get_string('syncnoticenomaterial', 'block_fredkitheagent'));
+        $nomaterialnotice = get_string('syncnoticenomaterial', 'block_fredkitheagent');
+        if ((int)($stats['deleted'] ?? 0) > 0) {
+            $nomaterialnotice .= ' ' . get_string('syncnoticeremoved', 'block_fredkitheagent', (int)$stats['deleted']);
+        }
+        \core\notification::warning($nomaterialnotice);
     } else {
         \core\notification::warning($notice . ' ' . get_string('syncnoticeincomplete', 'block_fredkitheagent'));
     }
@@ -257,6 +261,14 @@ try {
         // Disconnected by the licence server administrator: not an error of the teacher.
         \block_fredkitheagent\local\course_agent_manager::mark_detached($courseid);
         \core\notification::warning(get_string('coursedetachednotice', 'block_fredkitheagent'));
+        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+    }
+    if (
+        $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
+            && $e->getCode() === 402
+    ) {
+        // Package course limit: nothing was created on the server; existing courses keep working.
+        \core\notification::warning(get_string('courselimitnotice', 'block_fredkitheagent'));
         redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     }
     $code = \block_fredkitheagent\local\managed_gateway::safe_error($e);

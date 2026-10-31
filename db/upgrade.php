@@ -177,5 +177,29 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         upgrade_block_savepoint(true, 202610240700, 'fredkitheagent');
     }
 
+    // 1.4.1: the FredKI licence server moved to fredki-theagent.lernsteine.de. A stored copy of the
+    // former default address is replaced; an address the administrator entered deliberately is kept.
+    if ($oldversion < 202610271500) {
+        $old = 'https://bildungbleibt.de/fredki-hub/api/v1/index.php';
+        if (trim((string)get_config('block_fredkitheagent', 'managed_api_url')) === $old) {
+            $new = 'https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php';
+            set_config('managed_api_url', $new, 'block_fredkitheagent');
+        }
+        upgrade_block_savepoint(true, 202610271500, 'fredkitheagent');
+    }
+
+    // 1.4.2: the licence server subdomain serves the API at its root (without /fredki-hub/).
+    if ($oldversion < 202610271900) {
+        $stored = trim((string)get_config('block_fredkitheagent', 'managed_api_url'));
+        $former = [
+            'https://bildungbleibt.de/fredki-hub/api/v1/index.php',
+            'https://fredki-theagent.lernsteine.de/fredki-hub/api/v1/index.php',
+        ];
+        if (in_array($stored, $former, true)) {
+            set_config('managed_api_url', 'https://fredki-theagent.lernsteine.de/api/v1/index.php', 'block_fredkitheagent');
+        }
+        upgrade_block_savepoint(true, 202610271900, 'fredkitheagent');
+    }
+
     return true;
 }

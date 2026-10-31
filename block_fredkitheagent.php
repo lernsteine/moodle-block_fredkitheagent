@@ -43,7 +43,10 @@ class block_fredkitheagent extends block_base {
      * The header stays technically present so that Moodle still offers move/delete in editing mode.
      */
     public function specialization(): void {
-        $this->title = '';
+        // The card carries its own heading. Only while editing, the standard block header (with the move
+        // and settings controls) shows the name, exactly like every other block.
+        $editing = !empty($this->page) && $this->page->user_is_editing();
+        $this->title = $editing ? get_string('pluginname', 'block_fredkitheagent') : '';
     }
 
     /**
@@ -212,6 +215,9 @@ class block_fredkitheagent extends block_base {
                 '0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 ' .
                 '0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
             'chevron' => '<path d="M9 6l6 6-6 6"/>',
+            'palette' => '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.4-1.2-.3-.4-.4-.7-.4-1.1 ' .
+                '0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.4-4-8.4-9-8.4z"/>' .
+                '<circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
         ];
         return '<svg class="fk-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' .
             'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' .
@@ -373,11 +379,6 @@ class block_fredkitheagent extends block_base {
                     ['class' => 'fk-note']
                 );
             }
-            $content .= html_writer::div('', 'fk-rule');
-            $content .= html_writer::div(
-                html_writer::span('', 'fk-dot') . s(get_string('iosnotsetup', $pn)),
-                'fk-footer fk-footer-status'
-            );
         }
         $content .= html_writer::end_div();
 
@@ -389,16 +390,27 @@ class block_fredkitheagent extends block_base {
             $content .= html_writer::tag('button', get_string('iosdone', $pn), [
                 'type' => 'button', 'class' => 'fk-done', 'data-fk-close' => 'settings']);
             $content .= html_writer::end_div();
-            $content .= html_writer::start_div('fk-group');
+            // The look of the agent is what most teachers come for: one inviting, prominent entry.
             $content .= html_writer::link(
                 new moodle_url(
                     '/blocks/fredkitheagent/design.php',
                     ['courseid' => (int)$COURSE->id]
                 ),
-                html_writer::span(s(get_string('iosdesign', $pn)), 'fk-rowtext') . $this->ios_icon('chevron'),
-                ['class' => 'fk-row fk-row-link']
+                html_writer::span($this->ios_icon('palette'), 'fk-design-badge') .
+                html_writer::span(
+                    html_writer::tag('strong', s(get_string('iosdesign', $pn))) .
+                    html_writer::tag('small', s(get_string('iosdesigndesc', $pn))),
+                    'fk-design-copy'
+                ) .
+                html_writer::span($this->ios_icon('chevron'), 'fk-design-go'),
+                ['class' => 'fk-design']
             );
-            $content .= html_writer::end_div();
+            // Technical details stay out of sight until asked for.
+            $content .= html_writer::start_tag('details', ['class' => 'fk-advanced']);
+            $content .= html_writer::tag(
+                'summary',
+                html_writer::span(s(get_string('iosadvanced', $pn)), 'fk-advtext') . $this->ios_icon('chevron')
+            );
             $content .= html_writer::start_div('fk-group');
             $content .= html_writer::start_tag('div', ['class' => 'fk-row fk-row-form']);
             $content .= html_writer::start_div('fk-rowtext');
@@ -427,6 +439,7 @@ class block_fredkitheagent extends block_base {
             }
             $content .= html_writer::end_div();
             $content .= html_writer::div(s(get_string('iosbindingnote', $pn)), 'fk-sheetnote');
+            $content .= html_writer::end_tag('details');
             $content .= html_writer::end_div();
         }
         $content .= html_writer::end_div();
