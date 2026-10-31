@@ -1100,7 +1100,9 @@
 .fredki-ios .fk-rowtitle{display:block;font-size:15px;color:var(--fk-text)}
 .fredki-ios .fk-rowdesc{display:block;font-size:12.5px;line-height:1.35;color:var(--fk-muted)}
 .fredki-ios .fk-row-form form{flex:none}
-.fredki-ios .fk-rowbutton{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:0;border-radius:999px;background:var(--fk-tint);color:var(--fk-ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.fredki-ios .fk-row-form{flex-wrap:wrap;row-gap:8px}
+.fredki-ios .fk-row-form .fk-rowtext{flex:1 1 9em}
+.fredki-ios .fk-rowbutton{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:0;border-radius:999px;background:var(--fk-tint);color:var(--fk-ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .fredki-ios .fk-rowbutton:hover{background:var(--fk-tint-hover)}
 .fredki-ios .fk-rowbutton .fk-icon{display:none}
 .fredki-ios .fk-value{flex:none;color:var(--fk-muted);font-variant-numeric:tabular-nums;font-size:14px}
@@ -1148,3 +1150,59 @@
 .fk-act details{margin-top:22px;padding-top:14px;border-top:1px solid #ececf0;font-size:13.5px;color:#6e6e73}
 .fk-act summary{cursor:pointer}
 .fredki-ios .fk-detail{display:block;margin-top:6px;font-size:11.5px;line-height:1.35;color:#8e8e93;word-break:break-word}
+
+/* settings sheet: prominent appearance entry, quiet advanced section */
+.fredki-ios .fk-design{display:flex;align-items:center;gap:14px;margin:0 0 14px;padding:16px;border-radius:18px;
+    background:linear-gradient(135deg,#6663e0 0,#5856d6 45%,#453fbd 100%);color:#fff;text-decoration:none;
+    box-shadow:0 8px 20px rgba(88,86,214,.28),inset 0 1px 0 rgba(255,255,255,.18);
+    transition:transform .15s ease,box-shadow .15s ease}
+.fredki-ios .fk-design:hover{color:#fff;text-decoration:none;transform:translateY(-1px);box-shadow:0 12px 26px rgba(88,86,214,.36),inset 0 1px 0 rgba(255,255,255,.18)}
+.fredki-ios .fk-design:active{transform:scale(.99)}
+.fredki-ios .fk-design:focus-visible{outline:3px solid rgba(88,86,214,.45);outline-offset:3px}
+.fredki-ios .fk-design-badge{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.2)}
+.fredki-ios .fk-design-badge .fk-icon{width:24px;height:24px;stroke-width:1.8}
+.fredki-ios .fk-design-copy{flex:1 1 auto;min-width:0}
+.fredki-ios .fk-design-copy strong{display:block;font-size:16.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25;color:#fff}
+.fredki-ios .fk-design-copy small{display:block;margin-top:2px;font-size:13px;line-height:1.35;color:rgba(255,255,255,.88)}
+.fredki-ios .fk-design-go{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2)}
+.fredki-ios .fk-design-go .fk-icon{width:16px;height:16px;stroke-width:2.4}
+.fredki-ios .fk-advanced{margin:0 0 4px}
+.fredki-ios .fk-advanced>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px;padding:4px 6px;
+    list-style:none;cursor:pointer;color:var(--fk-muted);font-size:14px;font-weight:500;border-radius:10px}
+.fredki-ios .fk-advanced>summary::-webkit-details-marker{display:none}
+.fredki-ios .fk-advanced>summary:hover{color:var(--fk-text)}
+.fredki-ios .fk-advanced>summary:focus-visible{outline:3px solid rgba(88,86,214,.35);outline-offset:2px}
+.fredki-ios .fk-advanced>summary .fk-icon{width:16px;height:16px;transition:transform .18s ease}
+.fredki-ios .fk-advanced[open]>summary .fk-icon{transform:rotate(90deg)}
+.fredki-ios .fk-advanced[open]>summary{margin-bottom:6px}
+
+/* the one calm, inviting button */
+.fredki-ios .fk-main{
+    border:0;color:#fff;
+    background:linear-gradient(135deg,#6559e8 0%,#5650d6 100%);
+    box-shadow:0 4px 12px rgba(86,80,214,.24),inset 0 1px 0 rgba(255,255,255,.22);
+    text-shadow:none;animation:none;
+    transition:transform .15s ease,box-shadow .2s ease,filter .2s ease}
+.fredki-ios .fk-main::before{content:none}
+.fredki-ios .fk-main::after{content:none}
+.fredki-ios .fk-main:hover,.fredki-ios .fk-main:focus,.fredki-ios a.fk-main:hover,.fredki-ios a.fk-main:focus{color:#fff;background:linear-gradient(135deg,#6559e8 0%,#5650d6 100%);filter:brightness(1.06);transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(86,80,214,.30),inset 0 1px 0 rgba(255,255,255,.26)}
+.fredki-ios .fk-main:active{transform:scale(.985);filter:brightness(.97)}
+.fredki-ios .fk-main:focus-visible{outline:3px solid rgba(86,80,214,.4);outline-offset:3px}
+.fredki-ios .fk-main .fk-icon{width:22px;height:22px;stroke-width:1.9;filter:none;animation:none}
+.fredki-ios .fk-main .fk-label{position:relative}
+.fredki-ios .fk-main.is-busy,.fredki-ios .fk-main.is-busy:hover{background:linear-gradient(135deg,#6559e8,#5650d6);cursor:progress;filter:saturate(.9);animation:none}
+.fredki-ios .fk-main.is-busy::after{content:'';left:0;width:100%;transform:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:fk-sweep-full 1.8s ease-in-out infinite}
+.fredki-ios .fk-main.is-busy .fk-icon{animation:fk-spin 1.1s linear infinite}
+@keyframes fk-sweep-full{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){.fredki-ios .fk-main.is-busy::after,.fredki-ios .fk-main.is-busy .fk-icon{animation:none!important}}
+
+/* editing mode: look like every other block (standard frame and header, flat content) */
+.editing .block_fredkitheagent:has(.fredki-next-card){background:#fff!important;border:1px solid rgba(0,0,0,.125)!important;border-radius:.5rem!important}
+.editing .block_fredkitheagent:has(.fredki-next-card) > .card-body,
+.editing .block_fredkitheagent:has(.fredki-next-card) .card-body{padding:1rem!important}
+.editing .block_fredkitheagent:has(.fredki-next-card) .card-title,
+.editing .block_fredkitheagent:has(.fredki-next-card) .block-title{font-size:1.09375rem!important;line-height:1.2!important;margin:0 0 .75rem!important}
+.editing .block_fredkitheagent .fredki-next-card.fredki-ios{padding:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.editing .block_fredkitheagent .fredki-ios .fk-headcopy strong{display:none}
+.editing .block_fredkitheagent .fredki-ios .fk-headcopy small{margin-top:0;font-size:14px}

@@ -1,10 +1,38 @@
 # Changelog
 
-## 1.4.5 (2026-10-31)
+## 1.5.0 (2026-10-31)
 
+* Merges 1.4.6–1.4.9 (block design, removal of hidden material) with the Moodle Marketplace preparation.
 * Moodle Marketplace: the plugin ships with English only; German and other translations are provided through AMOS
   (lang.moodle.org). README without prices (current packages and prices are shown on the booking page) and with the
   booking-based activation steps.
+
+## 1.4.9 (2026-10-31)
+
+* Main button: the hover and focus state keeps the violet background (white text no longer turns white on white).
+
+## 1.4.8 (2026-10-31)
+
+* The main button is calmer: a soft violet gradient with a light shadow; only the progress animation remains.
+
+## 1.4.7 (2026-10-31)
+
+* Tidier block: the grey notice box is the only status hint; the extra "Not set up yet" line was removed.
+* The main button is redesigned (a calmer version followed in 1.4.8).
+* In editing mode the block uses the standard Moodle frame and header with the move/settings controls, like every
+  other block, instead of a floating card.
+
+## 1.4.6 (2026-10-31)
+
+* Hidden or deleted material now disappears from the knowledge base even when nothing else is visible any more
+  (before, an "empty" course snapshot kept all earlier documents). The notice states how many documents were removed.
+
+## 1.4.5 (2026-10-31)
+
+* Settings of the course block redesigned: "Agent appearance" is now a prominent, inviting entry at the top (icon,
+  short description, arrow). The technical details (course agent, knowledge base, documents, last synchronisation) and
+  the full check are collected behind a collapsed "Advanced" section. The full check button no longer breaks
+  the text into single syllables in narrow blocks.
 
 ## 1.4.4 (2026-10-30)
 

@@ -243,7 +243,11 @@ try {
     if ($documentcomplete && \block_fredkitheagent\local\import_completion::chat_ready($rec)) {
         \core\notification::success($notice);
     } else if (\block_fredkitheagent\local\import_completion::waiting_for_material($rec)) {
-        \core\notification::warning(get_string('syncnoticenomaterial', 'block_fredkitheagent'));
+        $nomaterialnotice = get_string('syncnoticenomaterial', 'block_fredkitheagent');
+        if ((int)($stats['deleted'] ?? 0) > 0) {
+            $nomaterialnotice .= ' ' . get_string('syncnoticeremoved', 'block_fredkitheagent', (int)$stats['deleted']);
+        }
+        \core\notification::warning($nomaterialnotice);
     } else {
         \core\notification::warning($notice . ' ' . get_string('syncnoticeincomplete', 'block_fredkitheagent'));
     }

@@ -242,17 +242,11 @@ class course_content_importer {
         }
 
         $generated = $counters['files'] + count($this->textfiles);
-        if ($generated === 0) {
-            // Do not mark previously synchronised documents as removed when
-            // Moodle returned an empty course snapshot due to restrictions.
-            return array_merge($counters, [
-                'created' => 0, 'updated' => 0, 'skipped' => 0, 'deleted' => 0,
-                'emptycapture' => true,
-            ]);
-        }
-        // A successful nonempty snapshot must not retain stale generated
-        // documents from removed activities. Retire copies that were not part
-        // of this run without touching the remote API yet.
+        // The course structure was just read fresh, so an empty result is authoritative: when every
+        // activity is hidden, restricted or deleted, nothing of it may stay in the knowledge base.
+        $emptycapture = ($generated === 0);
+        // Retire generated copies that are no longer part of the visible course, without touching
+        // the remote API yet; the synchronisation removes the matching documents afterwards.
         $targetpaths = $this->capturedpaths;
         foreach ($this->textfiles as $filedef) {
             $targetpaths[$filedef['filepath'] . $filedef['filename']] = true;
@@ -277,7 +271,7 @@ class course_content_importer {
             }
         }
         $syncstats = file_sync_helper::scan_generated_files((int)$course->id, (int)$activity->id);
-        return array_merge($counters, $syncstats, ['emptycapture' => false]);
+        return array_merge($counters, $syncstats, ['emptycapture' => $emptycapture]);
     }
 
     /**
