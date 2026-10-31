@@ -29,7 +29,7 @@ are based on the materials of that course only.
 
 ## Requirements
 
-* Moodle 4.5 or later.
+* Moodle 4.5 to 5.3 (tested on 4.5, 5.0, 5.1, 5.2 and 5.3).
 * **A hosted service is required** (see "Costs" below). The plugin does not contain any AI model. It
   talks to the FredKI licence/gateway server operated by LERNSTEINE® (lernsteine.com), which provides
   the knowledge bases, the AI agents and the language models.

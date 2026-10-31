@@ -2,6 +2,7 @@
 
 ## 1.5.1 (2026-10-31)
 
+* Supports Moodle 4.5 to 5.3; the automated tests now also run on Moodle 5.2 and 5.3.
 * Version number in the Moodle format YYYYMMDDXX (2026103100), as required by the Moodle Plugins directory.
   The upgrade steps were renumbered in the same order. Sites that still have a former 12-digit version stored
   are converted once when a site administrator opens the FredKI activation page; then the normal Moodle
