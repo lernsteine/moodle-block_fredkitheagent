@@ -26,6 +26,9 @@ require_once(__DIR__ . '/../../config.php');
 require_login();
 $syscontext = context_system::instance();
 require_capability('moodle/site:config', $syscontext);
+if (\block_fredkitheagent\local\version_scheme::repair()) {
+    redirect(new moodle_url('/admin/index.php'));
+}
 $PAGE->set_url(new moodle_url('/blocks/fredkitheagent/activation.php'));
 $PAGE->set_context($syscontext);
 $PAGE->set_pagelayout('admin');

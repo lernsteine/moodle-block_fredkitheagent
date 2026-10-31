@@ -2,6 +2,10 @@
 
 ## 1.5.1 (2026-10-31)
 
+* Version number in the Moodle format YYYYMMDDXX (2026103100), as required by the Moodle Plugins directory.
+  The upgrade steps were renumbered in the same order. Sites that still have a former 12-digit version stored
+  are converted once when a site administrator opens the FredKI activation page; then the normal Moodle
+  upgrade runs. No data is changed.
 * Chat window: the subtitle and the screen-reader label of the typing indicator now come from the language pack
   (no hard-coded German text in the English interface).
 

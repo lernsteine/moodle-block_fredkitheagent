@@ -36,7 +36,7 @@ $PAGE->set_title('FredKI – ' . format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->requires->css(new moodle_url(
     '/blocks/fredkitheagent/course_chat.css',
-    ['v' => 202610240201]
+    ['v' => 2026103100]
 ));
 if ($embedded) {
     $PAGE->add_body_class('fredkitheagent-embedded-chat');
@@ -49,7 +49,7 @@ $PAGE->requires->strings_for_js(
 );
 $PAGE->requires->js(new moodle_url(
     '/blocks/fredkitheagent/course_chat.js',
-    ['v' => 202610240201]
+    ['v' => 2026103100]
 ), false);
 $color = static function (string $name, string $default): string {
     $value = (string)get_config('block_fredkitheagent', $name);
