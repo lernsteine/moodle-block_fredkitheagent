@@ -431,6 +431,20 @@ class block_fredkitheagent extends block_base {
             }
             $content .= html_writer::end_div();
             $content .= html_writer::div(s(get_string('iosbindingnote', $pn)), 'fk-sheetnote');
+            // Free the course agent for another course: deletes agent and knowledge base in FredKI.
+            $content .= html_writer::start_div('fk-group fk-remove');
+            $content .= html_writer::start_div('fk-row fk-row-form');
+            $content .= html_writer::start_div('fk-rowtext');
+            $content .= html_writer::span(s(get_string('removeagent', $pn)), 'fk-rowtitle');
+            $content .= html_writer::span(s(get_string('removeagentdesc', $pn)), 'fk-rowdesc');
+            $content .= html_writer::end_div();
+            $content .= html_writer::link(
+                new moodle_url('/blocks/fredkitheagent/remove.php', ['courseid' => (int)$COURSE->id]),
+                s(get_string('removeagentbutton', $pn)),
+                ['class' => 'fk-rowbutton fk-danger']
+            );
+            $content .= html_writer::end_div();
+            $content .= html_writer::end_div();
             $content .= html_writer::end_div();
         }
         $content .= html_writer::end_div();
