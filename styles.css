@@ -1250,3 +1250,10 @@
 .fredki-ios .fk-remove{margin-top:12px}
 .fredki-ios .fk-rowbutton.fk-danger{color:#b3261e;background:#fdecec;text-decoration:none}
 .fredki-ios .fk-rowbutton.fk-danger:hover,.fredki-ios .fk-rowbutton.fk-danger:focus{color:#fff;background:#b3261e;text-decoration:none}
+/* 1.5.5: package fully used */
+.fredki-ios a.fk-main.fk-main-secondary,.fredki-ios a.fk-main.fk-main-secondary:hover,.fredki-ios a.fk-main.fk-main-secondary:focus{
+    background:var(--fk-tint);color:var(--fk-ink);border:1px solid var(--fk-tint-line);box-shadow:none;text-decoration:none;filter:none;transform:none}
+.fredki-ios a.fk-main.fk-main-secondary:hover{background:var(--fk-tint-hover)}
+.fredki-ios .fk-linkbutton{display:block;width:100%;margin:10px 0 0;padding:6px;border:0;background:transparent;color:var(--fk-accent);
+    font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:10px}
+.fredki-ios .fk-linkbutton:hover,.fredki-ios .fk-linkbutton:focus-visible{background:var(--fk-tint)}
