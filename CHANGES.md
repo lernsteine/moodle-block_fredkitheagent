@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5.2 (2026-11-01)
+
+* Reconnecting after a reinstall: if the plugin was removed and installed again, registering the site again restores
+  the existing connection automatically (package, trial and course agents are kept). The licence server confirms
+  through siteproof.php that the request really comes from this Moodle site. If the licence server no longer accepts
+  the stored connection, the activation page now explains this and offers "Reconnect this site".
+* Activation texts describe the booking-based activation (no manual approval any more); inactive states are shown in
+  plain words.
+* The booking and subscription pages open in the language of the Moodle site (English or German).
+* Requires licence server 13.19 for the automatic reconnect.
+
 ## 1.5.1 (2026-10-31)
 
 * Supports Moodle 4.5 to 5.3; the automated tests now also run on Moodle 5.2 and 5.3.

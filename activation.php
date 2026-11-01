@@ -46,9 +46,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     try {
         switch ($action) {
             case 'register':
+            case 'reconnect':
                 $email = required_param('contactemail', PARAM_EMAIL);
+                if ($action === 'reconnect') {
+                    // The licence server no longer accepts the stored credentials: start over. If the site
+                    // is still known there, the existing connection (package, courses) is restored.
+                    unset_config('managed_installation_id', 'block_fredkitheagent');
+                    unset_config('managed_installation_secret', 'block_fredkitheagent');
+                }
                 $result = $gateway::register($email);
-                $message = get_string('managedregistered', 'block_fredkitheagent');
+                $message = get_string(
+                    $result['state'] === 'reconnected' ? 'managedreconnected' : 'managedregistered',
+                    'block_fredkitheagent'
+                );
                 break;
             case 'diagnose':
                 $diagnosis = $gateway::diagnose_connection();
@@ -73,7 +83,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $error = $gateway::safe_error($e);
     }
     // A diagnostic or registration error is obsolete once the licence server reports the site as active.
-    if ($error !== '' && in_array($action, ['diagnose', 'register'], true)) {
+    if ($error !== '' && in_array($action, ['diagnose', 'register', 'reconnect'], true)) {
         try {
             $current = $gateway::status();
             if (in_array((string)($current['state'] ?? ''), ['trial_active', 'licensed', 'setup_pending'], true)) {
@@ -93,11 +103,16 @@ if (!empty($SESSION->block_fredkitheagent_activation) && is_array($SESSION->bloc
     unset($SESSION->block_fredkitheagent_activation);
 }
 $status = [];
+$connectionlost = false;
 try {
     $status = $gateway::status();
 } catch (\Throwable $e) {
     debugging('[FredKI activation status] ' . get_class($e), DEBUG_DEVELOPER);
-    $error = $error ?: get_string('managedstatusunavailable', 'block_fredkitheagent');
+    // 401: the licence server no longer knows these credentials (connection removed or replaced).
+    $connectionlost = $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception && $e->getCode() === 401;
+    if (!$connectionlost) {
+        $error = $error ?: get_string('managedstatusunavailable', 'block_fredkitheagent');
+    }
 }
 $state = (string)($status['state'] ?? 'unregistered');
 echo $OUTPUT->header();
@@ -111,12 +126,15 @@ if ($message !== '') {
 $registered = $gateway::is_registered();
 $active = in_array($state, ['trial_active', 'licensed', 'setup_pending'], true);
 // Position in the three-step journey: 1 = register, 2 = approval, 3 = ready.
-$position = !$registered ? 1 : ($active ? 3 : 2);
+$position = !$registered || $connectionlost ? 1 : ($active ? 3 : 2);
 // Package links come from the licence server and are already restricted to its https host.
 $checkouturl = (string)($status['checkout_url'] ?? '');
 $manageurl = (string)($status['manage_url'] ?? '');
-$serverbutton = static function (string $url, string $label): string {
-    return html_writer::link($url, s($label), ['class' => 'fk-actbutton', 'target' => '_blank', 'rel' => 'noopener noreferrer']);
+// The booking and subscription pages use the language of this Moodle site (German or English).
+$shoplang = str_starts_with(current_language(), 'de') ? 'de' : 'en';
+$serverbutton = static function (string $url, string $label) use ($shoplang): string {
+    $attributes = ['class' => 'fk-actbutton', 'target' => '_blank', 'rel' => 'noopener noreferrer'];
+    return html_writer::link($url . '&lang=' . $shoplang, s($label), $attributes);
 };
 echo html_writer::start_div('fk-act');
 echo html_writer::start_div('fk-head');
@@ -139,16 +157,22 @@ foreach (['actstepregister', 'actstepapproval', 'actstepready'] as $index => $ke
 }
 echo html_writer::end_tag('ol');
 echo html_writer::start_div('fk-actbody');
-if (!$registered) {
-    echo html_writer::tag('p', get_string('managedregisterintro', $pn));
+if (!$registered || $connectionlost) {
+    if ($connectionlost) {
+        echo html_writer::div(s(get_string('managedconnectionlost', $pn)), 'fk-actwarn');
+    } else {
+        echo html_writer::tag('p', s(get_string('managedregisterintro', $pn)));
+    }
     echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
     echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'register']);
+    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action',
+        'value' => $connectionlost ? 'reconnect' : 'register']);
     echo html_writer::tag('label', get_string('managedcontactemail', $pn), ['for' => 'contactemail']);
     echo html_writer::empty_tag('input', ['type' => 'email', 'name' => 'contactemail', 'id' => 'contactemail',
         'maxlength' => 254, 'required' => 'required', 'class' => 'form-control']);
     echo html_writer::empty_tag('input', ['type' => 'submit',
-        'value' => get_string('managedregisterbutton', $pn), 'class' => 'fk-actbutton']);
+        'value' => get_string($connectionlost ? 'managedreconnectbutton' : 'managedregisterbutton', $pn),
+        'class' => 'fk-actbutton']);
     echo html_writer::end_tag('form');
 } else if ($state === 'pending') {
     if ($checkouturl !== '') {
@@ -191,7 +215,8 @@ if (!$registered) {
         echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
     }
 } else {
-    echo html_writer::div(get_string('managednotactive', $pn) . ': ' . s($state), 'fk-actwarn');
+    $statelabel = get_string_manager()->string_exists('state' . $state, $pn) ? get_string('state' . $state, $pn) : $state;
+    echo html_writer::div(s(get_string('managednotactive', $pn) . ': ' . $statelabel), 'fk-actwarn');
     if ($checkouturl !== '') {
         echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
     }
