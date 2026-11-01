@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.5.3 (2026-11-01)
+
+* New colour language in Moodle's teal for course material, so FredKI fits into the course page (block, settings,
+  activation page; new default colours for the chat header and the message bubbles).
+* "Agent appearance" is easier to find: its own palette button in the block. The gear became an info button that opens
+  the course agent details (full check, agent, knowledge base, documents, last sync) directly, without an extra
+  "Advanced" section.
+* The global welcome text is taken over from the opening statement of the FredKI template agent as long as the
+  administrator has not changed it (requires licence server 13.19). On the course appearance page, empty fields show
+  the global text that applies instead of "Use global setting".
+
+## 1.5.2 (2026-11-01)
+
+* Reconnecting after a reinstall: if the plugin was removed and installed again, registering the site again restores
+  the existing connection automatically (package, trial and course agents are kept). The licence server confirms
+  through siteproof.php that the request really comes from this Moodle site. If the licence server no longer accepts
+  the stored connection, the activation page now explains this and offers "Reconnect this site".
+* Activation texts describe the booking-based activation (no manual approval any more); inactive states are shown in
+  plain words.
+* The booking and subscription pages open in the language of the Moodle site (English or German).
+* Requires licence server 13.19 for the automatic reconnect.
+
 ## 1.5.1 (2026-10-31)
 
 * Supports Moodle 4.5 to 5.3; the automated tests now also run on Moodle 5.2 and 5.3.

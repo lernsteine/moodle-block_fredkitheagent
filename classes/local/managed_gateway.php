@@ -115,15 +115,28 @@ final class managed_gateway {
         ], false);
         $id = (string)($result['installation_id'] ?? '');
         $secret = (string)($result['installation_secret'] ?? '');
+        $state = (string)($result['state'] ?? '');
         if (
             !preg_match('/^[0-9a-f]{32}$/D', $id) || !preg_match('/^[0-9a-f]{64}$/D', $secret)
-                || ($result['state'] ?? '') !== 'pending'
+                || !in_array($state, ['pending', 'reconnect'], true)
         ) {
             throw new \UnexpectedValueException('Invalid registration response from licence server.');
         }
         set_config('managed_installation_id', $id, self::COMPONENT);
         set_config('managed_installation_secret', $secret, self::COMPONENT);
         self::$requeststatus = null;
+        if ($state === 'reconnect') {
+            // This site was connected before (e.g. the plugin was reinstalled). The licence server now
+            // fetches siteproof.php from this site; only this site can publish the hash of the new secret.
+            try {
+                self::request('installations/reconnect', ['installation_id' => $id]);
+            } catch (\Throwable $e) {
+                unset_config('managed_installation_id', self::COMPONENT);
+                unset_config('managed_installation_secret', self::COMPONENT);
+                throw $e;
+            }
+            return ['state' => 'reconnected', 'notification_status' => 'unknown'];
+        }
         // Do not persist a personally identifiable e-mail address in the plugin.
         return ['state' => 'pending', 'notification_status' =>
             in_array(($result['notification_status'] ?? ''), ['sent', 'failed'], true)
@@ -150,6 +163,20 @@ final class managed_gateway {
         // Never cache failures: an unreachable/invalid license must fail closed.
         self::$requeststatus = $parsed;
         return $parsed;
+    }
+
+    /**
+     * Defaults from the FredKI template agent (opening statement), see welcome_sync.
+     *
+     * @return array ['welcome' => ?string]
+     */
+    public static function agent_defaults(): array {
+        if (!self::is_registered()) {
+            return ['welcome' => null];
+        }
+        $response = self::request('agents/defaults', ['installation_id' => self::get_installation_id()]);
+        $welcome = $response['welcome'] ?? null;
+        return ['welcome' => is_string($welcome) && trim($welcome) !== '' ? \core_text::substr(trim($welcome), 0, 1000) : null];
     }
 
     /**
@@ -819,6 +846,9 @@ final class managed_gateway {
                         default => 'DIAG-HTTP-409: Request conflict on the licence server (' . $route . ').',
                     },
                     415 => 'DIAG-415: The licence server rejected the JSON request format.',
+                    422 => $route === 'installations/reconnect'
+                        ? get_string('reconnectfailed', self::COMPONENT)
+                        : 'DIAG-HTTP-422: The licence server rejected the request.',
                     410 => 'DIAG-COURSE-DETACHED: The FredKI administrator disconnected this course.',
                     429 => 'DIAG-429: Too many registration attempts. Rate limit reached.',
                     503 => 'DIAG-503: Licence server temporarily not ready. Check the initial setup and the PHP error log.',

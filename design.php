@@ -47,7 +47,7 @@ $globalcolour = static function (string $name, string $fallback): string {
 $colors = [
     'headercolor' => [
         'label' => get_string('designheadercolor', 'block_fredkitheagent'),
-        'default' => $globalcolour('chatheadercolor', '#e7f3fb'),
+        'default' => $globalcolour('chatheadercolor', '#e6f4f6'),
     ],
     'accentcolor' => [
         'label' => get_string('designaccentcolor', 'block_fredkitheagent'),
@@ -57,8 +57,8 @@ $colors = [
         'label' => get_string('designbackgroundcolor', 'block_fredkitheagent'),
         'default' => $globalcolour('chatbackgroundcolor', '#f5f7fa'),
     ],
-    'botbubblecolor' => ['label' => get_string('designbotbubble', 'block_fredkitheagent'), 'default' => '#f5f2ff'],
-    'userbubblecolor' => ['label' => get_string('designuserbubble', 'block_fredkitheagent'), 'default' => '#e9f4ff'],
+    'botbubblecolor' => ['label' => get_string('designbotbubble', 'block_fredkitheagent'), 'default' => '#eaf6f1'],
+    'userbubblecolor' => ['label' => get_string('designuserbubble', 'block_fredkitheagent'), 'default' => '#e3f2f5'],
 ];
 $notice = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -146,15 +146,23 @@ foreach ($colors as $name => $cfg) {
         'mb-3 d-flex align-items-center justify-content-between'
     );
 }
-foreach (
-    ['welcometext' => get_string('chatwelcometext', 'block_fredkitheagent'),
-          'footertext' => get_string('chatfootertext', 'block_fredkitheagent')] as $name => $label
-) {
+// Empty course texts use the global texts; show those as placeholder so teachers see what learners get.
+$globaltext = static function (string $setting, string $fallback): string {
+    $text = trim((string)get_config('block_fredkitheagent', $setting));
+    return $text !== '' ? $text : get_string($fallback, 'block_fredkitheagent');
+};
+$texts = [
+    'welcometext' => [get_string('chatwelcometext', 'block_fredkitheagent'), $globaltext('chatwelcometext', 'chatwelcomedefault')],
+    'footertext' => [get_string('chatfootertext', 'block_fredkitheagent'), $globaltext('chatfootertext', 'chatfooterdefault')],
+];
+foreach ($texts as $name => [$label, $global]) {
     $value = $design ? (string)($design->{$name} ?? '') : '';
     echo html_writer::tag('label', s($label), ['for' => 'fna-' . $name]);
     echo html_writer::empty_tag('input', ['type' => 'text', 'name' => $name, 'id' => 'fna-' . $name,
-        'value' => $value, 'maxlength' => 255, 'class' => 'form-control mb-3',
-        'placeholder' => get_string('designuseglobal', 'block_fredkitheagent')]);
+        'value' => $value, 'maxlength' => 255, 'class' => 'form-control',
+        'placeholder' => $global, 'aria-describedby' => 'fna-' . $name . '-hint']);
+    $hintattrs = ['class' => 'text-muted small mt-1 mb-3', 'id' => 'fna-' . $name . '-hint'];
+    echo html_writer::tag('p', s(get_string('designglobalhint', 'block_fredkitheagent')), $hintattrs);
 }
 echo html_writer::tag('label', get_string('designcourselogo', 'block_fredkitheagent'), ['for' => 'fna-logo']);
 echo html_writer::empty_tag('input', ['type' => 'file', 'name' => 'courselogo', 'id' => 'fna-logo',

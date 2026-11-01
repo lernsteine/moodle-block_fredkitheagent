@@ -71,6 +71,14 @@ translation portal AMOS (lang.moodle.org) and installed with the Moodle language
    is approved automatically within a few minutes.
 5. Add the block "FredKI The Agent" to a course and press the large button.
 
+### Reinstalling the plugin
+
+Uninstalling the plugin removes its stored connection and the blocks in the courses. After installing it again,
+register the site again on the activation page with the contact e-mail address. The licence server recognises the
+site (it checks `blocks/fredkitheagent/siteproof.php` on the site's usual address) and restores the existing
+connection: package, trial and course agents are kept. Then add the block to the courses again; course material that
+is already known is not transferred twice.
+
 ## Privacy
 
 The plugin implements the Moodle Privacy API. Data sent to the external service:
