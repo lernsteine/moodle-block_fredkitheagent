@@ -194,6 +194,26 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
+     * Whether the booked package has no free place for a course that is not connected yet.
+     *
+     * @param stdClass|null $rec Local course record.
+     * @return bool
+     */
+    protected function package_full(?stdClass $rec): bool {
+        if ($rec && (!empty($rec->knowledgeid) || !empty($rec->agentid))) {
+            return false;
+        }
+        try {
+            $status = \block_fredkitheagent\local\managed_gateway::status();
+        } catch (\Throwable $e) {
+            return false;
+        }
+        $limit = $status['course_limit'] ?? null;
+        $used = $status['courses_used'] ?? null;
+        return is_int($limit) && is_int($used) && $limit > 0 && $used >= $limit;
+    }
+
+    /**
      * Inline stroke icons (static markup, no user data).
      *
      * @param string $name The name.
@@ -315,6 +335,36 @@ class block_fredkitheagent extends block_base {
                 );
                 $content .= html_writer::div(s(get_string('coursedetachedhint', $pn)), 'fk-caption');
             }
+        } else if ($canmanage && !$agentcreated && $this->package_full($rec)) {
+            // The booked package has no free place: explain it before the teacher tries to set up the course.
+            $billing = \block_fredkitheagent\local\managed_gateway::status();
+            $limit = (object)['used' => (int)$billing['courses_used'], 'limit' => (int)$billing['course_limit']];
+            $content .= html_writer::div(
+                html_writer::span('', 'fk-dot is-waiting') . s(get_string('limitfullstatus', $pn, $limit)),
+                'fk-status is-waiting'
+            );
+            // Only site administrators can book a package; teachers are pointed to them.
+            $siteadmin = has_capability('moodle/site:config', context_system::instance());
+            $content .= html_writer::tag(
+                'p',
+                s(get_string($siteadmin ? 'limitfullintro' : 'limitfullintroteacher', $pn, $limit)),
+                ['class' => 'fk-intro']
+            );
+            if ($siteadmin) {
+                $content .= html_writer::link(
+                    new moodle_url('/blocks/fredkitheagent/activation.php'),
+                    s(get_string('limitfullmanage', $pn)),
+                    ['class' => 'fk-main fk-main-secondary']
+                );
+            }
+            // A place may have been freed meanwhile: checking again sets the course up if possible.
+            $content .= $this->render_ios_sync_form(
+                true,
+                get_string('limitfullretry', $pn),
+                get_string('iosbusy', $pn),
+                '',
+                'fk-linkbutton'
+            );
         } else if ($ready) {
             $status = $docs > 0 ? get_string('iosready', $pn, $docs) : get_string('nextready', $pn);
             $content .= html_writer::div(html_writer::span('', 'fk-dot is-ready') . s($status), 'fk-status');

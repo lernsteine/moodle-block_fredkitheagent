@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.5 (2026-11-03)
+
+* Package fully used: in a course without a course agent the block now says so before anything is tried
+  ("Package fully used · 5 of 5 courses"), explains how to free a place (remove the course agent of another course)
+  and, for site administrators, links to the booking of a larger package. "Check again" sets the course up as soon
+  as a place is free. The message after a rejected setup names the same ways.
+
 ## 1.5.4 (2026-11-02)
 
 * "Remove course agent" in the course agent details (info button): deletes the course agent and its knowledge base in
