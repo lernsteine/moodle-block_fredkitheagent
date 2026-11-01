@@ -194,31 +194,6 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
-     * Small colour preview of the course agent (header, accent, FredKI and learner bubbles).
-     *
-     * @param int $courseid The course id.
-     * @return string HTML.
-     */
-    private function design_swatches(int $courseid): string {
-        $design = \block_fredkitheagent\local\course_design::get($courseid);
-        $global = static function (string $name, string $default): string {
-            $value = (string)get_config('block_fredkitheagent', $name);
-            return preg_match('/^#[0-9a-fA-F]{6}$/D', $value) ? $value : $default;
-        };
-        $colours = [
-            \block_fredkitheagent\local\course_design::color($design, 'headercolor', $global('chatheadercolor', '#e6f4f6')),
-            \block_fredkitheagent\local\course_design::color($design, 'accentcolor', $global('chataccentcolor', '#007f91')),
-            \block_fredkitheagent\local\course_design::color($design, 'botbubblecolor', '#eaf6f1'),
-            \block_fredkitheagent\local\course_design::color($design, 'userbubblecolor', '#e3f2f5'),
-        ];
-        $out = '';
-        foreach ($colours as $colour) {
-            $out .= html_writer::span('', 'fk-swatch', ['style' => 'background:' . $colour]);
-        }
-        return html_writer::span($out, 'fk-swatches', ['aria-hidden' => 'true']);
-    }
-
-    /**
      * Inline stroke icons (static markup, no user data).
      *
      * @param string $name The name.
@@ -230,6 +205,7 @@ class block_fredkitheagent extends block_base {
                 '<path d="M4 13a8 8 0 0 0 14.3 4.6L20 15.5"/><path d="M20 20v-4.5h-4.5"/>',
             'sparkle' => '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>' .
                 '<path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
+            'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/>',
             'gear' => '<circle cx="12" cy="12" r="3"/>' .
                 '<path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 ' .
                 '0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 ' .
@@ -377,9 +353,9 @@ class block_fredkitheagent extends block_base {
                 ['class' => 'fk-gear fk-paint', 'aria-label' => get_string('iosdesign', $pn),
                     'title' => get_string('iosdesign', $pn)]
             );
-            $content .= html_writer::tag('button', $this->ios_icon('gear'), [
-                'type' => 'button', 'class' => 'fk-gear', 'data-fk-open' => 'settings',
-                'aria-label' => get_string('iossettings', $pn), 'title' => get_string('iossettings', $pn),
+            $content .= html_writer::tag('button', $this->ios_icon('info'), [
+                'type' => 'button', 'class' => 'fk-gear fk-info', 'data-fk-open' => 'settings',
+                'aria-label' => get_string('iosinfo', $pn), 'title' => get_string('iosinfo', $pn),
                 'aria-expanded' => 'false',
             ]);
             $content .= html_writer::end_div();
@@ -422,32 +398,11 @@ class block_fredkitheagent extends block_base {
         if ($ready && $canmanage) {
             $content .= html_writer::start_div('fk-view fk-view-settings', ['data-fk-view' => 'settings', 'hidden' => 'hidden']);
             $content .= html_writer::start_div('fk-sheethead');
-            $content .= html_writer::tag('h4', get_string('iossettings', $pn), ['class' => 'fk-sheettitle']);
+            $content .= html_writer::tag('h4', get_string('iosinfo', $pn), ['class' => 'fk-sheettitle']);
             $content .= html_writer::tag('button', get_string('iosdone', $pn), [
                 'type' => 'button', 'class' => 'fk-done', 'data-fk-close' => 'settings']);
             $content .= html_writer::end_div();
-            // The look of the agent is what most teachers come for: one inviting, prominent entry.
-            $content .= html_writer::link(
-                new moodle_url(
-                    '/blocks/fredkitheagent/design.php',
-                    ['courseid' => (int)$COURSE->id]
-                ),
-                html_writer::span($this->ios_icon('palette'), 'fk-design-badge') .
-                html_writer::span(
-                    html_writer::tag('strong', s(get_string('iosdesign', $pn))) .
-                    html_writer::tag('small', s(get_string('iosdesigndesc', $pn))) .
-                    $this->design_swatches((int)$COURSE->id),
-                    'fk-design-copy'
-                ) .
-                html_writer::span($this->ios_icon('chevron'), 'fk-design-go'),
-                ['class' => 'fk-design']
-            );
-            // Technical details stay out of sight until asked for.
-            $content .= html_writer::start_tag('details', ['class' => 'fk-advanced']);
-            $content .= html_writer::tag(
-                'summary',
-                html_writer::span(s(get_string('iosadvanced', $pn)), 'fk-advtext') . $this->ios_icon('chevron')
-            );
+            // Course agent details and the full check, shown directly (appearance has its own button).
             $content .= html_writer::start_div('fk-group');
             $content .= html_writer::start_tag('div', ['class' => 'fk-row fk-row-form']);
             $content .= html_writer::start_div('fk-rowtext');
@@ -476,7 +431,6 @@ class block_fredkitheagent extends block_base {
             }
             $content .= html_writer::end_div();
             $content .= html_writer::div(s(get_string('iosbindingnote', $pn)), 'fk-sheetnote');
-            $content .= html_writer::end_tag('details');
             $content .= html_writer::end_div();
         }
         $content .= html_writer::end_div();

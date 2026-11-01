@@ -4,8 +4,9 @@
 
 * New colour language in Moodle's teal for course material, so FredKI fits into the course page (block, settings,
   activation page; new default colours for the chat header and the message bubbles).
-* "Agent appearance" is easier to find: a palette button next to the settings gear, and in the settings a light card
-  with a colour preview that no longer looks like the main button.
+* "Agent appearance" is easier to find: its own palette button in the block. The gear became an info button that opens
+  the course agent details (full check, agent, knowledge base, documents, last sync) directly, without an extra
+  "Advanced" section.
 * The global welcome text is taken over from the opening statement of the FredKI template agent as long as the
   administrator has not changed it (requires licence server 13.19). On the course appearance page, empty fields show
   the global text that applies instead of "Use global setting".
