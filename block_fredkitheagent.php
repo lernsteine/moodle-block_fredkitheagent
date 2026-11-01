@@ -343,15 +343,19 @@ class block_fredkitheagent extends block_base {
                 html_writer::span('', 'fk-dot is-waiting') . s(get_string('limitfullstatus', $pn, $limit)),
                 'fk-status is-waiting'
             );
-            $content .= html_writer::tag('p', s(get_string('limitfullintro', $pn, $limit)), ['class' => 'fk-intro']);
-            if (has_capability('moodle/site:config', context_system::instance())) {
+            // Only site administrators can book a package; teachers are pointed to them.
+            $siteadmin = has_capability('moodle/site:config', context_system::instance());
+            $content .= html_writer::tag(
+                'p',
+                s(get_string($siteadmin ? 'limitfullintro' : 'limitfullintroteacher', $pn, $limit)),
+                ['class' => 'fk-intro']
+            );
+            if ($siteadmin) {
                 $content .= html_writer::link(
                     new moodle_url('/blocks/fredkitheagent/activation.php'),
                     s(get_string('limitfullmanage', $pn)),
                     ['class' => 'fk-main fk-main-secondary']
                 );
-            } else {
-                $content .= html_writer::div(s(get_string('limitfullaskadmin', $pn)), 'fk-caption');
             }
             // A place may have been freed meanwhile: checking again sets the course up if possible.
             $content .= $this->render_ios_sync_form(
