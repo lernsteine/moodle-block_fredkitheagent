@@ -59,7 +59,7 @@ $design = \block_fredkitheagent\local\course_design::get($courseid);
 $header = \block_fredkitheagent\local\course_design::color(
     $design,
     'headercolor',
-    $color('chatheadercolor', '#e7f3fb')
+    $color('chatheadercolor', '#e6f4f6')
 );
 $accent = \block_fredkitheagent\local\course_design::color(
     $design,
@@ -71,8 +71,8 @@ $background = \block_fredkitheagent\local\course_design::color(
     'backgroundcolor',
     $color('chatbackgroundcolor', '#f5f7fa')
 );
-$botbubble = \block_fredkitheagent\local\course_design::color($design, 'botbubblecolor', '#f5f2ff');
-$userbubble = \block_fredkitheagent\local\course_design::color($design, 'userbubblecolor', '#e9f4ff');
+$botbubble = \block_fredkitheagent\local\course_design::color($design, 'botbubblecolor', '#eaf6f1');
+$userbubble = \block_fredkitheagent\local\course_design::color($design, 'userbubblecolor', '#e3f2f5');
 $welcome = trim((string)get_config('block_fredkitheagent', 'chatwelcometext'));
 if ($design && trim((string)$design->welcometext) !== '') {
     $welcome = trim((string)$design->welcometext);

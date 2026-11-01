@@ -62,7 +62,7 @@ if ($ADMIN->fulltree) {
         'block_fredkitheagent/chatheadercolor',
         get_string('settingheadercolor', 'block_fredkitheagent'),
         '',
-        '#e7f3fb'
+        '#e6f4f6'
     ));
     $settings->add(new admin_setting_configcolourpicker(
         'block_fredkitheagent/chataccentcolor',
@@ -79,7 +79,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(
         'block_fredkitheagent/chatwelcometext',
         get_string('settingwelcome', 'block_fredkitheagent'),
-        '',
+        get_string('settingwelcome_desc', 'block_fredkitheagent'),
         get_string('settingwelcomedefault', 'block_fredkitheagent'),
         PARAM_TEXT
     ));

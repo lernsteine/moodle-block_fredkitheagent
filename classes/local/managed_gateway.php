@@ -166,6 +166,20 @@ final class managed_gateway {
     }
 
     /**
+     * Defaults from the FredKI template agent (opening statement), see welcome_sync.
+     *
+     * @return array ['welcome' => ?string]
+     */
+    public static function agent_defaults(): array {
+        if (!self::is_registered()) {
+            return ['welcome' => null];
+        }
+        $response = self::request('agents/defaults', ['installation_id' => self::get_installation_id()]);
+        $welcome = $response['welcome'] ?? null;
+        return ['welcome' => is_string($welcome) && trim($welcome) !== '' ? \core_text::substr(trim($welcome), 0, 1000) : null];
+    }
+
+    /**
      * Activate license.
      *
      * @param string $key The key.

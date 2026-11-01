@@ -10,7 +10,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 /* Normal Moodle content page; no overlay, floating widget or public embedding. */
-.fredki-course-chat{--fredki-accent:#007f91;--fredki-header:#e7f3fb;--fredki-bg:#f5f7fa;max-width:990px;min-height:min(75vh,780px);margin:20px auto 28px;border-radius:14px;border:1px solid #dce5eb;background:var(--fredki-bg);box-shadow:0 6px 25px #13273512;display:flex;flex-direction:column;overflow:hidden;color:#1d2937}
+.fredki-course-chat{--fredki-accent:#007f91;--fredki-header:#e6f4f6;--fredki-bg:#f5f7fa;max-width:990px;min-height:min(75vh,780px);margin:20px auto 28px;border-radius:14px;border:1px solid #dce5eb;background:var(--fredki-bg);box-shadow:0 6px 25px #13273512;display:flex;flex-direction:column;overflow:hidden;color:#1d2937}
 .fredki-course-header{background:var(--fredki-header);padding:18px 22px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #dce5eb}
 .fredki-course-logo{height:49px;width:49px;object-fit:contain;border-radius:12px;background:#fff}
 .fredki-course-header strong{font-size:20px;line-height:1.4;display:block}.fredki-course-header span{font-size:13px;color:#506071}
@@ -47,15 +47,15 @@ body.fredkitheagent-embedded-chat .fredki-course-header {padding-right:66px}
 /* Light, spacious protected chat – only within FredKI's own chat component. */
 .fredki-course-chat{background:var(--fredki-bg,#f5f7fa)!important;border-color:#e5e8f5!important;
     border-radius:20px!important;color:#182849!important;box-shadow:none!important}
-.fredki-course-header{padding:17px 18px;background:var(--fredki-header,#e7f3fb)!important;
+.fredki-course-header{padding:17px 18px;background:var(--fredki-header,#e6f4f6)!important;
     border-bottom-color:#ebedf5!important}
 .fredki-course-header strong{font-size:17px;letter-spacing:-.03em;color:#1c2c53}
 .fredki-course-header span{font-size:11px;color:#7b86a1}
 .fredki-course-logo{width:39px;height:39px;border-radius:50%;background:#fff}
 .fredki-course-messages{padding:19px 15px;gap:13px;scrollbar-width:thin;scrollbar-color:#c9d1e9 transparent}
 .fredki-course-message{font-size:14px;line-height:1.53;max-width:91%;border-radius:18px;
-    background:#f5f2ff;border-color:transparent;padding:12px 14px;color:#243254}
-.fredki-course-message.user{background:#e9f4ff;border:0}
+    background:#eaf6f1;border-color:transparent;padding:12px 14px;color:#243254}
+.fredki-course-message.user{background:#e3f2f5;border:0}
 .fredki-course-form{padding:10px 11px;border-top-color:#e8ecf4;background:#fff}
 .fredki-course-form textarea{min-height:46px;max-height:150px;border-color:#dfe5f1;border-radius:14px;font-size:13px;padding:10px 12px}
 .fredki-course-send{background:var(--fredki-accent,#007f91);color:#fff;border-radius:14px;font-size:12px;padding:14px 12px}
@@ -79,8 +79,8 @@ body.fredkitheagent-embedded-chat .fredki-course-chat{height:100dvh!important;mi
 body.fredkitheagent-embedded-chat .fredki-course-messages{min-height:0!important;max-height:none!important;flex:1 1 0!important}
 
 /* Per-course agent design (fallbacks preserve site-wide styling). */
-.fredki-course-chat .fredki-course-message.bot{background:var(--fredki-botbubble,#f5f2ff)!important}
-.fredki-course-chat .fredki-course-message.user{background:var(--fredki-userbubble,#e9f4ff)!important}
+.fredki-course-chat .fredki-course-message.bot{background:var(--fredki-botbubble,#eaf6f1)!important}
+.fredki-course-chat .fredki-course-message.user{background:var(--fredki-userbubble,#e3f2f5)!important}
 .fredki-course-message .fredki-word{opacity:0;animation:fredki-wordin .7s ease-out forwards}
 @keyframes fredki-wordin{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
 .fredki-reveal-skip{font-size:11px;align-self:flex-start;border:1px solid #cfd9e5;background:#fff;color:#405371;border-radius:999px;padding:5px 11px;cursor:pointer;margin:-7px 0 5px 6px}

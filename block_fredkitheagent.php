@@ -194,6 +194,31 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
+     * Small colour preview of the course agent (header, accent, FredKI and learner bubbles).
+     *
+     * @param int $courseid The course id.
+     * @return string HTML.
+     */
+    private function design_swatches(int $courseid): string {
+        $design = \block_fredkitheagent\local\course_design::get($courseid);
+        $global = static function (string $name, string $default): string {
+            $value = (string)get_config('block_fredkitheagent', $name);
+            return preg_match('/^#[0-9a-fA-F]{6}$/D', $value) ? $value : $default;
+        };
+        $colours = [
+            \block_fredkitheagent\local\course_design::color($design, 'headercolor', $global('chatheadercolor', '#e6f4f6')),
+            \block_fredkitheagent\local\course_design::color($design, 'accentcolor', $global('chataccentcolor', '#007f91')),
+            \block_fredkitheagent\local\course_design::color($design, 'botbubblecolor', '#eaf6f1'),
+            \block_fredkitheagent\local\course_design::color($design, 'userbubblecolor', '#e3f2f5'),
+        ];
+        $out = '';
+        foreach ($colours as $colour) {
+            $out .= html_writer::span('', 'fk-swatch', ['style' => 'background:' . $colour]);
+        }
+        return html_writer::span($out, 'fk-swatches', ['aria-hidden' => 'true']);
+    }
+
+    /**
      * Inline stroke icons (static markup, no user data).
      *
      * @param string $name The name.
@@ -267,6 +292,10 @@ class block_fredkitheagent extends block_base {
         global $COURSE;
         $pn = 'block_fredkitheagent';
         $ready = $this->can_show_chat_launcher($rec);
+        if ($ready && $canmanage) {
+            // Opening statement of the FredKI template agent as global welcome text (at most every six hours).
+            \block_fredkitheagent\local\welcome_sync::sync();
+        }
         $agentcreated = $rec && !empty($rec->agentid);
         $docs = $rec ? (int)($rec->documentcount ?? 0) : 0;
         $last = ($rec && !empty($rec->timesynced)) ?
@@ -341,6 +370,13 @@ class block_fredkitheagent extends block_base {
                 html_writer::empty_tag('input', $checkboxattrs),
                 ['class' => 'fk-switchrow', 'for' => 'fredki-next-chatcheck-' . (int)$COURSE->id]
             );
+            // Direct way to the agent's look, visible next to the settings gear.
+            $content .= html_writer::link(
+                new moodle_url('/blocks/fredkitheagent/design.php', ['courseid' => (int)$COURSE->id]),
+                $this->ios_icon('palette'),
+                ['class' => 'fk-gear fk-paint', 'aria-label' => get_string('iosdesign', $pn),
+                    'title' => get_string('iosdesign', $pn)]
+            );
             $content .= html_writer::tag('button', $this->ios_icon('gear'), [
                 'type' => 'button', 'class' => 'fk-gear', 'data-fk-open' => 'settings',
                 'aria-label' => get_string('iossettings', $pn), 'title' => get_string('iossettings', $pn),
@@ -399,7 +435,8 @@ class block_fredkitheagent extends block_base {
                 html_writer::span($this->ios_icon('palette'), 'fk-design-badge') .
                 html_writer::span(
                     html_writer::tag('strong', s(get_string('iosdesign', $pn))) .
-                    html_writer::tag('small', s(get_string('iosdesigndesc', $pn))),
+                    html_writer::tag('small', s(get_string('iosdesigndesc', $pn))) .
+                    $this->design_swatches((int)$COURSE->id),
                     'fk-design-copy'
                 ) .
                 html_writer::span($this->ios_icon('chevron'), 'fk-design-go'),

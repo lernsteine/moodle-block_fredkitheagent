@@ -115,6 +115,8 @@ try {
     }
 }
 $state = (string)($status['state'] ?? 'unregistered');
+// Take the opening statement of the FredKI template agent over (at most every six hours).
+\block_fredkitheagent\local\welcome_sync::sync();
 echo $OUTPUT->header();
 $pn = 'block_fredkitheagent';
 if ($error !== '') {

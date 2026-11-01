@@ -1206,3 +1206,43 @@
 .editing .block_fredkitheagent .fredki-next-card.fredki-ios{padding:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
 .editing .block_fredkitheagent .fredki-ios .fk-headcopy strong{display:none}
 .editing .block_fredkitheagent .fredki-ios .fk-headcopy small{margin-top:0;font-size:14px}
+
+/* ==========================================================================
+   1.5.2: colour language in Moodle's teal for course material ("content",
+   #0099ad), so FredKI fits into the course page. The appearance entry is a
+   light secondary card with a colour preview; it no longer looks like the
+   main button. Overrides the earlier violet values above.
+   ========================================================================== */
+.block_fredkitheagent .fredki-next-card.fredki-ios,
+.fk-act{
+    --fk-accent:#00818f;--fk-ink:#0b5a63;--fk-tint:rgba(0,153,173,.10);--fk-tint-hover:rgba(0,153,173,.16);
+    --fk-tint-line:rgba(0,153,173,.26);--fk-purple:#00818f;--fk-green:#2fa86f}
+.block_fredkitheagent .fredki-next-card{--fk-purple:#00818f}
+.fredki-ios .fk-orb,.fk-act .fk-orb{background:radial-gradient(circle at 34% 28%,#8be3ea 0,#0099ad 42%,#00525c 100%)}
+.fredki-ios .fk-eye,.fk-act .fk-eye{background:#fff}
+.fredki-ios .fk-status{color:#1d7a50}
+.fredki-ios .fk-main,
+.fredki-ios .fk-main:hover,.fredki-ios .fk-main:focus,.fredki-ios a.fk-main:hover,.fredki-ios a.fk-main:focus,
+.fredki-ios .fk-main.is-busy,.fredki-ios .fk-main.is-busy:hover{background:linear-gradient(135deg,#0a9fb1 0%,#00818f 100%)}
+.fredki-ios .fk-main{box-shadow:0 4px 12px rgba(0,129,143,.24),inset 0 1px 0 rgba(255,255,255,.22)}
+.fredki-ios .fk-main:hover,.fredki-ios .fk-main:focus{box-shadow:0 8px 18px rgba(0,129,143,.30),inset 0 1px 0 rgba(255,255,255,.26)}
+.fredki-ios .fk-main:focus-visible,.fredki-ios .fk-gear:focus-visible,.fredki-ios .fk-done:focus-visible,
+.fredki-ios .fk-rowbutton:focus-visible,.fredki-ios .fk-row-link:focus-visible,.fredki-ios .fk-switch:focus-visible,
+.fredki-ios .fk-advanced>summary:focus-visible,.fredki-ios .fk-design:focus-visible{outline:3px solid rgba(0,129,143,.38);outline-offset:3px}
+.fredki-ios .fk-main.is-busy::after{background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent)}
+.fredki-ios .fk-switch:checked{background:var(--fk-accent)}
+.fk-act input[type=email]:focus{box-shadow:0 0 0 4px rgba(0,129,143,.15)}
+.block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover{background:linear-gradient(180deg,#0aa7ba,#00818f);box-shadow:0 6px 16px rgba(0,129,143,.30)}
+/* palette button next to the gear */
+.fredki-ios .fk-footer .fk-paint{margin:0;color:var(--fk-accent)}
+.fredki-ios .fk-footer .fk-paint+.fk-gear{margin-left:2px}
+.fredki-ios .fk-footer .fk-paint:hover{color:var(--fk-ink);background:var(--fk-tint)}
+/* appearance entry: light secondary card with colour preview */
+.fredki-ios .fk-design{background:#fff;color:var(--fk-text);border:1.5px solid var(--fk-tint-line);box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.fredki-ios .fk-design:hover{background:#f3fafb;color:var(--fk-text);border-color:var(--fk-accent);box-shadow:0 6px 16px rgba(0,129,143,.14)}
+.fredki-ios .fk-design-badge{background:var(--fk-tint);color:var(--fk-accent)}
+.fredki-ios .fk-design-copy strong{color:var(--fk-ink)}
+.fredki-ios .fk-design-copy small{color:var(--fk-muted)}
+.fredki-ios .fk-design-go{background:var(--fk-tint);color:var(--fk-accent)}
+.fredki-ios .fk-swatches{display:flex;gap:5px;margin-top:8px}
+.fredki-ios .fk-swatch{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.12)}
