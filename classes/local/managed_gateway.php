@@ -180,6 +180,21 @@ final class managed_gateway {
     }
 
     /**
+     * Remove the course agent: the licence server deletes agent and knowledge base in FredKI and frees the
+     * course, so its place in the package can be used for another course.
+     *
+     * @param int $courseid The course id.
+     * @return array Server result.
+     */
+    public static function remove_course(int $courseid): array {
+        self::require_active();
+        if ($courseid <= 1) {
+            throw new \invalid_parameter_exception('Invalid course ID.');
+        }
+        return self::request('courses/remove', ['installation_id' => self::get_installation_id(), 'course_id' => $courseid]);
+    }
+
+    /**
      * Activate license.
      *
      * @param string $key The key.
@@ -832,9 +847,9 @@ final class managed_gateway {
                     400 => 'DIAG-400: Request rejected by the licence server. Check the Moodle URL and API protocol.',
                     401 => 'DIAG-401: Authorisation rejected by the licence server.',
                     403 => 'DIAG-403: The licence server denied access. Check local-only mode or HTTP approval.',
-                    404 => 'DIAG-404: API route not found. Check installation path and server patch.',
                     405 => 'DIAG-405: POST request was rejected. Check the API path and web server routing.',
                     409 => match ($route) {
+                        'courses/remove' => get_string('removeincomplete', self::COMPONENT),
                         'installations/register' => 'DIAG-INSTALLATION-409: This Moodle domain is already ' .
                             'registered. Reconnect the existing installation; do not ' .
                             'trigger a second registration.',
@@ -846,6 +861,9 @@ final class managed_gateway {
                         default => 'DIAG-HTTP-409: Request conflict on the licence server (' . $route . ').',
                     },
                     415 => 'DIAG-415: The licence server rejected the JSON request format.',
+                    404 => $route === 'courses/remove'
+                        ? get_string('removeunsupported', self::COMPONENT)
+                        : 'DIAG-404: API route not found. Check installation path and server patch.',
                     422 => $route === 'installations/reconnect'
                         ? get_string('reconnectfailed', self::COMPONENT)
                         : 'DIAG-HTTP-422: The licence server rejected the request.',

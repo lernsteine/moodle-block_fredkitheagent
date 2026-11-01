@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.4 (2026-11-02)
+
+* "Remove course agent" in the course agent details (info button): deletes the course agent and its knowledge base in
+  FredKI, hides the chat and takes the block out of the course. The place in the FredKI package becomes free for
+  another course; the course material in Moodle is not changed. Requires licence server 13.19.
+
 ## 1.5.3 (2026-11-01)
 
 * New colour language in Moodle's teal for course material, so FredKI fits into the course page (block, settings,
