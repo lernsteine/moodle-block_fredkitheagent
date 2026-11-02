@@ -194,6 +194,44 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
+     * Select box with the agent roles offered by the licence server; empty if there is nothing to choose.
+     *
+     * @param stdClass|null $rec Local course record.
+     * @param string $class CSS class of the wrapper.
+     * @return string HTML.
+     */
+    protected function role_select(?stdClass $rec, string $class): string {
+        try {
+            $roles = \block_fredkitheagent\local\managed_gateway::status()['agent_roles'] ?? [];
+        } catch (\Throwable $e) {
+            return '';
+        }
+        if (count($roles) < 2) {
+            return '';
+        }
+        $pn = 'block_fredkitheagent';
+        $current = $rec ? (string)($rec->agentrole ?? '') : '';
+        $options = '';
+        if ($current === '' && $rec && !empty($rec->agentid)) {
+            // Course agent from before agent roles existed: keep it until the teacher chooses a role.
+            $options .= html_writer::tag('option', s(get_string('rolecurrent', $pn)), ['value' => '', 'selected' => 'selected']);
+        }
+        foreach ($roles as $role) {
+            $attrs = ['value' => $role['id'], 'title' => $role['description']];
+            if ($role['id'] === $current || ($current === '' && !($rec && !empty($rec->agentid)) && $role['default'])) {
+                $attrs['selected'] = 'selected';
+            }
+            $options .= html_writer::tag('option', s($role['name']), $attrs);
+        }
+        $id = 'fredki-role-' . (int)($rec->course ?? 0) . '-' . random_int(1000, 9999);
+        return html_writer::div(
+            html_writer::tag('label', s(get_string('rolelabel', $pn)), ['for' => $id]) .
+            html_writer::tag('select', $options, ['name' => 'agentrole', 'id' => $id, 'class' => 'fk-roleselect']),
+            $class
+        );
+    }
+
+    /**
      * Whether the booked package has no free place for a course that is not connected yet.
      *
      * @param stdClass|null $rec Local course record.
@@ -253,6 +291,7 @@ class block_fredkitheagent extends block_base {
      * @param string $busylabel The busylabel.
      * @param string $icon The icon.
      * @param string $class The class.
+     * @param string $extra Extra form fields (e.g. the agent role).
      * @return string The result.
      */
     protected function render_ios_sync_form(
@@ -260,7 +299,8 @@ class block_fredkitheagent extends block_base {
         string $label,
         string $busylabel,
         string $icon,
-        string $class
+        string $class,
+        string $extra = ''
     ): string {
         global $COURSE;
         $url = new moodle_url('/blocks/fredkitheagent/sync.php');
@@ -268,6 +308,7 @@ class block_fredkitheagent extends block_base {
         $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => (int)$COURSE->id]);
         $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
         $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'fullcheck', 'value' => $fullcheck ? '1' : '0']);
+        $form .= $extra;
         $inner = ($icon !== '' ? $this->ios_icon($icon) : '') . html_writer::span(s($label), 'fk-label');
         $form .= html_writer::tag('button', $inner, [
             'type' => 'submit', 'class' => $class,
@@ -368,6 +409,21 @@ class block_fredkitheagent extends block_base {
         } else if ($ready) {
             $status = $docs > 0 ? get_string('iosready', $pn, $docs) : get_string('nextready', $pn);
             $content .= html_writer::div(html_writer::span('', 'fk-dot is-ready') . s($status), 'fk-status');
+            $roleselect = $canmanage ? $this->role_select($rec, 'fk-rolepick') : '';
+            if ($roleselect !== '') {
+                // The teacher chooses which FredKI agent works in this course (Berater, Sparringspartner, ...).
+                $content .= html_writer::start_tag('form', ['method' => 'post', 'class' => 'fk-roleform',
+                    'action' => new moodle_url('/blocks/fredkitheagent/role.php')]);
+                $hidden = ['courseid' => (int)$COURSE->id, 'sesskey' => sesskey()];
+                foreach ($hidden as $name => $value) {
+                    $content .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $name, 'value' => $value]);
+                }
+                $content .= $roleselect;
+                $content .= html_writer::tag('button', s(get_string('rolechange', $pn)), [
+                    'type' => 'submit', 'class' => 'fk-rowbutton',
+                ]);
+                $content .= html_writer::end_tag('form');
+            }
             $content .= $this->render_ios_sync_form(
                 false,
                 get_string('iosupdate', $pn),
@@ -420,7 +476,8 @@ class block_fredkitheagent extends block_base {
                 get_string($agentcreated ? 'ioscontinue' : 'iossetup', $pn),
                 get_string('iosbusy', $pn),
                 'sparkle',
-                'fk-main'
+                'fk-main',
+                $agentcreated ? '' : $this->role_select($rec, 'fk-rolepick fk-rolepick-setup')
             );
             $content .= html_writer::div(s(get_string('iossetupnote', $pn)), 'fk-caption');
             if ($rec && !empty($rec->lasterror)) {

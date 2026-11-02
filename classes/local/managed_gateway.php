@@ -159,6 +159,7 @@ final class managed_gateway {
             $response,
             (string)parse_url(self::api_address(), PHP_URL_HOST)
         );
+        $parsed['agent_roles'] = activation_state::roles_from_server($response);
         $parsed['active'] = activation_state::can_use($parsed, time());
         // Never cache failures: an unreachable/invalid license must fail closed.
         self::$requeststatus = $parsed;
@@ -177,6 +178,29 @@ final class managed_gateway {
         $response = self::request('agents/defaults', ['installation_id' => self::get_installation_id()]);
         $welcome = $response['welcome'] ?? null;
         return ['welcome' => is_string($welcome) && trim($welcome) !== '' ? \core_text::substr(trim($welcome), 0, 1000) : null];
+    }
+
+    /**
+     * Choose the agent role of a course. Without a course agent the server only stores the role; otherwise it
+     * creates a new agent from the role's template on the same knowledge base and deletes the previous one.
+     *
+     * @param int $courseid The course id.
+     * @param string $role Role id from the licence server.
+     * @return array ['role', 'agent_id', 'replaced_agent_ids', 'changed']
+     */
+    public static function set_course_role(int $courseid, string $role): array {
+        self::require_active();
+        if ($courseid <= 1 || !preg_match('/^[a-z0-9_-]{1,40}$/D', $role)) {
+            throw new \invalid_parameter_exception('Invalid course or role.');
+        }
+        $out = self::request('courses/set-role', [
+            'installation_id' => self::get_installation_id(), 'course_id' => $courseid, 'role' => $role,
+        ]);
+        $agent = $out['agent_id'] ?? '';
+        if (!is_string($agent) || ($agent !== '' && !preg_match('/^[A-Za-z0-9_-]{1,64}$/D', $agent))) {
+            throw new \UnexpectedValueException('Invalid role response from licence server.');
+        }
+        return $out;
     }
 
     /**

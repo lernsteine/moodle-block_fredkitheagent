@@ -74,6 +74,17 @@ $background = \block_fredkitheagent\local\course_design::color(
 $botbubble = \block_fredkitheagent\local\course_design::color($design, 'botbubblecolor', '#eaf6f1');
 $userbubble = \block_fredkitheagent\local\course_design::color($design, 'userbubblecolor', '#e3f2f5');
 $welcome = trim((string)get_config('block_fredkitheagent', 'chatwelcometext'));
+// 1.6.0: the agent role of the course brings its own opening statement and name.
+$agentrecord = \block_fredkitheagent\local\course_agent_manager::get_record($courseid);
+$rolename = '';
+foreach ((\block_fredkitheagent\local\managed_gateway::status()['agent_roles'] ?? []) as $role) {
+    if ($agentrecord && $role['id'] === (string)($agentrecord->agentrole ?? '')) {
+        $rolename = $role['name'];
+        if ($role['welcome'] !== '') {
+            $welcome = $role['welcome'];
+        }
+    }
+}
 if ($design && trim((string)$design->welcometext) !== '') {
     $welcome = trim((string)$design->welcometext);
 }
@@ -128,7 +139,8 @@ echo '<header class="fredki-course-header">'
     . ($embedded ? '' : '<a href="' . s($backurl) . '" class="fredki-course-back">' .
         s(get_string('chatbackcourse', 'block_fredkitheagent')) . '</a>')
     . '<img src="' . s($logo) . '" alt="FredKI" class="fredki-course-logo">'
-    . '<div><strong>FredKI</strong><span>' . s(get_string('nextsubtitle', 'block_fredkitheagent'))
+    . '<div><strong>FredKI' . ($rolename !== '' ? ' · ' . s($rolename) : '') . '</strong><span>'
+    . s(get_string('nextsubtitle', 'block_fredkitheagent'))
     . ' · ' . s(format_string($course->fullname)) . '</span></div>'
     . '</header>';
 echo '<div class="fredki-course-messages" id="fredki-course-messages" aria-live="polite">'

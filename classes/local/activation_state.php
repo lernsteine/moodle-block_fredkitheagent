@@ -102,6 +102,34 @@ final class activation_state {
     }
 
     /**
+     * Agent roles offered by the licence server (Berater, Sparringspartner, ...). Strictly validated.
+     *
+     * @param array $data Response of installations/status or agents/defaults.
+     * @return array List of ['id', 'name', 'description', 'default', 'welcome'].
+     */
+    public static function roles_from_server(array $data): array {
+        $out = [];
+        foreach ((array)($data['agent_roles'] ?? []) as $role) {
+            if (!is_array($role) || count($out) >= 12) {
+                continue;
+            }
+            $id = $role['id'] ?? null;
+            $name = $role['name'] ?? null;
+            if (
+                !is_string($id) || !preg_match('/^[a-z0-9_-]{1,40}$/D', $id)
+                    || !is_string($name) || !preg_match('/^[\p{L}\p{N} .+\-]{1,40}$/uD', $name)
+            ) {
+                continue;
+            }
+            $description = is_string($role['description'] ?? null) ? \core_text::substr(trim($role['description']), 0, 200) : '';
+            $welcome = is_string($role['welcome'] ?? null) ? \core_text::substr(trim($role['welcome']), 0, 1000) : '';
+            $out[] = ['id' => $id, 'name' => $name, 'description' => $description,
+                'default' => ($role['default'] ?? false) === true, 'welcome' => $welcome];
+        }
+        return $out;
+    }
+
+    /**
      * Accept only an https link to the licence server host.
      *
      * @param mixed $url The link from the server response.
