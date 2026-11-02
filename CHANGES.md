@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 (2026-11-04)
+
+* Agent roles: the licence server can offer several FredKI agents (for example Berater, Sparringspartner,
+  Critical Friend, Tester, Motivator). Teachers choose the agent for their course in the block, when setting up the
+  course or later. Changing it creates a new course agent from the role's template on the same knowledge base; the
+  course material is not transferred again. The chat shows the agent's name and its opening statement.
+  Requires licence server 13.19; without roles nothing changes.
+
 ## 1.5.5 (2026-11-03)
 
 * Package fully used: in a course without a course agent the block now says so before anything is tried

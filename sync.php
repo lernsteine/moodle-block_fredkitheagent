@@ -34,6 +34,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 $context = context_course::instance($courseid);
 require_capability('moodle/course:update', $context);
 $fullcheck = optional_param('fullcheck', 0, PARAM_INT) ? true : false;
+// 1.6.0: agent role chosen when the course agent is set up for the first time.
+$agentrole = optional_param('agentrole', '', PARAM_ALPHANUMEXT);
 $continuing = optional_param('continue', 0, PARAM_INT) ? true : false;
 // Long synchronisations run in stages, so no stage exceeds the timeout of a web server
 // or proxy in front of Moodle. The stage state lives in the teacher's session only.
@@ -78,9 +80,19 @@ try {
         // The administrator deleted the previous agent and knowledge base and released the course.
         \core\notification::info(get_string('coursebindingreset', 'block_fredkitheagent'));
     }
+    if ($agentrole !== '') {
+        // Without a course agent yet the licence server only remembers the role for the setup.
+        \block_fredkitheagent\local\managed_gateway::set_course_role($courseid, $agentrole);
+        // Remember the choice right away, so a retry after an interrupted setup keeps it.
+        $DB->set_field('block_fredkitheagent', 'agentrole', $agentrole, ['course' => $courseid]);
+    }
     $stage = get_string('syncstageknowledge', 'block_fredkitheagent');
     $prepared = \block_fredkitheagent\local\managed_gateway::prepare_or_provision_knowledge($course);
     $rec = \block_fredkitheagent\local\course_agent_manager::ensure_record($course);
+    if ($agentrole !== '' && (string)($rec->agentrole ?? '') !== $agentrole) {
+        $DB->set_field('block_fredkitheagent', 'agentrole', $agentrole, ['id' => $rec->id]);
+        $rec->agentrole = $agentrole;
+    }
     $knowledgeid = (string)$prepared['knowledge_id'];
     if (!empty($rec->knowledgeid) && !hash_equals((string)$rec->knowledgeid, $knowledgeid)) {
         $replaced = $prepared['replaced_knowledge_ids'] ?? [];

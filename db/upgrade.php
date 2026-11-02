@@ -201,5 +201,15 @@ function xmldb_block_fredkitheagent_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2026102701, 'fredkitheagent');
     }
 
+    // 1.6.0: agent role per course.
+    if ($oldversion < 2026110400) {
+        $table = new xmldb_table('block_fredkitheagent');
+        $field = new xmldb_field('agentrole', XMLDB_TYPE_CHAR, '40', null, null, null, null, 'verifiedat');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_block_savepoint(true, 2026110400, 'fredkitheagent');
+    }
+
     return true;
 }

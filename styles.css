@@ -1257,3 +1257,11 @@
 .fredki-ios .fk-linkbutton{display:block;width:100%;margin:10px 0 0;padding:6px;border:0;background:transparent;color:var(--fk-accent);
     font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:10px}
 .fredki-ios .fk-linkbutton:hover,.fredki-ios .fk-linkbutton:focus-visible{background:var(--fk-tint)}
+/* 1.6.0: agent role per course */
+.fredki-ios .fk-roleform{display:flex;align-items:flex-end;gap:8px;margin:12px 0 0}
+.fredki-ios .fk-rolepick{flex:1 1 auto;min-width:0}
+.fredki-ios .fk-rolepick label{display:block;margin:0 0 4px;font-size:12.5px;font-weight:600;color:var(--fk-muted)}
+.fredki-ios .fk-roleselect{width:100%;height:38px;padding:0 10px;border:1px solid var(--fk-tint-line);border-radius:12px;background:#fff;color:var(--fk-text);font:inherit;font-size:14px}
+.fredki-ios .fk-roleselect:focus{outline:3px solid rgba(0,129,143,.3);outline-offset:1px;border-color:var(--fk-accent)}
+.fredki-ios .fk-roleform .fk-rowbutton{flex:none;height:38px}
+.fredki-ios .fk-rolepick-setup{margin:14px 0 0}

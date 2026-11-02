@@ -24,6 +24,7 @@
                 <FIELD NAME="timesynced" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="managedtargetid" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD NAME="verifiedat" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+                <FIELD NAME="agentrole" TYPE="char" LENGTH="40" NOTNULL="false" SEQUENCE="false" COMMENT="Agent role chosen for this course (id from the licence server)"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
