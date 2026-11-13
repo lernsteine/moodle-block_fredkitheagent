@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.5 (2026-11-13)
+
+* Links to the terms, privacy notice and data processing agreement follow the Moodle language (German or English).
+
 ## 1.7.4 (2026-11-13)
 
 * Sites that were activated before the acceptance became part of the start confirm the terms, the privacy

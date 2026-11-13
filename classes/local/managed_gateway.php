@@ -813,6 +813,8 @@ final class managed_gateway {
         }
         $curl = new \curl();
         $curl->setHeader($headers);
+        // Language of the Moodle page, so links to legal texts in the response match it.
+        $body['lang'] = str_starts_with(current_language(), 'de') ? 'de' : 'en';
         $raw = $curl->post($url, json_encode($body, JSON_THROW_ON_ERROR), [
             'CURLOPT_CONNECTTIMEOUT' => 4,
             'CURLOPT_TIMEOUT' => in_array($route, ['chat/send', 'courses/provision', 'courses/prepare-knowledge'], true) ? 120 : 12,
