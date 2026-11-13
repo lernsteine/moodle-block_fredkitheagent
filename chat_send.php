@@ -83,10 +83,11 @@ try {
         $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
             && in_array($e->getCode(), [402, 429], true)
     ) {
-        // Limits of the free package: show a clear notice instead of a generic error.
+        // Package limits: show a clear notice instead of a generic error.
         $quota = $e->getCode() === 429;
+        $paid = $quota && str_starts_with($e->getMessage(), 'DIAG-MESSAGE-QUOTA');
         http_response_code($e->getCode());
-        $notice = get_string($quota ? 'chatfreequota' : 'chatcourselimit', 'block_fredkitheagent');
+        $notice = get_string($paid ? 'chatmessagequota' : ($quota ? 'chatfreequota' : 'chatcourselimit'), 'block_fredkitheagent');
         echo json_encode(['ok' => false, 'error_code' => $quota ? 'FREE_QUOTA' : 'COURSE_LIMIT',
             'error' => $notice], JSON_UNESCAPED_UNICODE);
         exit;

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.7 (2026-11-13)
+
+* Paid packages have a monthly message limit (licence server 13.38). From 80 % the block and the activation page show
+  the usage; site administrators can buy 1,000 extra messages for the current month. The chat explains when the
+  messages of the package are used up.
+
 ## 1.7.6 (2026-11-13)
 
 * Free package: from 80 % of the monthly messages, site administrators and teachers see a notice with a progress bar in the

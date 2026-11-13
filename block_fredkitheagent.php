@@ -327,8 +327,9 @@ class block_fredkitheagent extends block_base {
         } catch (\Throwable $e) {
             return '';
         }
-        $quota = $status['free_quota'] ?? null;
-        if (($status['tier'] ?? '') !== 'free' || !is_array($quota) || $quota['limit'] <= 0) {
+        $freetier = ($status['tier'] ?? '') === 'free';
+        $quota = $status['message_quota'] ?? ($status['free_quota'] ?? null);
+        if (!is_array($quota) || $quota['limit'] <= 0) {
             return '';
         }
         $used = (int)$quota['used'];
@@ -340,16 +341,17 @@ class block_fredkitheagent extends block_base {
         $full = $used >= $limit;
         $a = (object)['used' => $used, 'limit' => $limit, 'reset' => !empty($quota['resets_at'])
             ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-'];
-        $html = html_writer::tag('strong', s(get_string($full ? 'quotafulltitle' : 'quotanearlytitle', $pn, $a)));
+        $suffix = $freetier ? '' : 'paid';
+        $html = html_writer::tag('strong', s(get_string(($full ? 'quotafulltitle' : 'quotanearlytitle') . $suffix, $pn, $a)));
         $html .= html_writer::tag('progress', s($used . ' / ' . $limit), ['max' => $limit, 'value' => min($used, $limit),
             'class' => 'fk-quotabar', 'aria-label' => get_string('quotabarlabel', $pn, $a)]);
         $siteadmin = has_capability('moodle/site:config', context_system::instance());
-        $textkey = ($full ? 'quotafull' : 'quotanearly') . ($siteadmin ? 'admin' : 'teacher');
+        $textkey = ($full ? 'quotafull' : 'quotanearly') . $suffix . ($siteadmin ? 'admin' : 'teacher');
         $html .= html_writer::tag('p', s(get_string($textkey, $pn, $a)));
         if ($siteadmin) {
             $html .= html_writer::link(
                 new moodle_url('/blocks/fredkitheagent/activation.php'),
-                s(get_string('quotabook', $pn)),
+                s(get_string($freetier ? 'quotabook' : 'quotabuyextra', $pn)),
                 ['class' => 'fk-main']
             );
         }

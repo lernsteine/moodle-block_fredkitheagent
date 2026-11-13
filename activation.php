@@ -274,30 +274,35 @@ if (!$registered || $connectionlost) {
         );
         echo html_writer::div(s(get_string('actaftertrial', $pn)), 'fk-caption');
     }
-    if (($status['tier'] ?? '') === 'free') {
+    $freetier = ($status['tier'] ?? '') === 'free';
+    if ($freetier) {
         echo html_writer::div(s(get_string('actfreepackage', $pn)), 'fk-caption');
-        if (!empty($status['free_quota'])) {
-            $quota = $status['free_quota'];
-            $a = (object)[
-                'used' => (int)$quota['used'], 'limit' => (int)$quota['limit'],
-                'reset' => !empty($quota['resets_at'])
-                    ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-',
-            ];
-            if ($a->used * 5 >= $a->limit * 4) {
-                // From 80 %: a clear box instead of the small caption; the booking button follows below.
-                $full = $a->used >= $a->limit;
-                echo html_writer::div(
-                    html_writer::tag('strong', s(get_string($full ? 'quotafulltitle' : 'quotanearlytitle', $pn, $a))) .
-                    html_writer::tag('progress', s($a->used . ' / ' . $a->limit), ['max' => $a->limit,
-                        'value' => min($a->used, $a->limit), 'class' => 'fk-quotabar',
-                        'aria-label' => get_string('quotabarlabel', $pn, $a)]) .
-                    html_writer::tag('p', s(get_string($full ? 'quotafulladmin' : 'quotanearlyadmin', $pn, $a))),
-                    'fk-quota' . ($full ? ' is-full' : ''),
-                    ['role' => 'status']
-                );
-            } else {
-                echo html_writer::div(s(get_string('actfreequota', $pn, $a)), 'fk-caption');
-            }
+    }
+    $quota = $status['message_quota'] ?? ($status['free_quota'] ?? null);
+    $quotahigh = false;
+    if (is_array($quota)) {
+        $a = (object)[
+            'used' => (int)$quota['used'], 'limit' => (int)$quota['limit'],
+            'reset' => !empty($quota['resets_at'])
+                ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-',
+        ];
+        $quotahigh = $a->used * 5 >= $a->limit * 4;
+        if ($quotahigh) {
+            // From 80 %: a clear box instead of the small caption; booking or extra messages follow below.
+            $full = $a->used >= $a->limit;
+            $textkey = ($full ? 'quotafull' : 'quotanearly') . ($freetier ? '' : 'paid') . 'admin';
+            $titlekey = ($full ? 'quotafulltitle' : 'quotanearlytitle') . ($freetier ? '' : 'paid');
+            echo html_writer::div(
+                html_writer::tag('strong', s(get_string($titlekey, $pn, $a))) .
+                html_writer::tag('progress', s($a->used . ' / ' . $a->limit), ['max' => $a->limit,
+                    'value' => min($a->used, $a->limit), 'class' => 'fk-quotabar',
+                    'aria-label' => get_string('quotabarlabel', $pn, $a)]) .
+                html_writer::tag('p', s(get_string($textkey, $pn, $a))),
+                'fk-quota' . ($full ? ' is-full' : ''),
+                ['role' => 'status']
+            );
+        } else {
+            echo html_writer::div(s(get_string('actfreequota', $pn, $a)), 'fk-caption');
         }
     }
     if (!empty($status['plan']) && !empty($status['course_limit'])) {
@@ -307,6 +312,9 @@ if (!$registered || $connectionlost) {
     }
     if ($checkouturl !== '') {
         echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    }
+    if ($manageurl !== '' && $quotahigh && !$freetier) {
+        echo $serverbutton($manageurl, get_string('quotabuyextra', $pn));
     }
     if ($manageurl !== '') {
         echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));

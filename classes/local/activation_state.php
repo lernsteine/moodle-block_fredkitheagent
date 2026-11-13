@@ -104,7 +104,17 @@ final class activation_state {
         foreach (['terms_url', 'privacy_url', 'avv_url'] as $key) {
             $legallinks[$key] = self::legal_link($legal[$key] ?? null);
         }
+        $mquota = is_array($data['message_quota'] ?? null) ? $data['message_quota'] : [];
+        $mlimit = $mquota['limit'] ?? null;
+        $mused = $mquota['used'] ?? null;
+        $mextra = $mquota['extra'] ?? 0;
+        $mreset = $mquota['resets_at'] ?? null;
+        $messagequota = is_int($mlimit) && $mlimit > 0 && $mlimit <= 10000000 && is_int($mused) && $mused >= 0
+            ? ['limit' => $mlimit, 'used' => min($mused, $mlimit), 'extra' => is_int($mextra) && $mextra > 0 ? $mextra : 0,
+                'resets_at' => is_int($mreset) && $mreset > 0 ? $mreset : null]
+            : null;
         return [
+            'message_quota' => $messagequota,
             'legal' => in_array(null, $legallinks, true) ? null : $legallinks,
             'legal_required' => ($data['legal_required'] ?? false) === true,
             'free_quota' => $freequota,

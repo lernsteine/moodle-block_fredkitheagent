@@ -868,6 +868,15 @@ final class managed_gateway {
                         429
                     );
                 }
+                if (
+                    $code === 429 && is_array($errorresponse)
+                        && ($errorresponse['error_code'] ?? '') === 'FK-MESSAGE-QUOTA'
+                ) {
+                    throw new managed_api_diagnostic_exception(
+                        'DIAG-MESSAGE-QUOTA: The monthly messages of the FredKI package are used up.',
+                        429
+                    );
+                }
                 if ($route === 'chat/send' && $code === 424) {
                     throw new managed_api_diagnostic_exception(
                         'DIAG-CHAT-EMPTY: FredKI produced no answer text; check the AI model and agent workflow.',

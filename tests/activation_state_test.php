@@ -120,6 +120,7 @@ final class activation_state_test extends \basic_testcase {
      */
     public function test_missing_or_invalid_values(): void {
         $this->assertSame([
+            'message_quota' => null,
             'legal' => null,
             'legal_required' => false,
             'free_quota' => null,

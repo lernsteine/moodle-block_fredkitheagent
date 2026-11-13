@@ -57,7 +57,9 @@ are based on the materials of that course only.
 * Optionally a paid package can be booked instead or later, with a **7-day free trial**. When the
   trial or a subscription ends without a new booking, the site automatically continues in the free
   package.
-* **Paid packages** (optional) give more courses with a course agent and no monthly message limit. They
+* **Paid packages** (optional) give more courses with a course agent and more messages per month
+  (from 2,000). When the monthly messages are used up, 1,000 extra messages for the current month
+  can be bought at any time ("Manage subscription"), or the package can be changed. They
   are booked and paid on the booking page of the hosted service via Stripe (card, PayPal, SEPA
   direct debit). Current packages and prices are shown before anything is ordered; prices are
   maintained by the provider and may change. The package can be changed or cancelled at any time
@@ -135,5 +137,5 @@ registriert. Ohne Bezahlung steht das kostenlose Paket zur Verfügung („Kosten
 Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
 Funktionen des Plugins. Optional kann ein bezahltes Paket mit 7 Tagen Test gebucht werden; endet der
 Test oder ein Abo ohne neue Buchung, geht es automatisch im kostenlosen Paket weiter. Bezahlte Pakete (monatliches Hosting-Abo bei LERNSTEINE®) bieten mehr Kurse
-und kein Monatslimit für Nachrichten; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst
+und mehr Nachrichten pro Monat (ab 2.000, bei Bedarf 1.000 zusätzliche Nachrichten nachbuchbar); aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst
 ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.
