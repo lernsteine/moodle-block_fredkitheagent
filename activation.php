@@ -61,6 +61,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 );
                 break;
             case 'startfree':
+                if (
+                    !optional_param('acceptterms', 0, PARAM_BOOL)
+                        || !optional_param('acceptavv', 0, PARAM_BOOL)
+                ) {
+                    throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
+                        get_string('actfreestartaccept', 'block_fredkitheagent')
+                    );
+                }
                 $gateway::start_free();
                 $message = get_string('actfreestarted', 'block_fredkitheagent');
                 break;
@@ -181,16 +189,40 @@ if (!$registered || $connectionlost) {
         'class' => 'fk-actbutton']);
     echo html_writer::end_tag('form');
 } else if ($state === 'pending') {
-    if ($checkouturl !== '') {
+    $legal = $status['legal'] ?? null;
+    if ($checkouturl !== '' && is_array($legal)) {
         // Free package first: the essential functionality needs no payment.
         echo html_writer::tag('p', s(get_string('actfreestartintro', $pn)));
         echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
         echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
         echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'startfree']);
+        $link = static fn(string $url, string $text): string => html_writer::link(
+            $url,
+            s($text),
+            ['target' => '_blank', 'rel' => 'noopener noreferrer']
+        );
+        $checks = [
+            'acceptterms' => get_string('actfreestartterms', $pn, (object)[
+                'terms' => $link($legal['terms_url'], get_string('actlegalterms', $pn)),
+                'privacy' => $link($legal['privacy_url'], get_string('actlegalprivacy', $pn)),
+            ]),
+            'acceptavv' => get_string('actfreestartavv', $pn, (object)[
+                'avv' => $link($legal['avv_url'], get_string('actlegalavv', $pn)),
+            ]),
+        ];
+        foreach ($checks as $name => $label) {
+            echo html_writer::start_div('form-check mb-2');
+            echo html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => $name, 'value' => 1,
+                'id' => 'fk-' . $name, 'class' => 'form-check-input', 'required' => 'required']);
+            echo html_writer::tag('label', $label, ['for' => 'fk-' . $name, 'class' => 'form-check-label']);
+            echo html_writer::end_div();
+        }
         echo html_writer::empty_tag('input', ['type' => 'submit',
             'value' => get_string('actfreestartbutton', $pn), 'class' => 'fk-actbutton']);
         echo html_writer::end_tag('form');
-        echo html_writer::tag('p', s(get_string('actbookintro', $pn)), ['class' => 'mt-4']);
+    }
+    if ($checkouturl !== '') {
+        echo html_writer::tag('p', s(get_string('actbookintro', $pn)), ['class' => is_array($legal) ? 'mt-4' : '']);
         echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
     } else {
         echo html_writer::tag('p', get_string('actpendingcaption', $pn));

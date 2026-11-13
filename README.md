@@ -51,8 +51,9 @@ are based on the materials of that course only.
   (the counter starts again on the 1st of each month). All functions of the plugin are available
   in that course: setting up the course agent, transferring the course material, the protected
   course chat and agent roles.
-* After registration the administrator clicks **"Start for free"**: no payment method is needed. The
-  licence server only checks automatically that the Moodle site is reachable at its domain.
+* After registration the administrator accepts the terms, the privacy notice and the data processing
+  agreement (Art. 28 GDPR) and clicks **"Start for free"**: no payment method is needed. The licence
+  server only checks automatically that the Moodle site is reachable at its domain.
 * Optionally a paid package can be booked instead or later, with a **7-day free trial**. When the
   trial or a subscription ends without a new booking, the site automatically continues in the free
   package.

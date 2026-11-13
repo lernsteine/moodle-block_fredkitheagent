@@ -99,7 +99,13 @@ final class activation_state {
         $freequota = is_int($qlimit) && $qlimit > 0 && $qlimit <= 1000000 && is_int($qused) && $qused >= 0
             ? ['limit' => $qlimit, 'used' => min($qused, $qlimit), 'resets_at' => is_int($qreset) && $qreset > 0 ? $qreset : null]
             : null;
+        $legal = is_array($data['legal'] ?? null) ? $data['legal'] : [];
+        $legallinks = [];
+        foreach (['terms_url', 'privacy_url', 'avv_url'] as $key) {
+            $legallinks[$key] = self::legal_link($legal[$key] ?? null);
+        }
         return [
+            'legal' => in_array(null, $legallinks, true) ? null : $legallinks,
             'free_quota' => $freequota,
             'plan' => is_string($plan) && preg_match('/^[\p{L}\p{N} .+\-]{1,60}$/uD', $plan) ? $plan : null,
             'course_limit' => is_int($limit) && $limit > 0 && $limit <= 100000 ? $limit : null,
@@ -153,6 +159,26 @@ final class activation_state {
             !is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || isset($parts['user']) || isset($parts['pass'])
                 || isset($parts['port']) || strtolower((string)($parts['host'] ?? '')) !== strtolower($apihost)
                 || !preg_match('~^https://[A-Za-z0-9.-]+/[A-Za-z0-9._/-]*\.php\?[A-Za-z0-9=&_-]+$~D', $url)
+        ) {
+            return null;
+        }
+        return $url;
+    }
+
+    /**
+     * Accept only a plain https link to a legal text (terms, privacy notice, data processing agreement).
+     *
+     * @param mixed $url The link from the server response.
+     * @return string|null The link or null.
+     */
+    private static function legal_link($url): ?string {
+        if (!is_string($url) || strlen($url) > 500) {
+            return null;
+        }
+        $parts = parse_url($url);
+        if (
+            !is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || empty($parts['host']) || isset($parts['user'])
+                || isset($parts['pass']) || isset($parts['port']) || clean_param($url, PARAM_URL) !== $url
         ) {
             return null;
         }

@@ -169,12 +169,17 @@ final class managed_gateway {
     /**
      * Start this registered site directly in the free package, without booking or payment method.
      *
-     * The licence server checks the site domain via siteproof.php first.
+     * The licence server checks the site domain via siteproof.php first. The administrator has accepted the
+     * terms, the privacy notice and the data processing agreement (Art. 28 GDPR) on the activation page.
      *
      * @return array Parsed status after the start.
      */
     public static function start_free(): array {
-        self::request('installations/start_free', ['installation_id' => self::get_installation_id()]);
+        self::request('installations/start_free', [
+            'installation_id' => self::get_installation_id(),
+            'accept_terms' => true,
+            'accept_avv' => true,
+        ]);
         self::$requeststatus = null;
         return self::status();
     }

@@ -74,6 +74,25 @@ final class activation_state_test extends \basic_testcase {
     }
 
     /**
+     * Links to the legal texts are only accepted as plain https links, all three or none.
+     *
+     * @covers \block_fredkitheagent\local\activation_state::billing_from_server
+     */
+    public function test_legal_links(): void {
+        $legal = [
+            'terms_url' => 'https://lernsteine.com/agb',
+            'privacy_url' => 'https://lernsteine.com/datenschutz',
+            'avv_url' => 'https://fredki-theagent.lernsteine.de/avv',
+        ];
+        $result = activation_state::billing_from_server(['legal' => $legal], 'fredki-theagent.lernsteine.de');
+        $this->assertSame($legal, $result['legal']);
+        $legal['avv_url'] = 'javascript:alert(1)';
+        $this->assertNull(activation_state::billing_from_server(['legal' => $legal], 'x.example')['legal']);
+        $legal['avv_url'] = 'http://lernsteine.com/avv';
+        $this->assertNull(activation_state::billing_from_server(['legal' => $legal], 'x.example')['legal']);
+    }
+
+    /**
      * Links to other hosts, plain http or with script content are dropped.
      *
      * @covers \block_fredkitheagent\local\activation_state::billing_from_server
@@ -101,6 +120,7 @@ final class activation_state_test extends \basic_testcase {
      */
     public function test_missing_or_invalid_values(): void {
         $this->assertSame([
+            'legal' => null,
             'free_quota' => null,
             'plan' => null, 'course_limit' => null, 'courses_used' => null, 'checkout_url' => null, 'manage_url' => null,
         ], activation_state::billing_from_server([], 'fredki-theagent.lernsteine.de'));

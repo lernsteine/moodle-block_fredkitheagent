@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.2 (2026-11-13)
+
+* "Start for free": the administrator accepts the terms, the privacy notice and the data processing agreement
+  (Art. 28 GDPR), as with a booking. The licence server stores version and time of the acceptance.
+
 ## 1.7.1 (2026-11-13)
 
 * New button "Start for free" on the activation page (see 1.7.0 notes).
