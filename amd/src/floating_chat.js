@@ -25,6 +25,11 @@
  * Initialise the module.
  */
 export const init = () => {
+    /**
+     * Setup.
+     *
+     * @param {*} root Root.
+     */
     function setup(root) {
         if (root.dataset.ready) { return; }
         root.dataset.ready = '1';
@@ -45,12 +50,23 @@ export const init = () => {
         var history = root.querySelector('[data-fredkitheagent-history="1"]');
         var historylist = root.querySelector('[data-fredkitheagent-historylist="1"]');
         if (!trigger || !panel || !close || !frame || !backdrop || !expand || !menu || !history || !historylist) { return; }
+        /**
+         * Load history.
+         */
         function loadHistory() {
             try { return JSON.parse(sessionStorage.getItem(storageKey) || '[]'); } catch (e) { return []; }
         }
+        /**
+         * Save history.
+         *
+         * @param {*} items Items.
+         */
         function saveHistory(items) {
             try { sessionStorage.setItem(storageKey, JSON.stringify(items.slice(0, 20))); } catch (e) { /* ignore */ }
         }
+        /**
+         * Render history.
+         */
         function renderHistory() {
             var items = loadHistory();
             var labeldelete = history.getAttribute('data-label-delete') || 'Delete';
@@ -106,6 +122,11 @@ export const init = () => {
             });
             historylist.appendChild(clear);
         }
+        /**
+         * Add history.
+         *
+         * @param {*} prompt Prompt.
+         */
         function addHistory(prompt) {
             if (!prompt) { return; }
             var items = loadHistory().filter(function (item) { return item.prompt !== prompt; });
@@ -113,9 +134,15 @@ export const init = () => {
             saveHistory(items);
             renderHistory();
         }
+        /**
+         * Notify state.
+         */
         function notifyState() {
             window.postMessage({type: 'fredki:chatstate', open: !panel.hidden}, window.location.origin);
         }
+        /**
+         * Open.
+         */
         function open() {
             panel.hidden = false; backdrop.hidden = false;
             trigger.setAttribute('aria-expanded', 'true');
@@ -124,13 +151,19 @@ export const init = () => {
             renderHistory();
             notifyState();
         }
+        /**
+         * Close panel.
+         */
         function closePanel() {
             panel.hidden = true; backdrop.hidden = true;
             trigger.setAttribute('aria-expanded', 'false');
             document.body.classList.remove('fredkitheagent-chat-open');
             notifyState();
         }
-        trigger.addEventListener('click', function (event) { event.preventDefault(); if (panel.hidden) { open(); } else { closePanel(); } });
+        trigger.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (panel.hidden) { open(); } else { closePanel(); }
+        });
         close.addEventListener('click', function () { closePanel(); });
         backdrop.addEventListener('click', function () { closePanel(); });
         menu.addEventListener('click', function () {
@@ -155,9 +188,14 @@ export const init = () => {
             if (!event.detail.enabled) { closePanel(); }
             root.hidden = !event.detail.enabled;
         });
-        document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && !panel.hidden) { event.preventDefault(); closePanel(); } });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !panel.hidden) { event.preventDefault(); closePanel(); }
+        });
         renderHistory();
     }
+    /**
+     * Ready.
+     */
     function ready() { document.querySelectorAll('[data-fredkitheagent-launcher="1"]').forEach(setup); }
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', ready); }
     else { ready(); }

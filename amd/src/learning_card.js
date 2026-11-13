@@ -38,6 +38,9 @@ export const init = () => {
         }
         return fallback;
     }
+    /**
+     * Initialise.
+     */
     function initialise() {
         document.querySelectorAll('[data-fredki-next-card="1"]').forEach(function (root) {
             if (root.dataset.visibilityReady === '1') { return; }
@@ -45,6 +48,11 @@ export const init = () => {
             // Quiet settings sheet behind the gear.
             var views = {};
             root.querySelectorAll('[data-fk-view]').forEach(function (view) { views[view.getAttribute('data-fk-view')] = view; });
+            /**
+             * Show.
+             *
+             * @param {*} name Name.
+             */
             function show(name) {
                 Object.keys(views).forEach(function (key) { views[key].hidden = key !== name; });
                 var gear = root.querySelector('[data-fk-open="settings"]');
@@ -70,7 +78,9 @@ export const init = () => {
                     button.classList.add('is-busy');
                     button.setAttribute('aria-busy', 'true');
                     var label = button.querySelector('.fk-label');
-                    if (label && button.getAttribute('data-fk-busylabel')) { label.textContent = button.getAttribute('data-fk-busylabel'); }
+                    if (label && button.getAttribute('data-fk-busylabel')) {
+                        label.textContent = button.getAttribute('data-fk-busylabel');
+                    }
                     // Disable AFTER the browser has collected the form data.
                     setTimeout(function () {
                         root.querySelectorAll('button, input').forEach(function (control) { control.disabled = true; });

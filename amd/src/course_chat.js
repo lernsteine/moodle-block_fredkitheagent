@@ -45,12 +45,20 @@ export const init = () => {
      * Builds DOM nodes with createElement/createTextNode ONLY (never innerHTML),
      * links are limited to http(s). Supports: headings, paragraphs, bold, italic,
      * inline code, code blocks, (nested) lists, blockquotes, tables, rules, links.
+     * @param {*} name Name.
+     * @param {*} parent Parent.
      * ------------------------------------------------------------------ */
     function el(name, parent) {
         var node = document.createElement(name);
         if (parent) { parent.appendChild(node); }
         return node;
     }
+    /**
+     * Inline.
+     *
+     * @param {*} text Text.
+     * @param {*} parent Parent.
+     */
     function inline(text, parent) {
         var rules = [
             {re: /`([^`\n]+)`/, make: function (m, host) { el('code', host).textContent = m[1]; }},
@@ -77,23 +85,54 @@ export const init = () => {
             rest = rest.slice(best.m.index + best.m[0].length);
         }
     }
+    /**
+     * Inline lines.
+     *
+     * @param {*} lines Lines.
+     * @param {*} parent Parent.
+     */
     function inlineLines(lines, parent) {
         lines.forEach(function (line, index) {
             if (index > 0) { el('br', parent); }
             inline(line, parent);
         });
     }
+    /**
+     * Render markdown.
+     *
+     * @param {*} source Source.
+     */
     function renderMarkdown(source) {
         var root = document.createDocumentFragment();
         var lines = String(source).replace(/\r\n?/g, '\n').split('\n');
         var i = 0;
         var itemre = /^(\s*)([-*+•]|\d+[.)])\s+(.*)$/;
+        /**
+         * Blank.
+         *
+         * @param {*} line Line.
+         */
         function blank(line) { return /^\s*$/.test(line); }
+        /**
+         * Nextnonblank.
+         *
+         * @param {*} from From.
+         */
         function nextnonblank(from) {
             while (from < lines.length && blank(lines[from])) { from++; }
             return from;
         }
+        /**
+         * Isrow.
+         *
+         * @param {*} line Line.
+         */
         function isrow(line) { return /^\s*\|.*\|\s*$/.test(line); }
+        /**
+         * Cells.
+         *
+         * @param {*} line Line.
+         */
         function cells(line) { return line.trim().replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }); }
         while (i < lines.length) {
             var line = lines[i];
@@ -115,12 +154,12 @@ export const init = () => {
             if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { el('hr', root); i++; continue; }
             if (isrow(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(lines[i + 1])) {
                 var table = el('table', root);
-                var headrow = el('tr', el('thead', table));
+                const headrow = el('tr', el('thead', table));
                 cells(line).forEach(function (c) { inline(c, el('th', headrow)); });
                 var body = el('tbody', table);
                 i += 2;
                 while (i < lines.length && isrow(lines[i])) {
-                    var row = el('tr', body);
+                    const row = el('tr', body);
                     cells(lines[i]).forEach(function (c) { inline(c, el('td', row)); });
                     i++;
                 }
@@ -183,6 +222,9 @@ export const init = () => {
         return root;
     }
 
+    /**
+     * Initialize chat.
+     */
     function initializeChat() {
         var root = document.querySelector('[data-fredki-chat="1"]');
         if (!root || root.dataset.chatInitialized === '1') { return; }
@@ -199,6 +241,9 @@ export const init = () => {
             return; // Keep the submit button disabled instead of navigating to Moodle.
         }
         var busy = false;
+        /**
+         * Show typing.
+         */
         function showTyping() {
             var node = add('', 'bot');
             node.classList.add('fredki-typing');
@@ -214,12 +259,24 @@ export const init = () => {
             }
             return node;
         }
+        /**
+         * Finish typing.
+         *
+         * @param {*} node Node.
+         * @param {*} text Text.
+         */
         function finishTyping(node, text) {
             node.classList.remove('fredki-typing');
             node.removeAttribute('role');
             node.removeAttribute('aria-label');
             node.textContent = text;
         }
+        /**
+         * Add.
+         *
+         * @param {*} text Text.
+         * @param {*} type Type.
+         */
         function add(text, type) {
             var node = document.createElement('div');
             node.className = 'fredki-course-message ' + type;
@@ -238,6 +295,8 @@ export const init = () => {
          * with a soft fade-in. This is a display animation, not upstream token streaming:
          * the licence gateway returns one completed JSON answer. Pace: roughly 9-15 words
          * per second, about 8 seconds at most; the visitor can skip it.
+         * @param {*} node Node.
+         * @param {*} answer Answer.
          */
         function revealAnswer(node, answer) {
             node.classList.remove('fredki-typing');
@@ -254,7 +313,7 @@ export const init = () => {
             // Render the finished markup once, then hide it and uncover it piece by piece.
             node.appendChild(renderMarkdown(answer));
             var pieces = [];
-            var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null);
+            var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT + NodeFilter.SHOW_ELEMENT, null);
             var texts = [];
             var rules = [];
             var hidden = [];
@@ -299,13 +358,24 @@ export const init = () => {
             var lastscroll = 0;
             var frameid = 0;
             var completed = false;
+            /**
+             * Uncover.
+             *
+             * @param {*} piece Piece.
+             */
             function uncover(piece) {
                 for (var up = piece; up && up !== node; up = up.parentElement) { up.hidden = false; }
             }
+            /**
+             * Nearbottom.
+             */
             function nearbottom() {
                 return list.scrollHeight - list.scrollTop - list.clientHeight < 120;
             }
             return new Promise(function (resolve) {
+                /**
+                 * Finish.
+                 */
                 function finish() {
                     if (completed) { return; }
                     completed = true;
@@ -318,6 +388,11 @@ export const init = () => {
                     list.scrollTop = list.scrollHeight;
                     resolve();
                 }
+                /**
+                 * Draw.
+                 *
+                 * @param {*} timestamp Timestamp.
+                 */
                 function draw(timestamp) {
                     if (completed) { return; }
                     if (!start) { start = timestamp; }
@@ -405,12 +480,14 @@ export const init = () => {
                     return;
                 }
                 if (error && error.message === 'COURSE_DETACHED') {
-                    finishTyping(waiting, error.text || str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
+                    finishTyping(waiting, error.text
+                        || str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
                     input.disabled = true;
                     return;
                 }
                 finishTyping(waiting, error && error.message === 'CHAT_EMPTY'
-                    ? str('chaterrorempty', 'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.')
+                    ? str('chaterrorempty',
+                        'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.')
                     : str('chaterrorload', 'The answer could not be loaded. Please try again.'));
             }).finally(function () {
                 busy = false;
