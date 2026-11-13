@@ -45,9 +45,15 @@ export const init = () => {
      * Builds DOM nodes with createElement/createTextNode ONLY (never innerHTML),
      * links are limited to http(s). Supports: headings, paragraphs, bold, italic,
      * inline code, code blocks, (nested) lists, blockquotes, tables, rules, links.
-     * @param {*} name Name.
-     * @param {*} parent Parent.
      * ------------------------------------------------------------------ */
+
+    /**
+     * Create an element and append it to a parent.
+     *
+     * @param {string} name Tag name.
+     * @param {HTMLElement} parent Parent node.
+     * @return {HTMLElement} The new element.
+     */
     function el(name, parent) {
         var node = document.createElement(name);
         if (parent) { parent.appendChild(node); }
