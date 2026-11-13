@@ -51,8 +51,11 @@ are based on the materials of that course only.
   (the counter starts again on the 1st of each month). All functions of the plugin are available
   in that course: setting up the course agent, transferring the course material, the protected
   course chat and agent roles.
-* After registration a **7-day trial** of a paid package starts. If no package is booked, the site
-  automatically continues in the free package. The same happens when a subscription ends.
+* After registration the administrator clicks **"Start for free"**: no payment method is needed. The
+  licence server only checks automatically that the Moodle site is reachable at its domain.
+* Optionally a paid package can be booked instead or later, with a **7-day free trial**. When the
+  trial or a subscription ends without a new booking, the site automatically continues in the free
+  package.
 * **Paid packages** (optional) give more courses with a course agent and no monthly message limit. They
   are booked and paid on the booking page of the hosted service via Stripe (card, PayPal, SEPA
   direct debit). Current packages and prices are shown before anything is ordered; prices are
@@ -126,9 +129,9 @@ Questions about the hosted service, trial and subscription: info@lernsteine.com
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig kostenlos
-registriert. Ohne Bezahlung steht das kostenlose Paket zur Verfügung: ein Kurs mit Kurs-Agent und
-200 beantwortete Nachrichten pro Monat, mit allen Funktionen des Plugins. Nach der Registrierung läuft
-7 Tage ein Test eines bezahlten Pakets; wird nichts gebucht oder endet ein Abo, geht es automatisch im
-kostenlosen Paket weiter. Bezahlte Pakete (monatliches Hosting-Abo bei LERNSTEINE®) bieten mehr Kurse
+registriert. Ohne Bezahlung steht das kostenlose Paket zur Verfügung („Kostenlos starten“, keine
+Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
+Funktionen des Plugins. Optional kann ein bezahltes Paket mit 7 Tagen Test gebucht werden; endet der
+Test oder ein Abo ohne neue Buchung, geht es automatisch im kostenlosen Paket weiter. Bezahlte Pakete (monatliches Hosting-Abo bei LERNSTEINE®) bieten mehr Kurse
 und kein Monatslimit für Nachrichten; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst
 ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.

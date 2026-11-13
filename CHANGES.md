@@ -2,6 +2,8 @@
 
 ## 1.7.0 (2026-11-13)
 
+* New button "Start for free" on the activation page: a registered site starts directly in the free package,
+  without booking or payment method (domain check only). Booking a package stays optional.
 * Free package: after the 7-day trial, or when a subscription ends, the site continues in the free package
   instead of being paused: one course with a course agent and 200 answered chat messages per month.
   The activation page shows the package and the messages used this month. The chat explains when the monthly

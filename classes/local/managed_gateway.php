@@ -167,6 +167,19 @@ final class managed_gateway {
     }
 
     /**
+     * Start this registered site directly in the free package, without booking or payment method.
+     *
+     * The licence server checks the site domain via siteproof.php first.
+     *
+     * @return array Parsed status after the start.
+     */
+    public static function start_free(): array {
+        self::request('installations/start_free', ['installation_id' => self::get_installation_id()]);
+        self::$requeststatus = null;
+        return self::status();
+    }
+
+    /**
      * Defaults from the FredKI template agent (opening statement), see welcome_sync.
      *
      * @return array ['welcome' => ?string]
@@ -818,6 +831,9 @@ final class managed_gateway {
                         'DIAG-COURSE-LIMIT: The course limit of the FredKI package is reached.',
                         402
                     );
+                }
+                if ($route === 'installations/start_free' && $code === 422) {
+                    throw new managed_api_diagnostic_exception(get_string('actfreestartproof', self::COMPONENT), 422);
                 }
                 if (
                     $code === 429 && is_array($errorresponse)

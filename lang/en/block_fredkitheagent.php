@@ -24,10 +24,14 @@
 
 $string['actaftertrial'] = 'After the trial the site continues in the free package unless a package is booked.';
 $string['actbookbutton'] = 'Book a package – test 7 days free';
-$string['actbookintro'] = 'Choose a package, store a payment method and test FredKI free of charge for 7 days. After the booking and the automatic domain check, this site is approved within a few minutes. No charge if you cancel during the trial.';
+$string['actbookintro'] = 'Optional: for more courses and messages, book a package. Store a payment method and test it free of charge for 7 days; no charge if you cancel during the trial.';
 $string['actbooknowbutton'] = 'Book a package now';
 $string['actfreepackage'] = 'Free package: one course with course agent and 200 answered messages per month. Book a package for more courses and messages.';
 $string['actfreequota'] = 'Messages this month: {$a->used} of {$a->limit} · new messages from {$a->reset}';
+$string['actfreestartbutton'] = 'Start for free';
+$string['actfreestarted'] = 'The free package is active. Add the block "FredKI The Agent" to a course to set up the course agent.';
+$string['actfreestartintro'] = 'Start now with the free package – no payment method needed: one course with a course agent and 200 answered messages per month, with all functions of the plugin. The licence server checks automatically that this Moodle site is reachable at its domain.';
+$string['actfreestartproof'] = 'The domain check failed: the licence server could not reach this Moodle site. Please make sure the site is publicly reachable at its address and try again.';
 $string['actionfailed'] = 'The action could not be completed. Please test the licence server connection under "Advanced connection settings"; if it fails again, check the Moodle PHP error log.';
 $string['activationmailbody'] = 'Please approve my Moodle installation: {$a}';
 $string['activationmailsubject'] = 'FredKI – approval request';
@@ -154,7 +158,7 @@ $string['managedreconnectbutton'] = 'Reconnect this site';
 $string['managedreconnected'] = 'Welcome back: this Moodle site was already connected to FredKI. The connection has been restored – package, trial and course agents are kept. Add the block “FredKI The Agent” to your courses again and click the button there; course material that is already known is not transferred twice.';
 $string['managedregister'] = 'Register installation';
 $string['managedregisterbutton'] = 'Try FredKI for free';
-$string['managedregistered'] = 'Registration successful. Next step: book a package – the first 7 days are free.';
+$string['managedregistered'] = 'Registration successful. Next step: start for free, or book a package and test it 7 days free.';
 $string['managedregisterintro'] = 'Register this Moodle site once with a contact e-mail address. Then choose a package and test FredKI free of charge for 7 days. If this site was connected to FredKI before (for example before the plugin was reinstalled), the existing connection is restored automatically – package, trial and course agents are kept.';
 $string['managedresetbutton'] = 'Switch connection to another server';
 $string['managedresetconfirm'] = 'I deliberately want to remove the stored connection of this site (only needed when switching to another licence server).';

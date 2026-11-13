@@ -60,6 +60,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     'block_fredkitheagent'
                 );
                 break;
+            case 'startfree':
+                $gateway::start_free();
+                $message = get_string('actfreestarted', 'block_fredkitheagent');
+                break;
             case 'diagnose':
                 $diagnosis = $gateway::diagnose_connection();
                 if (!empty($diagnosis['ok'])) {
@@ -178,7 +182,15 @@ if (!$registered || $connectionlost) {
     echo html_writer::end_tag('form');
 } else if ($state === 'pending') {
     if ($checkouturl !== '') {
-        echo html_writer::tag('p', s(get_string('actbookintro', $pn)));
+        // Free package first: the essential functionality needs no payment.
+        echo html_writer::tag('p', s(get_string('actfreestartintro', $pn)));
+        echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'startfree']);
+        echo html_writer::empty_tag('input', ['type' => 'submit',
+            'value' => get_string('actfreestartbutton', $pn), 'class' => 'fk-actbutton']);
+        echo html_writer::end_tag('form');
+        echo html_writer::tag('p', s(get_string('actbookintro', $pn)), ['class' => 'mt-4']);
         echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
     } else {
         echo html_writer::tag('p', get_string('actpendingcaption', $pn));
