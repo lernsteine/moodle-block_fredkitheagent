@@ -1793,3 +1793,41 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     background: rgba(20, 40, 80, .05);
     font-weight: 700;
 }
+
+/* Free package: monthly messages (nearly) used up. */
+.fredki-ios .fk-quota,
+.fk-quota {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border: 1px solid #f5c26b;
+    border-radius: 12px;
+    background: #fff8e6;
+    color: #5c3d00;
+}
+
+.fk-quota.is-full {
+    border-color: #f1a7a0;
+    background: #fdecea;
+    color: #6e1a12;
+}
+
+.fk-quota strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.fk-quota p {
+    margin: 8px 0 10px;
+    font-size: .92rem;
+}
+
+.fk-quota .fk-quotabar {
+    display: block;
+    width: 100%;
+    height: 10px;
+    accent-color: #e8930c;
+}
+
+.fk-quota.is-full .fk-quotabar {
+    accent-color: #c4320a;
+}

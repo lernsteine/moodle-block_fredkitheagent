@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.6 (2026-11-13)
+
+* Free package: from 80 % of the monthly messages, site administrators and teachers see a notice with a progress bar in the
+  block and on the activation page, with a link to book a package. The licence server also e-mails the contact at 80 % and 100 %.
+
 ## 1.7.5 (2026-11-13)
 
 * Links to the terms, privacy notice and data processing agreement follow the Moodle language (German or English).

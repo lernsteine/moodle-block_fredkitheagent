@@ -316,6 +316,47 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
+     * Notice for site administrators and teachers when the free package's monthly messages are (nearly) used up.
+     *
+     * @return string HTML, empty below 80 %.
+     */
+    protected function render_quota_notice(): string {
+        $pn = 'block_fredkitheagent';
+        try {
+            $status = \block_fredkitheagent\local\managed_gateway::status();
+        } catch (\Throwable $e) {
+            return '';
+        }
+        $quota = $status['free_quota'] ?? null;
+        if (($status['tier'] ?? '') !== 'free' || !is_array($quota) || $quota['limit'] <= 0) {
+            return '';
+        }
+        $used = (int)$quota['used'];
+        $limit = (int)$quota['limit'];
+        if ($used * 5 < $limit * 4) {
+            // Below 80 %: nothing to show.
+            return '';
+        }
+        $full = $used >= $limit;
+        $a = (object)['used' => $used, 'limit' => $limit, 'reset' => !empty($quota['resets_at'])
+            ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-'];
+        $html = html_writer::tag('strong', s(get_string($full ? 'quotafulltitle' : 'quotanearlytitle', $pn, $a)));
+        $html .= html_writer::tag('progress', s($used . ' / ' . $limit), ['max' => $limit, 'value' => min($used, $limit),
+            'class' => 'fk-quotabar', 'aria-label' => get_string('quotabarlabel', $pn, $a)]);
+        $siteadmin = has_capability('moodle/site:config', context_system::instance());
+        $textkey = ($full ? 'quotafull' : 'quotanearly') . ($siteadmin ? 'admin' : 'teacher');
+        $html .= html_writer::tag('p', s(get_string($textkey, $pn, $a)));
+        if ($siteadmin) {
+            $html .= html_writer::link(
+                new moodle_url('/blocks/fredkitheagent/activation.php'),
+                s(get_string('quotabook', $pn)),
+                ['class' => 'fk-main']
+            );
+        }
+        return html_writer::div($html, 'fk-quota' . ($full ? ' is-full' : ''), ['role' => 'status']);
+    }
+
+    /**
      * iPhone-style card: ONE big button for everything; extras sit quietly behind the gear.
      *
      * @param bool $canmanage The canmanage.
@@ -354,6 +395,9 @@ class block_fredkitheagent extends block_base {
         $content .= html_writer::tag('small', get_string('nextsubtitle', $pn));
         $content .= html_writer::end_div();
         $content .= html_writer::end_div();
+        if ($canmanage) {
+            $content .= $this->render_quota_notice();
+        }
 
         if ($rec && (string)$rec->status === 'detached') {
             // Disconnected by the licence server administrator. Nothing the teacher must repair;
