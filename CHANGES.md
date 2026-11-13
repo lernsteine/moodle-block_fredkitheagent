@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.1 (2026-11-13)
+
+* New button "Start for free" on the activation page (see 1.7.0 notes).
+
 ## 1.7.0 (2026-11-13)
 
 * New button "Start for free" on the activation page: a registered site starts directly in the free package,
