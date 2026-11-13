@@ -35,6 +35,7 @@ jobs:
           cd moodle
           npm ci
           npx grunt amd --root=blocks/fredkitheagent
+          mkdir -p ../plugin/amd/build
           cp blocks/fredkitheagent/amd/build/* ../plugin/amd/build/
 
       - name: Commit build files
