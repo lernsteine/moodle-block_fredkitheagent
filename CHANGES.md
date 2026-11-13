@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.4 (2026-11-13)
+
+* Sites that were activated before the acceptance became part of the start confirm the terms, the privacy
+  notice and the data processing agreement once on the activation page.
+
 ## 1.7.3 (2026-11-13)
 
 * Texts on the block, the activation page and in the README now describe the free start instead of a required booking.

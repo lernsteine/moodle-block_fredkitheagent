@@ -106,6 +106,7 @@ final class activation_state {
         }
         return [
             'legal' => in_array(null, $legallinks, true) ? null : $legallinks,
+            'legal_required' => ($data['legal_required'] ?? false) === true,
             'free_quota' => $freequota,
             'plan' => is_string($plan) && preg_match('/^[\p{L}\p{N} .+\-]{1,60}$/uD', $plan) ? $plan : null,
             'course_limit' => is_int($limit) && $limit > 0 && $limit <= 100000 ? $limit : null,

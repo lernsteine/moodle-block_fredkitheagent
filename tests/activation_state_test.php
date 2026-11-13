@@ -121,6 +121,7 @@ final class activation_state_test extends \basic_testcase {
     public function test_missing_or_invalid_values(): void {
         $this->assertSame([
             'legal' => null,
+            'legal_required' => false,
             'free_quota' => null,
             'plan' => null, 'course_limit' => null, 'courses_used' => null, 'checkout_url' => null, 'manage_url' => null,
         ], activation_state::billing_from_server([], 'fredki-theagent.lernsteine.de'));

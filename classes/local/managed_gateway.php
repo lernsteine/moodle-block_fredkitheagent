@@ -185,6 +185,23 @@ final class managed_gateway {
     }
 
     /**
+     * Record that the administrator accepted the terms, the privacy notice and the data processing agreement.
+     *
+     * Used once by sites that were activated before the acceptance was part of the start.
+     *
+     * @return array Parsed status afterwards.
+     */
+    public static function accept_legal(): array {
+        self::request('installations/accept_legal', [
+            'installation_id' => self::get_installation_id(),
+            'accept_terms' => true,
+            'accept_avv' => true,
+        ]);
+        self::$requeststatus = null;
+        return self::status();
+    }
+
+    /**
      * Defaults from the FredKI template agent (opening statement), see welcome_sync.
      *
      * @return array ['welcome' => ?string]

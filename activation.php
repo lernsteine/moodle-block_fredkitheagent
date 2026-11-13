@@ -60,6 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     'block_fredkitheagent'
                 );
                 break;
+            case 'acceptlegal':
             case 'startfree':
                 if (
                     !optional_param('acceptterms', 0, PARAM_BOOL)
@@ -68,6 +69,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
                         get_string('actfreestartaccept', 'block_fredkitheagent')
                     );
+                }
+                if ($action === 'acceptlegal') {
+                    $gateway::accept_legal();
+                    $message = get_string('actlegalaccepted', 'block_fredkitheagent');
+                    break;
                 }
                 $gateway::start_free();
                 $message = get_string('actfreestarted', 'block_fredkitheagent');
@@ -171,6 +177,33 @@ foreach (['actstepregister', 'actstepapproval', 'actstepready'] as $index => $ke
 }
 echo html_writer::end_tag('ol');
 echo html_writer::start_div('fk-actbody');
+// Required checkboxes for the terms, privacy notice and data processing agreement.
+$legalchecks = static function (array $legal) use ($pn): string {
+    $link = static fn(string $url, string $text): string => html_writer::link(
+        $url,
+        s($text),
+        ['target' => '_blank', 'rel' => 'noopener noreferrer']
+    );
+    $checks = [
+        'acceptterms' => get_string('actfreestartterms', $pn, (object)[
+            'terms' => $link($legal['terms_url'], get_string('actlegalterms', $pn)),
+            'privacy' => $link($legal['privacy_url'], get_string('actlegalprivacy', $pn)),
+        ]),
+        'acceptavv' => get_string('actfreestartavv', $pn, (object)[
+            'avv' => $link($legal['avv_url'], get_string('actlegalavv', $pn)),
+        ]),
+    ];
+    $html = '';
+    foreach ($checks as $name => $label) {
+        $html .= html_writer::div(
+            html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => $name, 'value' => 1,
+                'id' => 'fk-' . $name, 'class' => 'form-check-input', 'required' => 'required']) .
+            html_writer::tag('label', $label, ['for' => 'fk-' . $name, 'class' => 'form-check-label']),
+            'form-check mb-2'
+        );
+    }
+    return $html;
+};
 if (!$registered || $connectionlost) {
     if ($connectionlost) {
         echo html_writer::div(s(get_string('managedconnectionlost', $pn)), 'fk-actwarn');
@@ -196,27 +229,7 @@ if (!$registered || $connectionlost) {
         echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
         echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
         echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'startfree']);
-        $link = static fn(string $url, string $text): string => html_writer::link(
-            $url,
-            s($text),
-            ['target' => '_blank', 'rel' => 'noopener noreferrer']
-        );
-        $checks = [
-            'acceptterms' => get_string('actfreestartterms', $pn, (object)[
-                'terms' => $link($legal['terms_url'], get_string('actlegalterms', $pn)),
-                'privacy' => $link($legal['privacy_url'], get_string('actlegalprivacy', $pn)),
-            ]),
-            'acceptavv' => get_string('actfreestartavv', $pn, (object)[
-                'avv' => $link($legal['avv_url'], get_string('actlegalavv', $pn)),
-            ]),
-        ];
-        foreach ($checks as $name => $label) {
-            echo html_writer::start_div('form-check mb-2');
-            echo html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => $name, 'value' => 1,
-                'id' => 'fk-' . $name, 'class' => 'form-check-input', 'required' => 'required']);
-            echo html_writer::tag('label', $label, ['for' => 'fk-' . $name, 'class' => 'form-check-label']);
-            echo html_writer::end_div();
-        }
+        echo $legalchecks($legal);
         echo html_writer::empty_tag('input', ['type' => 'submit',
             'value' => get_string('actfreestartbutton', $pn), 'class' => 'fk-actbutton']);
         echo html_writer::end_tag('form');
@@ -238,6 +251,17 @@ if (!$registered || $connectionlost) {
         echo html_writer::link($mail, get_string('managedmailfallback', $pn), ['class' => 'fk-actbutton']);
     }
 } else if ($active) {
+    if (!empty($status['legal_required']) && is_array($status['legal'] ?? null)) {
+        // Sites that never accepted the legal texts (e.g. approved before they were part of the start) do it once.
+        echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url, 'class' => 'fk-actwarn']);
+        echo html_writer::tag('p', s(get_string('actlegalrequired', $pn)));
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'acceptlegal']);
+        echo $legalchecks($status['legal']);
+        echo html_writer::empty_tag('input', ['type' => 'submit',
+            'value' => get_string('actlegalconfirm', $pn), 'class' => 'fk-actbutton']);
+        echo html_writer::end_tag('form');
+    }
     echo html_writer::div(
         html_writer::tag('p', s(get_string('managedapproved', $pn))) .
         html_writer::tag('p', html_writer::tag('strong', s(get_string('managedapprovedslogan', $pn)))),
