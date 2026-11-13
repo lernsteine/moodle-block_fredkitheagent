@@ -893,10 +893,12 @@ class course_content_importer {
             $benefit = $this->default_benefit($type);
         }
         if ($link === '') {
-            // Einträge ohne Link sollen nicht entstehen. Als Sicherheitsnetz bleibt der Kurslink erhalten.
+            // Entries without a link should not occur. As a safety net the course link is used.
             $link = (new \moodle_url('/course/view.php', ['id' => $course->id]))->out(false);
         }
 
+        // Fixed record format of the FredKI course agent knowledge base. The markers and default texts are
+        // data for the agent's retrieval (its templates expect them verbatim); they are never shown in Moodle.
         $body = "START EINTRAG\n\n" .
             "TITEL:\n" . $title . "\n\n" .
             "TYP:\n" . $type . "\n\n" .
