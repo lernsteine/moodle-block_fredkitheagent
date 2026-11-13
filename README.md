@@ -78,8 +78,9 @@ translation portal AMOS (lang.moodle.org) and installed with the Moodle language
 2. Run the Moodle upgrade.
 3. As administrator open *Site administration → Plugins → Blocks → FredKI The Agent → Open activation*,
    enter a contact e-mail address and register the site.
-4. On the activation page choose "Book a package – test 7 days free". After the booking the site
-   is approved automatically within a few minutes.
+4. On the activation page accept the terms and the data processing agreement and click
+   "Start for free" – the site is ready immediately. Optionally choose "Book a package – test 7 days
+   free" instead, for more courses and messages.
 5. Add the block "FredKI The Agent" to a course and press the large button.
 
 ### Reinstalling the plugin

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.3 (2026-11-13)
+
+* Texts on the block, the activation page and in the README now describe the free start instead of a required booking.
+
 ## 1.7.2 (2026-11-13)
 
 * "Start for free": the administrator accepts the terms, the privacy notice and the data processing agreement
