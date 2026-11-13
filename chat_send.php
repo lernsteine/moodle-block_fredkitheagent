@@ -79,6 +79,18 @@ try {
             'error' => get_string('chatdetached', 'block_fredkitheagent')], JSON_UNESCAPED_UNICODE);
         exit;
     }
+    if (
+        $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
+            && in_array($e->getCode(), [402, 429], true)
+    ) {
+        // Limits of the free package: show a clear notice instead of a generic error.
+        $quota = $e->getCode() === 429;
+        http_response_code($e->getCode());
+        $notice = get_string($quota ? 'chatfreequota' : 'chatcourselimit', 'block_fredkitheagent');
+        echo json_encode(['ok' => false, 'error_code' => $quota ? 'FREE_QUOTA' : 'COURSE_LIMIT',
+            'error' => $notice], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
     // Return only allowlisted diagnostic categories, never raw upstream text.
     $empty = $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
         && $e->getCode() === 424;

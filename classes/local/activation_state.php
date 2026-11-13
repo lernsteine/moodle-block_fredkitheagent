@@ -92,7 +92,15 @@ final class activation_state {
         $plan = $data['plan'] ?? null;
         $limit = $data['course_limit'] ?? null;
         $used = $data['courses_used'] ?? null;
+        $quota = is_array($data['free_quota'] ?? null) ? $data['free_quota'] : [];
+        $qlimit = $quota['limit'] ?? null;
+        $qused = $quota['used'] ?? null;
+        $qreset = $quota['resets_at'] ?? null;
+        $freequota = is_int($qlimit) && $qlimit > 0 && $qlimit <= 1000000 && is_int($qused) && $qused >= 0
+            ? ['limit' => $qlimit, 'used' => min($qused, $qlimit), 'resets_at' => is_int($qreset) && $qreset > 0 ? $qreset : null]
+            : null;
         return [
+            'free_quota' => $freequota,
             'plan' => is_string($plan) && preg_match('/^[\p{L}\p{N} .+\-]{1,60}$/uD', $plan) ? $plan : null,
             'course_limit' => is_int($limit) && $limit > 0 && $limit <= 100000 ? $limit : null,
             'courses_used' => is_int($used) && $used >= 0 && $used <= 100000 ? $used : null,

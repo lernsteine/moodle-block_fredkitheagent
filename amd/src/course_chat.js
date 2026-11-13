@@ -1,17 +1,30 @@
-/*
- * This file is part of Moodle - http://moodle.org/
- * Moodle is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3
- * of the License, or (at your option) any later version. Moodle is distributed in the hope
- * that it will be useful, but WITHOUT ANY WARRANTY. See http://www.gnu.org/licenses/ .
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Protected Moodle-local FredKI course chat.
  *
- * @package    block_fredkitheagent
+ * @module     block_fredkitheagent/course_chat
  * @copyright  2026 lernsteine.com
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-/* Protected Moodle-local FredKI chat. Never submit a traditional HTML page inside the iframe. */
-(function () {
-    'use strict';
+
+/**
+ * Initialise the module.
+ */
+export const init = () => {
     /**
      * Language string from Moodle (lang/<lang>/block_fredkitheagent.php), English fallback.
      *
@@ -364,6 +377,11 @@
                         if (payload && payload.error_code === 'CHAT_EMPTY') {
                             throw new Error('CHAT_EMPTY');
                         }
+                        if (payload && (payload.error_code === 'FREE_QUOTA' || payload.error_code === 'COURSE_LIMIT')) {
+                            var limit = new Error('LIMIT');
+                            limit.text = typeof payload.error === 'string' ? payload.error : '';
+                            throw limit;
+                        }
                         if (payload && payload.error_code === 'COURSE_DETACHED') {
                             var detached = new Error('COURSE_DETACHED');
                             detached.text = typeof payload.error === 'string' ? payload.error : '';
@@ -382,6 +400,10 @@
                 }
                 return revealAnswer(waiting, answer.answer);
             }).catch(function (error) {
+                if (error && error.message === 'LIMIT') {
+                    finishTyping(waiting, error.text || str('chaterrorload', 'The answer could not be loaded. Please try again.'));
+                    return;
+                }
                 if (error && error.message === 'COURSE_DETACHED') {
                     finishTyping(waiting, error.text || str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
                     input.disabled = true;
@@ -417,4 +439,4 @@
     } else {
         initializeChat();
     }
-})();
+};

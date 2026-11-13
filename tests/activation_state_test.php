@@ -55,6 +55,25 @@ final class activation_state_test extends \basic_testcase {
     }
 
     /**
+     * The monthly messages of the free package are read strictly.
+     *
+     * @covers \block_fredkitheagent\local\activation_state::billing_from_server
+     */
+    public function test_free_quota(): void {
+        $result = activation_state::billing_from_server([
+            'plan' => 'Free',
+            'course_limit' => 1,
+            'free_quota' => ['limit' => 200, 'used' => 12, 'resets_at' => 1796079600],
+        ], 'fredki-theagent.lernsteine.de');
+        $this->assertSame('Free', $result['plan']);
+        $this->assertSame(['limit' => 200, 'used' => 12, 'resets_at' => 1796079600], $result['free_quota']);
+        $invalid = activation_state::billing_from_server(['free_quota' => ['limit' => '200', 'used' => -1]], 'x.example');
+        $this->assertNull($invalid['free_quota']);
+        $none = activation_state::billing_from_server([], 'x.example');
+        $this->assertNull($none['free_quota']);
+    }
+
+    /**
      * Links to other hosts, plain http or with script content are dropped.
      *
      * @covers \block_fredkitheagent\local\activation_state::billing_from_server

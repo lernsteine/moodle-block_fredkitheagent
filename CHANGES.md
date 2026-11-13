@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.7.0 (2026-11-13)
+
+* Free package: after the 7-day trial, or when a subscription ends, the site continues in the free package
+  instead of being paused: one course with a course agent and 200 answered chat messages per month.
+  The activation page shows the package and the messages used this month. The chat explains when the monthly
+  messages are used up or when a further course is not included. Requires licence server 13.38.
+* JavaScript moved to AMD modules (amd/src, built with grunt) and loaded with js_call_amd.
+* The styles of the course chat are now part of styles.css; no separate stylesheet is loaded any more.
+
 ## 1.6.0 (2026-11-04)
 
 * Agent roles: the licence server can offer several FredKI agents (for example Berater, Sparringspartner,

@@ -22,9 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['actaftertrial'] = 'After the trial the site continues in the free package unless a package is booked.';
 $string['actbookbutton'] = 'Book a package – test 7 days free';
 $string['actbookintro'] = 'Choose a package, store a payment method and test FredKI free of charge for 7 days. After the booking and the automatic domain check, this site is approved within a few minutes. No charge if you cancel during the trial.';
 $string['actbooknowbutton'] = 'Book a package now';
+$string['actfreepackage'] = 'Free package: one course with course agent and 200 answered messages per month. Book a package for more courses and messages.';
+$string['actfreequota'] = 'Messages this month: {$a->used} of {$a->limit} · new messages from {$a->reset}';
 $string['actionfailed'] = 'The action could not be completed. Please test the licence server connection under "Advanced connection settings"; if it fails again, check the Moodle PHP error log.';
 $string['activationmailbody'] = 'Please approve my Moodle installation: {$a}';
 $string['activationmailsubject'] = 'FredKI – approval request';
@@ -45,12 +48,14 @@ $string['chataccentcolor'] = 'Accent color';
 $string['chatask'] = 'Type your question …';
 $string['chatbackcourse'] = 'Back to course';
 $string['chatbackgroundcolor'] = 'Chat background';
+$string['chatcourselimit'] = 'The free FredKI package includes one course. The chat is available in the first connected course. A site administrator can book a package for more courses.';
 $string['chatdetached'] = 'The FredKI chat is not available for this course at the moment.';
 $string['chaterror'] = 'FredKI is currently unavailable. Please try again later.';
 $string['chaterrorempty'] = 'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.';
 $string['chaterrorload'] = 'The answer could not be loaded. Please try again.';
 $string['chatfooterdefault'] = 'AI-generated answers may contain mistakes.';
 $string['chatfootertext'] = 'Footer';
+$string['chatfreequota'] = 'The messages of the free FredKI package for this month are used up. The chat is available again next month, or a site administrator can book a package.';
 $string['chatheadercolor'] = 'Chat header';
 $string['chatlogo'] = 'Chat logo';
 $string['chatneedsjavascript'] = 'JavaScript must be enabled for the FredKI chat.';
@@ -67,7 +72,7 @@ $string['coursedetachedintro'] = 'The FredKI administrator has disconnected this
 $string['coursedetachednotice'] = 'This course has been disconnected from FredKI by the administrator. Chat and synchronisation are paused until the administrator releases the course again.';
 $string['coursedetachedretry'] = 'Check again';
 $string['coursedetachedstatus'] = 'Disconnected by the administrator';
-$string['courselimitnotice'] = 'The course limit of the booked FredKI package has been reached, so this course could not be connected. Courses that are already connected keep working. To free a place, remove the course agent of another course (info button → Remove course agent), or ask a site administrator to book a larger package (FredKI activation page → Manage subscription).';
+$string['courselimitnotice'] = 'The course limit of the FredKI package has been reached, so this course could not be connected. Courses that are already connected keep working. To free a place, remove the course agent of another course (info button → Remove course agent), or ask a site administrator to book a larger package (FredKI activation page → Manage subscription).';
 $string['debuglog'] = 'Enable debug log';
 $string['designaccentcolor'] = 'Accent colour';
 $string['designbackgroundcolor'] = 'Background colour';

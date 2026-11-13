@@ -204,6 +204,18 @@ if (!$registered || $connectionlost) {
             s(get_string('managedtrialend', $pn) . ': ' . userdate((int)$status['trial_ends_at'])),
             'fk-caption'
         );
+        echo html_writer::div(s(get_string('actaftertrial', $pn)), 'fk-caption');
+    }
+    if (($status['tier'] ?? '') === 'free') {
+        echo html_writer::div(s(get_string('actfreepackage', $pn)), 'fk-caption');
+        if (!empty($status['free_quota'])) {
+            $quota = $status['free_quota'];
+            echo html_writer::div(s(get_string('actfreequota', $pn, (object)[
+                'used' => (int)$quota['used'], 'limit' => (int)$quota['limit'],
+                'reset' => !empty($quota['resets_at'])
+                    ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-',
+            ])), 'fk-caption');
+        }
     }
     if (!empty($status['plan']) && !empty($status['course_limit'])) {
         echo html_writer::div(s(get_string('actplan', $pn, (object)[

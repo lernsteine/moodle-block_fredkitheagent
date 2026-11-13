@@ -811,12 +811,21 @@ final class managed_gateway {
                     );
                 }
                 if (
-                    $route === 'courses/register' && $code === 402 && is_array($errorresponse)
+                    $code === 402 && is_array($errorresponse)
                         && ($errorresponse['error_code'] ?? '') === 'FK-COURSE-LIMIT'
                 ) {
                     throw new managed_api_diagnostic_exception(
-                        'DIAG-COURSE-LIMIT: The course limit of the booked FredKI package is reached.',
+                        'DIAG-COURSE-LIMIT: The course limit of the FredKI package is reached.',
                         402
+                    );
+                }
+                if (
+                    $code === 429 && is_array($errorresponse)
+                        && ($errorresponse['error_code'] ?? '') === 'FK-FREE-QUOTA'
+                ) {
+                    throw new managed_api_diagnostic_exception(
+                        'DIAG-FREE-QUOTA: The monthly messages of the free FredKI package are used up.',
+                        429
                     );
                 }
                 if ($route === 'chat/send' && $code === 424) {

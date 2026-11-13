@@ -34,23 +34,14 @@ $PAGE->set_course($course);
 $PAGE->set_pagelayout($embedded ? 'embedded' : 'standard');
 $PAGE->set_title('FredKI – ' . format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
-$PAGE->requires->css(new moodle_url(
-    '/blocks/fredkitheagent/course_chat.css',
-    ['v' => 2026103100]
-));
 if ($embedded) {
     $PAGE->add_body_class('fredkitheagent-embedded-chat');
 }
-// Load in the page footer, after the chat markup exists.
-// The script also waits for DOMContentLoaded as a second safeguard.
 $PAGE->requires->strings_for_js(
     ['chatdetached', 'chaterrorempty', 'chaterrorload', 'chatshowfullanswer'],
     'block_fredkitheagent'
 );
-$PAGE->requires->js(new moodle_url(
-    '/blocks/fredkitheagent/course_chat.js',
-    ['v' => 2026103100]
-), false);
+$PAGE->requires->js_call_amd('block_fredkitheagent/course_chat', 'init');
 $color = static function (string $name, string $default): string {
     $value = (string)get_config('block_fredkitheagent', $name);
     return preg_match('/^#[0-9a-fA-F]{6}$/D', $value) ? $value : $default;

@@ -134,10 +134,7 @@ class block_fredkitheagent extends block_base {
                 ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'],
                 'block_fredkitheagent'
             );
-            $this->page->requires->js(new moodle_url(
-                '/blocks/fredkitheagent/learning_card.js',
-                ['v' => 202610240400]
-            ), false);
+            $this->page->requires->js_call_amd('block_fredkitheagent/learning_card', 'init');
             if ($this->can_show_chat_launcher($rec)) {
                 $this->content->text .= $this->render_chat_launcher(empty($rec->agentcoursevisible));
             }
@@ -578,10 +575,7 @@ class block_fredkitheagent extends block_base {
         global $COURSE, $OUTPUT;
         // This script must run for BOTH teachers and learners; otherwise the launcher
         // remains an inert button after being moved out of Moodle's block drawer.
-        $this->page->requires->js(new moodle_url(
-            '/blocks/fredkitheagent/floating_chat.js',
-            ['v' => 202610240200]
-        ), false);
+        $this->page->requires->js_call_amd('block_fredkitheagent/floating_chat', 'init');
         $url = new moodle_url('/blocks/fredkitheagent/chat.php', [
             'courseid' => (int)$COURSE->id, 'embedded' => 1,
         ]);

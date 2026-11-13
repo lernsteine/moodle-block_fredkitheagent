@@ -42,18 +42,25 @@ are based on the materials of that course only.
 
 * The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key and
   no payment inside Moodle.
+* The plugin uses the hosted FredKI service by lernsteine.com. FredKI itself is open source
+  (GNU GPL v3): <https://github.com/lernsteine/FredKI>.
 * A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
-  FredKI The Agent → "Open activation"). The activation page links to the booking page of the
-  hosted service, where a package is chosen and paid via Stripe (card, PayPal, SEPA direct debit).
-* Every package starts with a **free 7-day trial**; the first charge is made when the trial ends.
-  Cancelling during the trial is free of charge.
-* The hosted service is offered as monthly packages that differ in the number of courses with a
-  course agent. Current packages and prices are shown on the booking page before anything is
-  ordered; prices are maintained by the provider and may change.
+  FredKI The Agent → "Open activation"). Registration is free.
+* **Free package – no payment needed for the essential functionality.** Every site can use the
+  plugin without paying: one course with a course agent and 200 answered chat messages per month
+  (the counter starts again on the 1st of each month). All functions of the plugin are available
+  in that course: setting up the course agent, transferring the course material, the protected
+  course chat and agent roles.
+* After registration a **7-day trial** of a paid package starts. If no package is booked, the site
+  automatically continues in the free package. The same happens when a subscription ends.
+* **Paid packages** (optional) give more courses with a course agent and no monthly message limit. They
+  are booked and paid on the booking page of the hosted service via Stripe (card, PayPal, SEPA
+  direct debit). Current packages and prices are shown before anything is ordered; prices are
+  maintained by the provider and may change. The package can be changed or cancelled at any time
+  via "Manage subscription".
 * When the course limit is reached, further courses cannot be connected; connected courses keep
-  working. The package can be changed at any time via "Manage subscription".
-* Without an active subscription the plugin stays installed, but course synchronisation and chat
-  are paused. Questions: info@lernsteine.com
+  working. When the monthly messages of the free package are used up, the chat says so and is
+  available again next month. Questions: info@lernsteine.com
 
 ## Languages
 
@@ -118,8 +125,10 @@ Questions about the hosted service, trial and subscription: info@lernsteine.com
 „FredKI The Agent“ legt per Klick für jeden Kurs eine eigene Wissensbasis und einen eigenen
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
-(FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig registriert
-und nach Buchung eines Pakets automatisch freigeschaltet. Jedes Paket beginnt mit 7 Tagen kostenlosem
-Test; danach ist es ein monatliches Hosting-Abo bei LERNSTEINE®. Die Pakete unterscheiden sich in der
-Zahl der Kurse mit Kursagent; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst ist kostenlos
-und steht unter GPL v3 oder später.
+(FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig kostenlos
+registriert. Ohne Bezahlung steht das kostenlose Paket zur Verfügung: ein Kurs mit Kurs-Agent und
+200 beantwortete Nachrichten pro Monat, mit allen Funktionen des Plugins. Nach der Registrierung läuft
+7 Tage ein Test eines bezahlten Pakets; wird nichts gebucht oder endet ein Abo, geht es automatisch im
+kostenlosen Paket weiter. Bezahlte Pakete (monatliches Hosting-Abo bei LERNSTEINE®) bieten mehr Kurse
+und kein Monatslimit für Nachrichten; aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst
+ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.
