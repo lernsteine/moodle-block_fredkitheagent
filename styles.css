@@ -810,11 +810,11 @@
     color: #005b70;
     background: #e7f4f7;
     text-decoration: none;
-    font-weight: 650
+    font-weight: 650;
 }
 .fredki-course-chat-link:hover {
     background: #d3edf3;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 
@@ -855,7 +855,7 @@
     right: 22px;
     bottom: 20px;
     z-index: 11000;
-    pointer-events: none
+    pointer-events: none;
 }
 .fredkitheagent-floating-trigger {
     display: grid;
@@ -868,19 +868,19 @@
     box-shadow: 0 8px 22px rgba(10, 33, 51, .2);
     pointer-events: auto;
     text-decoration: none;
-    transition: transform .18s ease, box-shadow .18s ease
+    transition: transform .18s ease, box-shadow .18s ease;
 }
 .fredkitheagent-floating-trigger:hover,
 .fredkitheagent-floating-trigger:focus-visible {
     transform: translateY(-3px);
     box-shadow: 0 13px 28px rgba(10, 33, 51, .25);
-    outline-offset: 3px
+    outline-offset: 3px;
 }
 .fredkitheagent-floating-icon {
     width: 55px !important;
     height: 55px !important;
     max-width: 55px !important;
-    object-fit: contain
+    object-fit: contain;
 }
 .fredkitheagent-floating-panel {
     position: absolute;
@@ -895,10 +895,10 @@
     background: #fff;
     box-shadow: 0 18px 65px rgba(0, 0, 0, .25);
     border: 1px solid #dce5ec;
-    pointer-events: auto
+    pointer-events: auto;
 }
 .fredkitheagent-floating-panel[hidden] {
-    display: none !important
+    display: none !important;
 }
 .fredkitheagent-floating-header {
     display: flex;
@@ -908,7 +908,7 @@
     padding: 12px 18px;
     color: #fff;
     background: #007f91;
-    font-weight: 650
+    font-weight: 650;
 }
 .fredkitheagent-floating-close {
     appearance: none;
@@ -918,29 +918,29 @@
     font-size: 28px;
     cursor: pointer;
     line-height: 1;
-    padding: 0 5px
+    padding: 0 5px;
 }
 .fredkitheagent-floating-frame {
     flex: 1;
     width: 100%;
     height: 100%;
     border: 0;
-    background: #f5f7fa
+    background: #f5f7fa;
 }
 
 @media (max-width: 560px) {
     .fredkitheagent-floating-root {
         right: 12px;
-        bottom: 12px
+        bottom: 12px;
     }
     .fredkitheagent-floating-trigger {
         width: 64px;
         height: 64px;
-        border-radius: 20px
+        border-radius: 20px;
     }
     .fredkitheagent-floating-icon {
         width: 47px !important;
-        height: 47px !important
+        height: 47px !important;
     }
     .fredkitheagent-floating-panel {
         position: fixed;
@@ -949,7 +949,7 @@
         bottom: 0;
         width: 100vw;
         height: 100dvh;
-        border-radius: 0
+        border-radius: 0;
     }
 }
 
@@ -962,7 +962,7 @@
     display: block;
     padding: 0;
     background: transparent;
-    color: inherit
+    color: inherit;
 }
 .fredkitheagent-floating-close {
     display: grid;
@@ -974,14 +974,14 @@
     background: #fff;
     color: #263746;
     box-shadow: 0 1px 7px rgba(0, 0, 0, .12);
-    font-size: 27px
+    font-size: 27px;
 }
 
 
 /* FredKI The Agent alpha14: refreshed Moodle Block design (protected managed mode only).
    All selectors are restricted to the block; no global Moodle theme overrides. */
 .block_fredkitheagent .card-body {
-    padding: 0.6rem !important
+    padding: 0.6rem !important;
 }
 .block_fredkitheagent .fredki-next-card {
     --fk-ink: #16284d;
@@ -1000,21 +1000,21 @@
     min-width: 0;
 }
 .block_fredkitheagent .fredki-next-card * {
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 .block_fredkitheagent .fredki-next-head {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
     column-gap: 16px;
-    margin-bottom: 14px
+    margin-bottom: 14px;
 }
 .block_fredkitheagent .fredki-next-statusrow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px 14px;
-    margin: 0 0 18px
+    margin: 0 0 18px;
 }
 .block_fredkitheagent .fredki-next-orb {
     margin: 8px;
@@ -1026,16 +1026,16 @@
     display: grid;
     place-items: center;
     position: relative;
-    flex: none
+    flex: none;
 }
 .block_fredkitheagent .fredki-next-orb-eyes {
     font-size: 17px;
     letter-spacing: 8px;
     color: #8ef7ef;
-    transform: translateX(4px)
+    transform: translateX(4px);
 }
 .block_fredkitheagent .fredki-next-headcopy {
-    min-width: 0
+    min-width: 0;
 }
 .block_fredkitheagent .fredki-next-headcopy strong {
     display: block;
@@ -1046,13 +1046,13 @@
     text-wrap: balance;
     overflow-wrap: break-word;
     word-break: normal;
-    margin: 0 0 6px
+    margin: 0 0 6px;
 }
 .block_fredkitheagent .fredki-next-headcopy small {
     display: block;
     font-size: 14px;
     line-height: 1.45;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .block_fredkitheagent .fredki-next-status {
     display: inline-flex;
@@ -1066,7 +1066,7 @@
     color: #0f9b73;
     font-size: 13px;
     font-weight: 800;
-    line-height: 1
+    line-height: 1;
 }
 .block_fredkitheagent .fredki-next-status::before {
     content: '';
@@ -1074,12 +1074,12 @@
     height: 14px;
     border-radius: 50%;
     background: #11bb89;
-    box-shadow: 0 0 0 4px rgba(17, 187, 137, .08)
+    box-shadow: 0 0 0 4px rgba(17, 187, 137, .08);
 }
 .block_fredkitheagent .fredki-next-status.is-pending,
 .block_fredkitheagent .fredki-next-status.is-ready {
     background: #edf8f3;
-    color: #0f9b73
+    color: #0f9b73;
 }
 .block_fredkitheagent .fredki-next-designlink {
     align-self: center;
@@ -1095,12 +1095,12 @@
     text-decoration: none;
     font-size: 24px;
     line-height: 1;
-    margin-left: 2px
+    margin-left: 2px;
 }
 .block_fredkitheagent .fredki-next-designlink:hover {
     background: #f7f9fc;
     border-color: var(--fk-line);
-    color: #495a76
+    color: #495a76;
 }
 .block_fredkitheagent .fredki-next-success {
     display: grid;
@@ -1112,7 +1112,7 @@
     border-radius: 28px;
     background: #f3f8f6;
     border: 1px solid #e4efea;
-    box-shadow: none
+    box-shadow: none;
 }
 .block_fredkitheagent .fredki-next-check {
     width: 74px;
@@ -1124,19 +1124,19 @@
     place-items: center;
     font-size: 32px;
     font-weight: 800;
-    box-shadow: none
+    box-shadow: none;
 }
 .block_fredkitheagent .fredki-next-success strong {
     display: block;
     font-size: 18px;
     line-height: 1.25;
-    margin-bottom: 6px
+    margin-bottom: 6px;
 }
 .block_fredkitheagent .fredki-next-success p {
     margin: 0;
     color: #647693;
     font-size: 15px;
-    line-height: 1.5
+    line-height: 1.5;
 }
 .fredki-next-chatcheck {
     display: flex;
@@ -1150,35 +1150,35 @@
     cursor: pointer;
     color: #1f3358;
     font-weight: 750;
-    box-shadow: none
+    box-shadow: none;
 }
 .fredki-next-chatcheck-input {
     width: 18px;
     height: 18px;
     accent-color: #655cff;
     cursor: pointer;
-    flex: none
+    flex: none;
 }
 .fredki-next-chatcheck span {
     font-size: 16px;
-    line-height: 1.35
+    line-height: 1.35;
 }
 .block_fredkitheagent .fredki-next-visibility-result {
     display: block;
     min-height: 18px;
     margin: 6px 2px 0;
     color: #6c7a92;
-    font-size: 12px
+    font-size: 12px;
 }
 .block_fredkitheagent .fredki-next-card .fredkitheagent-actions {
-    margin: 0
+    margin: 0;
 }
 .block_fredkitheagent .fredki-resync-quick {
     margin-top: 8px;
-    padding-top: 6px
+    padding-top: 6px;
 }
 .block_fredkitheagent .fredki-resync-quick form {
-    margin: 0
+    margin: 0;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,
 .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero {
@@ -1198,52 +1198,52 @@
     font-weight: 800;
     letter-spacing: -.01em;
     text-align: center;
-    line-height: 1.35
+    line-height: 1.35;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover,
 .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover {
     background: #fcfdff;
-    transform: translateY(-1px)
+    transform: translateY(-1px);
 }
 .block_fredkitheagent .fredki-resync-fullhint {
     margin: 16px 8px 2px;
     color: #70819f;
     font-size: 14px;
-    line-height: 1.55
+    line-height: 1.55;
 }
 .block_fredkitheagent .fredki-next-action:focus-visible,
 .block_fredkitheagent .fredkitheagent-sync-hero:focus-visible,
 .block_fredkitheagent .fredki-next-designlink:focus-visible,
 .block_fredkitheagent .fredki-next-chatcheck:focus-within {
     outline: 3px solid rgba(99, 91, 255, .24);
-    outline-offset: 2px
+    outline-offset: 2px;
 }
 
 @media (max-width: 450px) {
     .block_fredkitheagent .fredki-next-card {
         padding: 18px 16px;
-        border-radius: 24px
+        border-radius: 24px;
     }
     .block_fredkitheagent .fredki-next-head {
-        column-gap: 8px
+        column-gap: 8px;
     }
     .block_fredkitheagent .fredki-next-headcopy strong {
-        font-size: 22px
+        font-size: 22px;
     }
     .block_fredkitheagent .fredki-next-orb {
         width: 84px;
-        height: 84px
+        height: 84px;
     }
     .block_fredkitheagent .fredki-next-check {
         width: 64px;
         height: 64px;
-        font-size: 28px
+        font-size: 28px;
     }
     .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,
     .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero {
         min-height: 74px;
         font-size: 15px;
-        padding: 16px
+        padding: 16px;
     }
 }
 /* Alpha 14.2: teacher toggle, participants launcher-only, right-edge chat with history and expand. */
@@ -1254,10 +1254,10 @@
     right: 22px;
     bottom: 18px;
     z-index: 11000;
-    pointer-events: none
+    pointer-events: none;
 }
 .fredkitheagent-floating-root > * {
-    pointer-events: auto
+    pointer-events: auto;
 }
 .fredkitheagent-floating-panel {
     position: fixed;
@@ -1275,10 +1275,10 @@
     overflow: hidden;
     z-index: 11001;
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 }
 .fredkitheagent-floating-panel.is-expanded {
-    width: min(66vw, 980px)
+    width: min(66vw, 980px);
 }
 .fredkitheagent-floating-header {
     position: absolute;
@@ -1289,7 +1289,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    pointer-events: none
+    pointer-events: none;
 }
 .fredkitheagent-floating-header button {
     pointer-events: auto;
@@ -1303,23 +1303,23 @@
     box-shadow: 0 8px 24px rgba(16, 31, 66, .12);
     color: #34465e;
     font-size: 24px;
-    cursor: pointer
+    cursor: pointer;
 }
 .fredkitheagent-floating-header button:hover,
 .fredkitheagent-floating-header button:focus-visible {
-    transform: translateY(-1px)
+    transform: translateY(-1px);
 }
 .fredkitheagent-floating-header > .fredkitheagent-floating-menu {
-    margin-right: auto
+    margin-right: auto;
 }
 .fredkitheagent-floating-header > .fredkitheagent-floating-expand {
     margin-left: auto;
-    margin-right: 10px
+    margin-right: 10px;
 }
 .fredkitheagent-floating-body {
     display: flex;
     min-height: 0;
-    height: 100%
+    height: 100%;
 }
 .fredkitheagent-floating-history {
     width: 248px;
@@ -1327,22 +1327,22 @@
     background: #fff;
     border-right: 1px solid #e6ebf2;
     padding: 84px 12px 12px;
-    overflow: auto
+    overflow: auto;
 }
 .fredkitheagent-floating-history strong {
     display: block;
     font-size: 14px;
-    color: #20345c
+    color: #20345c;
 }
 .fredkitheagent-floating-history p {
     margin: 6px 0 12px;
     font-size: 12px;
     color: #75839b;
-    line-height: 1.45
+    line-height: 1.45;
 }
 .fredkitheagent-history-list {
     display: grid;
-    gap: 8px
+    gap: 8px;
 }
 .fredkitheagent-history-item {
     width: 100%;
@@ -1357,27 +1357,27 @@
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden
+    overflow: hidden;
 }
 .fredkitheagent-history-item:hover {
-    background: #eef4ff
+    background: #eef4ff;
 }
 .fredkitheagent-history-empty {
     font-size: 12px;
     color: #8693a8;
-    margin: 0
+    margin: 0;
 }
 .fredkitheagent-floating-main {
     flex: 1;
     min-width: 0;
-    height: 100%
+    height: 100%;
 }
 .fredkitheagent-floating-frame {
     display: block;
     width: 100%;
     height: 100%;
     border: 0;
-    background: #f5f7fa
+    background: #f5f7fa;
 }
 
 @media (max-width: 800px) {
@@ -1385,13 +1385,13 @@
         right: 12px;
         bottom: 88px;
         width: min(500px, calc(100vw - 18px));
-        height: min(82dvh, 840px)
+        height: min(82dvh, 840px);
     }
     .fredkitheagent-floating-panel.is-expanded {
-        width: calc(100vw - 18px)
+        width: calc(100vw - 18px);
     }
     .fredkitheagent-floating-history {
-        width: 220px
+        width: 220px;
     }
 }
 
@@ -1401,10 +1401,10 @@
         bottom: 0;
         width: 100vw;
         height: 100dvh;
-        border-radius: 0
+        border-radius: 0;
     }
     .fredkitheagent-floating-panel.is-expanded {
-        width: 100vw
+        width: 100vw;
     }
     .fredkitheagent-floating-history {
         position: absolute;
@@ -1413,31 +1413,31 @@
         bottom: 0;
         z-index: 4;
         width: min(86vw, 300px);
-        box-shadow: 10px 0 24px rgba(18, 35, 65, .14)
+        box-shadow: 10px 0 24px rgba(18, 35, 65, .14);
     }
 }
 
 
 /* Alpha 14.3: only teacher status and course-wide checkbox remain in the block. */
 .fredkitheagent-floating-root[hidden] {
-    display: none !important
+    display: none !important;
 }
 .block_fredkitheagent .fredki-next-visibility-result {
     display: block;
     font-size: 12px;
     color: #62758b;
     padding: 0 4px;
-    min-height: 0
+    min-height: 0;
 }
 .block_fredkitheagent .fredki-next-visibility-result:empty {
-    display: none
+    display: none;
 }
 .block_fredkitheagent .fredki-next-chatcheck-input:disabled {
     opacity: .55;
-    cursor: wait
+    cursor: wait;
 }
 .block_fredkitheagent:has(> .card-body .fredkitheagent-floating-root):not(:has(.fredki-next-card, .fredkitheagent-brand-card)) {
-    display: none !important
+    display: none !important;
 }
 
 /* editor entry styles unified above */
@@ -1447,7 +1447,7 @@
     margin-top: 14px;
     border-top: 1px solid #e6ebf2;
     padding-top: 10px;
-    color: #425572
+    color: #425572;
 }
 .block_fredkitheagent .fredki-resync-panel > summary {
     cursor: pointer;
@@ -1458,21 +1458,21 @@
     display: flex;
     align-items: center;
     gap: 7px;
-    padding: 6px 2px
+    padding: 6px 2px;
 }
 .block_fredkitheagent .fredki-resync-panel > summary::before {
     content: '↻';
     color: #5f52e9;
-    font-size: 18px
+    font-size: 18px;
 }
 .block_fredkitheagent .fredki-resync-panel > summary::-webkit-details-marker {
-    display: none
+    display: none;
 }
 .block_fredkitheagent .fredki-resync-panel p {
     font-size: 12px;
     line-height: 1.5;
     margin: 9px 0;
-    color: #63738b
+    color: #63738b;
 }
 .block_fredkitheagent .fredki-resync-primary,
 .block_fredkitheagent .fredki-resync-secondary {
@@ -1483,25 +1483,25 @@
     font-weight: 750;
     font-size: 13px;
     padding: 10px 12px;
-    cursor: pointer
+    cursor: pointer;
 }
 .block_fredkitheagent .fredki-resync-primary {
     background: #f0efff;
-    color: #5547bc
+    color: #5547bc;
 }
 .block_fredkitheagent .fredki-resync-secondary {
     background: #fff;
-    color: #435776
+    color: #435776;
 }
 .block_fredkitheagent .fredki-resync-panel .fredki-resync-fullhint {
-    margin-top: 18px
+    margin-top: 18px;
 }
 
 .block_fredkitheagent .fredki-resync-quick {
-    margin-top: 8px
+    margin-top: 8px;
 }
 .block_fredkitheagent .fredki-resync-quick form {
-    margin: 0
+    margin: 0;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary {
     background: linear-gradient(180deg, #fff, #fbfbff);
@@ -1511,26 +1511,26 @@
     box-shadow: 0 10px 28px rgba(27, 39, 79, .08);
     min-height: 58px;
     font-size: 14px;
-    font-weight: 800
+    font-weight: 800;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover {
     background: linear-gradient(180deg, #fdfdff, #f6f7ff);
-    transform: translateY(-1px)
+    transform: translateY(-1px);
 }
 .block_fredkitheagent .fredki-resync-panel {
     margin-top: 4px;
     border-top: 0;
-    padding-top: 0
+    padding-top: 0;
 }
 .block_fredkitheagent .fredki-resync-panel > summary {
     font-size: 11px;
     color: #78849a;
-    font-weight: 600
+    font-weight: 600;
 }
 .block_fredkitheagent .fredki-resync-panel > summary::before {
     content: '⌄';
     font-size: 13px;
-    color: #78849a
+    color: #78849a;
 }
 
 
@@ -1544,19 +1544,19 @@
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    pointer-events: none
+    pointer-events: none;
 }
 .block_fredkitheagent .fredki-next-headcopy strong {
-    text-wrap: balance
+    text-wrap: balance;
 }
 .block_fredkitheagent .fredki-resync-fullhint {
     font-size: 12px;
     line-height: 1.5;
     color: #6d7890;
-    margin: 10px 4px 0
+    margin: 10px 4px 0;
 }
 .block_fredkitheagent .fredki-next-designlink {
-    margin-left: 2px
+    margin-left: 2px;
 }
 
 /* ==========================================================================
@@ -1566,12 +1566,12 @@
 .block_fredkitheagent:has(.fredki-next-card) {
     background: transparent !important;
     border: 0 !important;
-    box-shadow: none !important
+    box-shadow: none !important;
 }
 .block_fredkitheagent:has(.fredki-next-card) > .card-body,
 .block_fredkitheagent:has(.fredki-next-card) .card-body {
     padding: 0 !important;
-    background: transparent !important
+    background: transparent !important;
 }
 .block_fredkitheagent .fredki-next-card {
     --fk-ink: #1b2a4e;
@@ -1589,30 +1589,30 @@
     overflow: hidden;
 }
 .block_fredkitheagent .fredki-next-card::before {
-    display: none !important
+    display: none !important;
 }
 /* header: orb + name */
 .block_fredkitheagent .fredki-next-head {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 0 12px
+    margin: 0 0 12px;
 }
 .block_fredkitheagent .fredki-next-orb {
     width: 46px;
     height: 46px;
     margin: 5px 5px 5px 4px;
     flex: none;
-    box-shadow: inset 3px 5px 9px rgba(255, 255, 255, .18), 0 0 0 5px rgba(98, 86, 238, .08)
+    box-shadow: inset 3px 5px 9px rgba(255, 255, 255, .18), 0 0 0 5px rgba(98, 86, 238, .08);
 }
 .block_fredkitheagent .fredki-next-orb-eyes {
     font-size: 9px;
     letter-spacing: 4px;
-    transform: translateX(2px)
+    transform: translateX(2px);
 }
 .block_fredkitheagent .fredki-next-headcopy {
     flex: 1 1 auto;
-    min-width: 0
+    min-width: 0;
 }
 .block_fredkitheagent .fredki-next-headcopy strong {
     display: block;
@@ -1622,13 +1622,13 @@
     line-height: 1.2;
     letter-spacing: -.01em;
     color: var(--fk-ink);
-    text-wrap: balance
+    text-wrap: balance;
 }
 .block_fredkitheagent .fredki-next-headcopy small {
     display: block;
     font-size: 12.5px;
     line-height: 1.35;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 /* status row: pill left, settings right */
 .block_fredkitheagent .fredki-next-statusrow {
@@ -1637,19 +1637,19 @@
     justify-content: space-between;
     gap: 8px;
     margin: 0 0 12px;
-    padding: 0
+    padding: 0;
 }
 .block_fredkitheagent .fredki-next-status {
     gap: 7px;
     padding: 6px 12px 6px 10px;
     font-size: 12px;
     font-weight: 700;
-    letter-spacing: .01em
+    letter-spacing: .01em;
 }
 .block_fredkitheagent .fredki-next-status::before {
     width: 8px;
     height: 8px;
-    box-shadow: 0 0 0 3px rgba(17, 187, 137, .16)
+    box-shadow: 0 0 0 3px rgba(17, 187, 137, .16);
 }
 .block_fredkitheagent .fredki-next-designlink {
     width: 32px;
@@ -1657,12 +1657,12 @@
     margin: 0;
     font-size: 18px;
     color: #7a88a3;
-    border-radius: 10px
+    border-radius: 10px;
 }
 .block_fredkitheagent .fredki-next-designlink:hover {
     background: var(--fk-soft);
     border-color: transparent;
-    color: var(--fk-purple)
+    color: var(--fk-purple);
 }
 /* success note */
 .block_fredkitheagent .fredki-next-success {
@@ -1673,17 +1673,17 @@
     padding: 12px 14px;
     border-radius: 14px;
     background: #f1f9f6;
-    border: 1px solid #dff1ea
+    border: 1px solid #dff1ea;
 }
 .block_fredkitheagent .fredki-next-check {
     width: 32px;
     height: 32px;
     flex: none;
     font-size: 16px;
-    font-weight: 700
+    font-weight: 700;
 }
 .block_fredkitheagent .fredki-next-success > div {
-    min-width: 0
+    min-width: 0;
 }
 .block_fredkitheagent .fredki-next-success strong {
     display: block;
@@ -1691,13 +1691,13 @@
     font-size: 13.5px;
     font-weight: 700;
     line-height: 1.3;
-    color: var(--fk-ink)
+    color: var(--fk-ink);
 }
 .block_fredkitheagent .fredki-next-success p {
     margin: 0;
     font-size: 12px;
     line-height: 1.4;
-    color: #5f7a72
+    color: #5f7a72;
 }
 /* chat toggle as switch */
 .block_fredkitheagent .fredki-next-chatcheck {
@@ -1712,13 +1712,13 @@
     border-radius: 14px;
     background: #fff;
     box-shadow: none;
-    cursor: pointer
+    cursor: pointer;
 }
 .block_fredkitheagent .fredki-next-chatcheck span {
     font-size: 13.5px;
     font-weight: 650;
     line-height: 1.3;
-    color: var(--fk-ink)
+    color: var(--fk-ink);
 }
 .block_fredkitheagent .fredki-next-chatcheck-input {
     -webkit-appearance: none;
@@ -1731,7 +1731,7 @@
     border-radius: 999px;
     background: #cfd6e4;
     transition: background .18s ease;
-    cursor: pointer
+    cursor: pointer;
 }
 .block_fredkitheagent .fredki-next-chatcheck-input::after {
     content: '';
@@ -1743,25 +1743,25 @@
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(20, 30, 60, .3);
-    transition: transform .18s ease
+    transition: transform .18s ease;
 }
 .block_fredkitheagent .fredki-next-chatcheck-input:checked {
-    background: var(--fk-purple)
+    background: var(--fk-purple);
 }
 .block_fredkitheagent .fredki-next-chatcheck-input:checked::after {
-    transform: translateX(16px)
+    transform: translateX(16px);
 }
 .block_fredkitheagent .fredki-next-chatcheck:hover {
-    border-color: #d5dbea
+    border-color: #d5dbea;
 }
 .block_fredkitheagent .fredki-next-visibility-result {
     margin: -6px 2px 10px;
-    font-size: 12px
+    font-size: 12px;
 }
 /* primary action */
 .block_fredkitheagent .fredki-resync-quick {
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,
 .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero {
@@ -1783,65 +1783,65 @@
     line-height: 1.25;
     text-align: center;
     box-shadow: 0 4px 12px rgba(98, 86, 238, .28);
-    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:hover,
 .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover {
     background: linear-gradient(180deg, #7a6ff7, #6155ea);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(98, 86, 238, .34)
+    box-shadow: 0 6px 16px rgba(98, 86, 238, .34);
 }
 .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary:active {
     transform: none;
-    filter: brightness(.97)
+    filter: brightness(.97);
 }
 .block_fredkitheagent .fredki-resync-fullhint {
     margin: 10px 2px 0;
     font-size: 11.5px;
     line-height: 1.45;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .block_fredkitheagent .fredki-next-intro strong {
-    font-size: 14px
+    font-size: 14px;
 }
 .block_fredkitheagent .fredki-next-intro p {
     font-size: 12.5px;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 
 @media (max-width: 450px) {
     .block_fredkitheagent .fredki-next-card {
         padding: 16px 14px 14px;
-        border-radius: 18px
+        border-radius: 18px;
     }
     .block_fredkitheagent .fredki-next-headcopy strong {
-        font-size: 17px
+        font-size: 17px;
     }
     .block_fredkitheagent .fredki-next-orb {
         width: 44px;
-        height: 44px
+        height: 44px;
     }
     .block_fredkitheagent .fredki-next-check {
         width: 32px;
         height: 32px;
-        font-size: 16px
+        font-size: 16px;
     }
     .block_fredkitheagent .fredki-resync-quick .fredki-resync-primary,
     .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero {
         min-height: 42px;
         font-size: 13.5px;
-        padding: 10px 14px
+        padding: 10px 14px;
     }
 }
 
 /* alpha14.15: delete single history entries / whole history */
 .fredkitheagent-history-row {
     position: relative;
-    display: block
+    display: block;
 }
 .fredkitheagent-history-row .fredkitheagent-history-item {
-    padding-right: 34px
+    padding-right: 34px;
 }
 .fredkitheagent-history-delete {
     position: absolute;
@@ -1860,17 +1860,17 @@
     line-height: 1;
     cursor: pointer;
     opacity: .75;
-    transition: background .15s, color .15s, opacity .15s
+    transition: background .15s, color .15s, opacity .15s;
 }
 .fredkitheagent-history-row:hover .fredkitheagent-history-delete,
 .fredkitheagent-history-delete:focus-visible {
-    opacity: 1
+    opacity: 1;
 }
 .fredkitheagent-history-delete:hover,
 .fredkitheagent-history-delete:focus-visible {
     background: #fde8e8;
     color: #c0392b;
-    outline: none
+    outline: none;
 }
 .fredkitheagent-history-clear {
     margin-top: 4px;
@@ -1881,13 +1881,13 @@
     color: #8a97ad;
     font-size: 12px;
     text-align: center;
-    cursor: pointer
+    cursor: pointer;
 }
 .fredkitheagent-history-clear:hover,
 .fredkitheagent-history-clear:focus-visible {
     background: #fde8e8;
     color: #c0392b;
-    outline: none
+    outline: none;
 }
 
 /* ==========================================================================
@@ -1912,15 +1912,15 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .06);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden
+    overflow: hidden;
 }
 .block_fredkitheagent .fredki-ios [hidden] {
-    display: none !important
+    display: none !important;
 }
 .fredki-ios .fk-head {
     display: flex;
     align-items: center;
-    gap: 12px
+    gap: 12px;
 }
 .fredki-ios .fk-orb {
     width: 44px;
@@ -1931,17 +1931,17 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: radial-gradient(circle at 34% 28%, #8f8bff 0, #4b46c9 38%, #1d1b78 100%)
+    background: radial-gradient(circle at 34% 28%, #8f8bff 0, #4b46c9 38%, #1d1b78 100%);
 }
 .fredki-ios .fk-eye {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: #8ef7ef
+    background: #8ef7ef;
 }
 .fredki-ios .fk-headcopy {
     min-width: 0;
-    flex: 1 1 auto
+    flex: 1 1 auto;
 }
 .fredki-ios .fk-headcopy strong {
     display: block;
@@ -1949,14 +1949,14 @@
     font-weight: 600;
     letter-spacing: -.01em;
     line-height: 1.2;
-    color: var(--fk-text)
+    color: var(--fk-text);
 }
 .fredki-ios .fk-headcopy small {
     display: block;
     margin-top: 1px;
     font-size: 13px;
     line-height: 1.35;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-status {
     display: flex;
@@ -1965,26 +1965,26 @@
     margin-top: 14px;
     font-size: 13px;
     font-weight: 500;
-    color: #1f7a38
+    color: #1f7a38;
 }
 .fredki-ios .fk-dot {
     width: 8px;
     height: 8px;
     flex: none;
     border-radius: 50%;
-    background: #aeaeb2
+    background: #aeaeb2;
 }
 .fredki-ios .fk-dot.is-ready {
-    background: var(--fk-green)
+    background: var(--fk-green);
 }
 .fredki-ios .fk-intro {
     margin: 14px 0 0;
     font-size: 14px;
     line-height: 1.45;
-    color: #3a3a3c
+    color: #3a3a3c;
 }
 .fredki-ios form {
-    margin: 0
+    margin: 0;
 }
 /* the one big, light button */
 .fredki-ios .fk-main {
@@ -2009,14 +2009,14 @@
     letter-spacing: -.01em;
     line-height: 1.2;
     cursor: pointer;
-    transition: background .18s ease, transform .12s ease
+    transition: background .18s ease, transform .12s ease;
 }
 .fredki-ios .fk-main:hover {
     background: var(--fk-tint-hover);
-    color: var(--fk-ink)
+    color: var(--fk-ink);
 }
 .fredki-ios .fk-main:active {
-    transform: scale(.985)
+    transform: scale(.985);
 }
 .fredki-ios .fk-main:focus-visible,
 .fredki-ios .fk-gear:focus-visible,
@@ -2024,17 +2024,17 @@
 .fredki-ios .fk-rowbutton:focus-visible,
 .fredki-ios .fk-row-link:focus-visible {
     outline: 3px solid rgba(88, 86, 214, .35);
-    outline-offset: 2px
+    outline-offset: 2px;
 }
 .fredki-ios .fk-main .fk-icon {
-    flex: none
+    flex: none;
 }
 .fredki-ios .fk-main.is-busy {
     cursor: progress;
-    background: var(--fk-tint)
+    background: var(--fk-tint);
 }
 .fredki-ios .fk-main.is-busy .fk-icon {
-    animation: fk-spin 1.1s linear infinite
+    animation: fk-spin 1.1s linear infinite;
 }
 .fredki-ios .fk-main.is-busy::after {
     content: '';
@@ -2042,29 +2042,29 @@
     inset: 0;
     background: linear-gradient(90deg, transparent, rgba(88, 86, 214, .16), transparent);
     transform: translateX(-100%);
-    animation: fk-sweep 1.8s ease-in-out infinite
+    animation: fk-sweep 1.8s ease-in-out infinite;
 }
 .fredki-ios.is-busy .fk-footer,
 .fredki-ios.is-busy .fk-caption {
-    opacity: .45
+    opacity: .45;
 }
 
 @keyframes fk-spin {
     to {
-        transform: rotate(360deg)
+        transform: rotate(360deg);
     }
 }
 
 @keyframes fk-sweep {
     to {
-        transform: translateX(100%)
+        transform: translateX(100%);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .fredki-ios .fk-main.is-busy .fk-icon,
     .fredki-ios .fk-main.is-busy::after {
-        animation: none
+        animation: none;
     }
 }
 .fredki-ios .fk-caption {
@@ -2072,39 +2072,39 @@
     text-align: center;
     font-size: 12.5px;
     line-height: 1.4;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-note {
     margin: 8px 0 0;
     text-align: center;
     font-size: 12.5px;
-    color: #b3261e
+    color: #b3261e;
 }
 .fredki-ios .fk-result {
     display: block;
     text-align: center;
     font-size: 12px;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-result:empty {
-    display: none
+    display: none;
 }
 .fredki-ios .fk-rule {
     height: 1px;
     margin: 14px 0 6px;
-    background: var(--fk-hair)
+    background: var(--fk-hair);
 }
 /* quiet footer: switch + gear */
 .fredki-ios .fk-footer {
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 36px
+    min-height: 36px;
 }
 .fredki-ios .fk-footer-status {
     font-size: 13px;
     color: var(--fk-muted);
-    gap: 6px
+    gap: 6px;
 }
 .fredki-ios .fk-switchrow {
     display: flex;
@@ -2112,13 +2112,13 @@
     gap: 10px;
     flex: 1 1 auto;
     margin: 0;
-    cursor: pointer
+    cursor: pointer;
 }
 .fredki-ios .fk-switchtext {
     flex: 1 1 auto;
     font-size: 13px;
     font-weight: 400;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-switch {
     -webkit-appearance: none;
@@ -2132,7 +2132,7 @@
     border-radius: 12px;
     background: #d1d1d6;
     cursor: pointer;
-    transition: background .18s ease
+    transition: background .18s ease;
 }
 .fredki-ios .fk-switch::after {
     content: '';
@@ -2144,21 +2144,21 @@
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
-    transition: transform .18s ease
+    transition: transform .18s ease;
 }
 .fredki-ios .fk-switch:checked {
-    background: var(--fk-green)
+    background: var(--fk-green);
 }
 .fredki-ios .fk-switch:checked::after {
-    transform: translateX(16px)
+    transform: translateX(16px);
 }
 .fredki-ios .fk-switch:focus-visible {
     outline: 3px solid rgba(88, 86, 214, .35);
-    outline-offset: 2px
+    outline-offset: 2px;
 }
 .fredki-ios .fk-switch:disabled {
     opacity: .55;
-    cursor: wait
+    cursor: wait;
 }
 .fredki-ios .fk-gear {
     display: grid;
@@ -2172,30 +2172,30 @@
     border-radius: 10px;
     background: transparent;
     color: var(--fk-muted);
-    cursor: pointer
+    cursor: pointer;
 }
 .fredki-ios .fk-gear:hover {
     background: #f2f2f7;
-    color: var(--fk-text)
+    color: var(--fk-text);
 }
 .fredki-ios .fk-gear .fk-icon {
     width: 20px;
     height: 20px;
-    stroke-width: 1.8
+    stroke-width: 1.8;
 }
 /* settings sheet */
 .fredki-ios .fk-sheethead {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px
+    margin-bottom: 12px;
 }
 .fredki-ios .fk-sheettitle {
     margin: 0;
     font-size: 20px;
     font-weight: 700;
     letter-spacing: -.02em;
-    color: var(--fk-text)
+    color: var(--fk-text);
 }
 .fredki-ios .fk-done {
     padding: 8px 4px;
@@ -2205,13 +2205,13 @@
     font: inherit;
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer
+    cursor: pointer;
 }
 .fredki-ios .fk-group {
     margin-bottom: 12px;
     border-radius: 14px;
     background: #f2f2f7;
-    overflow: hidden
+    overflow: hidden;
 }
 .fredki-ios .fk-row {
     display: flex;
@@ -2221,46 +2221,46 @@
     padding: 6px 14px;
     font-size: 15px;
     color: var(--fk-text);
-    text-decoration: none
+    text-decoration: none;
 }
 .fredki-ios .fk-row + .fk-row {
-    border-top: 1px solid #e3e3e8
+    border-top: 1px solid #e3e3e8;
 }
 .fredki-ios .fk-row-link:hover {
     background: #ebebf0;
     color: var(--fk-text);
-    text-decoration: none
+    text-decoration: none;
 }
 .fredki-ios .fk-row-link .fk-icon {
     width: 16px;
     height: 16px;
     color: #aeaeb2;
-    flex: none
+    flex: none;
 }
 .fredki-ios .fk-rowtext {
     flex: 1 1 auto;
-    min-width: 0
+    min-width: 0;
 }
 .fredki-ios .fk-rowtitle {
     display: block;
     font-size: 15px;
-    color: var(--fk-text)
+    color: var(--fk-text);
 }
 .fredki-ios .fk-rowdesc {
     display: block;
     font-size: 12.5px;
     line-height: 1.35;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-row-form form {
-    flex: none
+    flex: none;
 }
 .fredki-ios .fk-row-form {
     flex-wrap: wrap;
-    row-gap: 8px
+    row-gap: 8px;
 }
 .fredki-ios .fk-row-form .fk-rowtext {
-    flex: 1 1 9em
+    flex: 1 1 9em;
 }
 .fredki-ios .fk-rowbutton {
     white-space: nowrap;
@@ -2275,41 +2275,41 @@
     font: inherit;
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer
+    cursor: pointer;
 }
 .fredki-ios .fk-rowbutton:hover {
-    background: var(--fk-tint-hover)
+    background: var(--fk-tint-hover);
 }
 .fredki-ios .fk-rowbutton .fk-icon {
-    display: none
+    display: none;
 }
 .fredki-ios .fk-value {
     flex: none;
     color: var(--fk-muted);
     font-variant-numeric: tabular-nums;
-    font-size: 14px
+    font-size: 14px;
 }
 .fredki-ios .fk-row-fact {
-    min-height: 40px
+    min-height: 40px;
 }
 .fredki-ios .fk-sheetnote {
     margin: -2px 14px 8px;
     font-size: 12.5px;
     line-height: 1.4;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 
 /* Activation: inactive block card and activation page (iPhone look). */
 .fredki-ios .fk-dot.is-waiting {
-    background: #ff9f0a
+    background: #ff9f0a;
 }
 .fredki-ios .fk-status.is-waiting {
-    color: #8a5a00
+    color: #8a5a00;
 }
 .fredki-ios a.fk-main,
 .fredki-ios a.fk-main:hover,
 .fredki-ios a.fk-main:focus {
-    text-decoration: none
+    text-decoration: none;
 }
 .fredki-ios .fk-note {
     margin-top: 14px;
@@ -2318,7 +2318,7 @@
     background: #f2f2f7;
     font-size: 13.5px;
     line-height: 1.45;
-    color: #3a3a3c
+    color: #3a3a3c;
 }
 .fk-act {
     --fk-accent: #5856d6;
@@ -2334,12 +2334,12 @@
     color: #1c1c1e;
     box-shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 28px rgba(0, 0, 0, .07);
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased
+    -webkit-font-smoothing: antialiased;
 }
 .fk-act .fk-head {
     display: flex;
     align-items: center;
-    gap: 14px
+    gap: 14px;
 }
 .fk-act .fk-orb {
     width: 52px;
@@ -2350,40 +2350,40 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-    background: radial-gradient(circle at 34% 28%, #8f8bff 0, #4b46c9 38%, #1d1b78 100%)
+    background: radial-gradient(circle at 34% 28%, #8f8bff 0, #4b46c9 38%, #1d1b78 100%);
 }
 .fk-act .fk-eye {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: #8ef7ef
+    background: #8ef7ef;
 }
 .fk-act .fk-headcopy strong {
     display: block;
     font-size: 20px;
     font-weight: 650;
     letter-spacing: -.01em;
-    line-height: 1.2
+    line-height: 1.2;
 }
 .fk-act .fk-headcopy small {
     display: block;
     margin-top: 2px;
     font-size: 14px;
-    color: #6e6e73
+    color: #6e6e73;
 }
 .fk-act .fk-steps {
     display: flex;
     align-items: flex-start;
     margin: 26px 0 8px;
     padding: 0;
-    list-style: none
+    list-style: none;
 }
 .fk-act .fk-step {
     flex: 1 1 0;
     position: relative;
     text-align: center;
     font-size: 13px;
-    color: #8e8e93
+    color: #8e8e93;
 }
 .fk-act .fk-step::before {
     content: '';
@@ -2392,14 +2392,14 @@
     left: -50%;
     width: 100%;
     height: 2px;
-    background: #e5e5ea
+    background: #e5e5ea;
 }
 .fk-act .fk-step:first-child::before {
-    display: none
+    display: none;
 }
 .fk-act .fk-step.is-done::before,
 .fk-act .fk-step.is-current::before {
-    background: #34c759
+    background: #34c759;
 }
 .fk-act .fk-bubble {
     position: relative;
@@ -2413,37 +2413,37 @@
     background: #e5e5ea;
     color: #fff;
     font-size: 13px;
-    font-weight: 700
+    font-weight: 700;
 }
 .fk-act .fk-step.is-done .fk-bubble {
-    background: #34c759
+    background: #34c759;
 }
 .fk-act .fk-step.is-current .fk-bubble {
     background: #ff9f0a;
-    box-shadow: 0 0 0 5px rgba(255, 159, 10, .18)
+    box-shadow: 0 0 0 5px rgba(255, 159, 10, .18);
 }
 .fk-act .fk-step.is-current {
     color: #1c1c1e;
-    font-weight: 600
+    font-weight: 600;
 }
 .fk-act .fk-step.is-done {
-    color: #1f7a38
+    color: #1f7a38;
 }
 .fk-act .fk-actbody {
-    margin-top: 18px
+    margin-top: 18px;
 }
 .fk-act .fk-actbody p {
     margin: 0 0 12px;
     font-size: 14.5px;
     line-height: 1.5;
-    color: #3a3a3c
+    color: #3a3a3c;
 }
 .fk-act label {
     display: block;
     margin-bottom: 6px;
     font-size: 13px;
     font-weight: 600;
-    color: #6e6e73
+    color: #6e6e73;
 }
 .fk-act input[type=email] {
     box-sizing: border-box;
@@ -2453,12 +2453,12 @@
     border: 1px solid #d1d1d6;
     padding: 0 14px;
     font-size: 16px;
-    box-shadow: none
+    box-shadow: none;
 }
 .fk-act input[type=email]:focus {
     border-color: var(--fk-accent);
     box-shadow: 0 0 0 4px rgba(88, 86, 214, .15);
-    outline: none
+    outline: none;
 }
 .fk-act .fk-actbutton {
     display: flex;
@@ -2474,16 +2474,16 @@
     font-size: 17px;
     font-weight: 600;
     cursor: pointer;
-    transition: background .18s ease
+    transition: background .18s ease;
 }
 .fk-act .fk-actbutton:hover {
-    background: var(--fk-tint-hover)
+    background: var(--fk-tint-hover);
 }
 .fk-act .fk-caption {
     margin-top: 10px;
     text-align: center;
     font-size: 12.5px;
-    color: #6e6e73
+    color: #6e6e73;
 }
 .fk-act .fk-actok {
     padding: 14px 16px;
@@ -2491,30 +2491,30 @@
     background: #e8f6ec;
     color: #1f7a38;
     font-size: 14.5px;
-    font-weight: 500
+    font-weight: 500;
 }
 .fk-act .fk-actok p {
-    margin: 0
+    margin: 0;
 }
 .fk-act .fk-actok p + p {
-    margin-top: 10px
+    margin-top: 10px;
 }
 .fk-act .fk-actwarn {
     padding: 14px 16px;
     border-radius: 16px;
     background: #fff4e0;
     color: #8a5a00;
-    font-size: 14.5px
+    font-size: 14.5px;
 }
 .fk-act details {
     margin-top: 22px;
     padding-top: 14px;
     border-top: 1px solid #ececf0;
     font-size: 13.5px;
-    color: #6e6e73
+    color: #6e6e73;
 }
 .fk-act summary {
-    cursor: pointer
+    cursor: pointer;
 }
 .fredki-ios .fk-detail {
     display: block;
@@ -2522,7 +2522,7 @@
     font-size: 11.5px;
     line-height: 1.35;
     color: #8e8e93;
-    word-break: break-word
+    word-break: break-word;
 }
 
 /* settings sheet: prominent appearance entry, quiet advanced section */
@@ -2537,20 +2537,20 @@
     color: #fff;
     text-decoration: none;
     box-shadow: 0 8px 20px rgba(88, 86, 214, .28), inset 0 1px 0 rgba(255, 255, 255, .18);
-    transition: transform .15s ease, box-shadow .15s ease
+    transition: transform .15s ease, box-shadow .15s ease;
 }
 .fredki-ios .fk-design:hover {
     color: #fff;
     text-decoration: none;
     transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(88, 86, 214, .36), inset 0 1px 0 rgba(255, 255, 255, .18)
+    box-shadow: 0 12px 26px rgba(88, 86, 214, .36), inset 0 1px 0 rgba(255, 255, 255, .18);
 }
 .fredki-ios .fk-design:active {
-    transform: scale(.99)
+    transform: scale(.99);
 }
 .fredki-ios .fk-design:focus-visible {
     outline: 3px solid rgba(88, 86, 214, .45);
-    outline-offset: 3px
+    outline-offset: 3px;
 }
 .fredki-ios .fk-design-badge {
     display: grid;
@@ -2559,16 +2559,16 @@
     width: 44px;
     height: 44px;
     border-radius: 13px;
-    background: rgba(255, 255, 255, .2)
+    background: rgba(255, 255, 255, .2);
 }
 .fredki-ios .fk-design-badge .fk-icon {
     width: 24px;
     height: 24px;
-    stroke-width: 1.8
+    stroke-width: 1.8;
 }
 .fredki-ios .fk-design-copy {
     flex: 1 1 auto;
-    min-width: 0
+    min-width: 0;
 }
 .fredki-ios .fk-design-copy strong {
     display: block;
@@ -2576,14 +2576,14 @@
     font-weight: 600;
     letter-spacing: -.01em;
     line-height: 1.25;
-    color: #fff
+    color: #fff;
 }
 .fredki-ios .fk-design-copy small {
     display: block;
     margin-top: 2px;
     font-size: 13px;
     line-height: 1.35;
-    color: rgba(255, 255, 255, .88)
+    color: rgba(255, 255, 255, .88);
 }
 .fredki-ios .fk-design-go {
     display: grid;
@@ -2592,15 +2592,15 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, .2)
+    background: rgba(255, 255, 255, .2);
 }
 .fredki-ios .fk-design-go .fk-icon {
     width: 16px;
     height: 16px;
-    stroke-width: 2.4
+    stroke-width: 2.4;
 }
 .fredki-ios .fk-advanced {
-    margin: 0 0 4px
+    margin: 0 0 4px;
 }
 .fredki-ios .fk-advanced > summary {
     display: flex;
@@ -2614,28 +2614,28 @@
     color: var(--fk-muted);
     font-size: 14px;
     font-weight: 500;
-    border-radius: 10px
+    border-radius: 10px;
 }
 .fredki-ios .fk-advanced > summary::-webkit-details-marker {
-    display: none
+    display: none;
 }
 .fredki-ios .fk-advanced > summary:hover {
-    color: var(--fk-text)
+    color: var(--fk-text);
 }
 .fredki-ios .fk-advanced > summary:focus-visible {
     outline: 3px solid rgba(88, 86, 214, .35);
-    outline-offset: 2px
+    outline-offset: 2px;
 }
 .fredki-ios .fk-advanced > summary .fk-icon {
     width: 16px;
     height: 16px;
-    transition: transform .18s ease
+    transition: transform .18s ease;
 }
 .fredki-ios .fk-advanced[open] > summary .fk-icon {
-    transform: rotate(90deg)
+    transform: rotate(90deg);
 }
 .fredki-ios .fk-advanced[open] > summary {
-    margin-bottom: 6px
+    margin-bottom: 6px;
 }
 
 /* the one calm, inviting button */
@@ -2646,13 +2646,13 @@
     box-shadow: 0 4px 12px rgba(86, 80, 214, .24), inset 0 1px 0 rgba(255, 255, 255, .22);
     text-shadow: none;
     animation: none;
-    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
 }
 .fredki-ios .fk-main::before {
-    content: none
+    content: none;
 }
 .fredki-ios .fk-main::after {
-    content: none
+    content: none;
 }
 .fredki-ios .fk-main:hover,
 .fredki-ios .fk-main:focus,
@@ -2662,32 +2662,32 @@
     background: linear-gradient(135deg, #6559e8 0%, #5650d6 100%);
     filter: brightness(1.06);
     transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(86, 80, 214, .30), inset 0 1px 0 rgba(255, 255, 255, .26)
+    box-shadow: 0 8px 18px rgba(86, 80, 214, .30), inset 0 1px 0 rgba(255, 255, 255, .26);
 }
 .fredki-ios .fk-main:active {
     transform: scale(.985);
-    filter: brightness(.97)
+    filter: brightness(.97);
 }
 .fredki-ios .fk-main:focus-visible {
     outline: 3px solid rgba(86, 80, 214, .4);
-    outline-offset: 3px
+    outline-offset: 3px;
 }
 .fredki-ios .fk-main .fk-icon {
     width: 22px;
     height: 22px;
     stroke-width: 1.9;
     filter: none;
-    animation: none
+    animation: none;
 }
 .fredki-ios .fk-main .fk-label {
-    position: relative
+    position: relative;
 }
 .fredki-ios .fk-main.is-busy,
 .fredki-ios .fk-main.is-busy:hover {
     background: linear-gradient(135deg, #6559e8, #5650d6);
     cursor: progress;
     filter: saturate(.9);
-    animation: none
+    animation: none;
 }
 .fredki-ios .fk-main.is-busy::after {
     content: '';
@@ -2695,25 +2695,25 @@
     width: 100%;
     transform: none;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent);
-    animation: fk-sweep-full 1.8s ease-in-out infinite
+    animation: fk-sweep-full 1.8s ease-in-out infinite;
 }
 .fredki-ios .fk-main.is-busy .fk-icon {
-    animation: fk-spin 1.1s linear infinite
+    animation: fk-spin 1.1s linear infinite;
 }
 
 @keyframes fk-sweep-full {
     from {
-        transform: translateX(-100%)
+        transform: translateX(-100%);
     }
     to {
-        transform: translateX(100%)
+        transform: translateX(100%);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .fredki-ios .fk-main.is-busy::after,
     .fredki-ios .fk-main.is-busy .fk-icon {
-        animation: none !important
+        animation: none !important;
     }
 }
 
@@ -2721,31 +2721,31 @@
 .editing .block_fredkitheagent:has(.fredki-next-card) {
     background: #fff !important;
     border: 1px solid rgba(0, 0, 0, .125) !important;
-    border-radius: .5rem !important
+    border-radius: .5rem !important;
 }
 .editing .block_fredkitheagent:has(.fredki-next-card) > .card-body,
 .editing .block_fredkitheagent:has(.fredki-next-card) .card-body {
-    padding: 1rem !important
+    padding: 1rem !important;
 }
 .editing .block_fredkitheagent:has(.fredki-next-card) .card-title,
 .editing .block_fredkitheagent:has(.fredki-next-card) .block-title {
     font-size: 1.09375rem !important;
     line-height: 1.2 !important;
-    margin: 0 0 .75rem !important
+    margin: 0 0 .75rem !important;
 }
 .editing .block_fredkitheagent .fredki-next-card.fredki-ios {
     padding: 0;
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    overflow: visible
+    overflow: visible;
 }
 .editing .block_fredkitheagent .fredki-ios .fk-headcopy strong {
-    display: none
+    display: none;
 }
 .editing .block_fredkitheagent .fredki-ios .fk-headcopy small {
     margin-top: 0;
-    font-size: 14px
+    font-size: 14px;
 }
 
 /* ==========================================================================
@@ -2762,21 +2762,21 @@
     --fk-tint-hover: rgba(0, 153, 173, .16);
     --fk-tint-line: rgba(0, 153, 173, .26);
     --fk-purple: #00818f;
-    --fk-green: #2fa86f
+    --fk-green: #2fa86f;
 }
 .block_fredkitheagent .fredki-next-card {
-    --fk-purple: #00818f
+    --fk-purple: #00818f;
 }
 .fredki-ios .fk-orb,
 .fk-act .fk-orb {
-    background: radial-gradient(circle at 34% 28%, #8be3ea 0, #0099ad 42%, #00525c 100%)
+    background: radial-gradient(circle at 34% 28%, #8be3ea 0, #0099ad 42%, #00525c 100%);
 }
 .fredki-ios .fk-eye,
 .fk-act .fk-eye {
-    background: #fff
+    background: #fff;
 }
 .fredki-ios .fk-status {
-    color: #1d7a50
+    color: #1d7a50;
 }
 .fredki-ios .fk-main,
 .fredki-ios .fk-main:hover,
@@ -2785,14 +2785,14 @@
 .fredki-ios a.fk-main:focus,
 .fredki-ios .fk-main.is-busy,
 .fredki-ios .fk-main.is-busy:hover {
-    background: linear-gradient(135deg, #0a9fb1 0%, #00818f 100%)
+    background: linear-gradient(135deg, #0a9fb1 0%, #00818f 100%);
 }
 .fredki-ios .fk-main {
-    box-shadow: 0 4px 12px rgba(0, 129, 143, .24), inset 0 1px 0 rgba(255, 255, 255, .22)
+    box-shadow: 0 4px 12px rgba(0, 129, 143, .24), inset 0 1px 0 rgba(255, 255, 255, .22);
 }
 .fredki-ios .fk-main:hover,
 .fredki-ios .fk-main:focus {
-    box-shadow: 0 8px 18px rgba(0, 129, 143, .30), inset 0 1px 0 rgba(255, 255, 255, .26)
+    box-shadow: 0 8px 18px rgba(0, 129, 143, .30), inset 0 1px 0 rgba(255, 255, 255, .26);
 }
 .fredki-ios .fk-main:focus-visible,
 .fredki-ios .fk-gear:focus-visible,
@@ -2803,85 +2803,85 @@
 .fredki-ios .fk-advanced > summary:focus-visible,
 .fredki-ios .fk-design:focus-visible {
     outline: 3px solid rgba(0, 129, 143, .38);
-    outline-offset: 3px
+    outline-offset: 3px;
 }
 .fredki-ios .fk-main.is-busy::after {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent)
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent);
 }
 .fredki-ios .fk-switch:checked {
-    background: var(--fk-accent)
+    background: var(--fk-accent);
 }
 .fk-act input[type=email]:focus {
-    box-shadow: 0 0 0 4px rgba(0, 129, 143, .15)
+    box-shadow: 0 0 0 4px rgba(0, 129, 143, .15);
 }
 .block_fredkitheagent .fredki-next-card .fredkitheagent-sync-hero:hover {
     background: linear-gradient(180deg, #0aa7ba, #00818f);
-    box-shadow: 0 6px 16px rgba(0, 129, 143, .30)
+    box-shadow: 0 6px 16px rgba(0, 129, 143, .30);
 }
 /* palette button next to the gear */
 .fredki-ios .fk-footer .fk-paint {
     margin: 0;
-    color: var(--fk-accent)
+    color: var(--fk-accent);
 }
 .fredki-ios .fk-footer .fk-paint + .fk-gear {
-    margin-left: 2px
+    margin-left: 2px;
 }
 .fredki-ios .fk-footer .fk-paint:hover {
     color: var(--fk-ink);
-    background: var(--fk-tint)
+    background: var(--fk-tint);
 }
 /* appearance entry: light secondary card with colour preview */
 .fredki-ios .fk-design {
     background: #fff;
     color: var(--fk-text);
     border: 1.5px solid var(--fk-tint-line);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .04)
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
 }
 .fredki-ios .fk-design:hover {
     background: #f3fafb;
     color: var(--fk-text);
     border-color: var(--fk-accent);
-    box-shadow: 0 6px 16px rgba(0, 129, 143, .14)
+    box-shadow: 0 6px 16px rgba(0, 129, 143, .14);
 }
 .fredki-ios .fk-design-badge {
     background: var(--fk-tint);
-    color: var(--fk-accent)
+    color: var(--fk-accent);
 }
 .fredki-ios .fk-design-copy strong {
-    color: var(--fk-ink)
+    color: var(--fk-ink);
 }
 .fredki-ios .fk-design-copy small {
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-design-go {
     background: var(--fk-tint);
-    color: var(--fk-accent)
+    color: var(--fk-accent);
 }
 .fredki-ios .fk-swatches {
     display: flex;
     gap: 5px;
-    margin-top: 8px
+    margin-top: 8px;
 }
 .fredki-ios .fk-swatch {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, .12)
+    border: 1px solid rgba(0, 0, 0, .12);
 }
 /* 1.5.4: remove course agent (danger row in the details sheet) */
 .fredki-ios .fk-remove {
-    margin-top: 12px
+    margin-top: 12px;
 }
 .fredki-ios .fk-rowbutton.fk-danger {
     color: #b3261e;
     background: #fdecec;
-    text-decoration: none
+    text-decoration: none;
 }
 .fredki-ios .fk-rowbutton.fk-danger:hover,
 .fredki-ios .fk-rowbutton.fk-danger:focus {
     color: #fff;
     background: #b3261e;
-    text-decoration: none
+    text-decoration: none;
 }
 /* 1.5.5: package fully used */
 .fredki-ios a.fk-main.fk-main-secondary,
@@ -2893,10 +2893,10 @@
     box-shadow: none;
     text-decoration: none;
     filter: none;
-    transform: none
+    transform: none;
 }
 .fredki-ios a.fk-main.fk-main-secondary:hover {
-    background: var(--fk-tint-hover)
+    background: var(--fk-tint-hover);
 }
 .fredki-ios .fk-linkbutton {
     display: block;
@@ -2910,29 +2910,29 @@
     font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
-    border-radius: 10px
+    border-radius: 10px;
 }
 .fredki-ios .fk-linkbutton:hover,
 .fredki-ios .fk-linkbutton:focus-visible {
-    background: var(--fk-tint)
+    background: var(--fk-tint);
 }
 /* 1.6.0: agent role per course */
 .fredki-ios .fk-roleform {
     display: flex;
     align-items: flex-end;
     gap: 8px;
-    margin: 12px 0 0
+    margin: 12px 0 0;
 }
 .fredki-ios .fk-rolepick {
     flex: 1 1 auto;
-    min-width: 0
+    min-width: 0;
 }
 .fredki-ios .fk-rolepick label {
     display: block;
     margin: 0 0 4px;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--fk-muted)
+    color: var(--fk-muted);
 }
 .fredki-ios .fk-roleselect {
     width: 100%;
@@ -2943,19 +2943,19 @@
     background: #fff;
     color: var(--fk-text);
     font: inherit;
-    font-size: 14px
+    font-size: 14px;
 }
 .fredki-ios .fk-roleselect:focus {
     outline: 3px solid rgba(0, 129, 143, .3);
     outline-offset: 1px;
-    border-color: var(--fk-accent)
+    border-color: var(--fk-accent);
 }
 .fredki-ios .fk-roleform .fk-rowbutton {
     flex: none;
-    height: 38px
+    height: 38px;
 }
 .fredki-ios .fk-rolepick-setup {
-    margin: 14px 0 0
+    margin: 14px 0 0;
 }
 /* Course chat page (chat.php). */
 /* Normal Moodle content page; no overlay, floating widget or public embedding. */
@@ -3524,22 +3524,22 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     accent-color: #c4320a;
 }
 .fk-designform {
-    max-width: 680px
+    max-width: 680px;
 }
 .fk-designform .fk-colorinput {
     width: 90px;
     height: 42px;
-    padding: 3px
+    padding: 3px;
 }
 .fk-act .fk-licence {
     margin-top: 22px;
     padding-top: 16px;
-    border-top: 1px solid #ececf0
+    border-top: 1px solid #ececf0;
 }
 .fk-act .fk-licencetitle {
     margin: 0 0 8px;
     font-size: 16px;
-    font-weight: 650
+    font-weight: 650;
 }
 .fk-act input.fk-licenceinput {
     box-sizing: border-box;
@@ -3550,5 +3550,5 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     padding: 0 14px;
     font-size: 15px;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    letter-spacing: .02em
+    letter-spacing: .02em;
 }

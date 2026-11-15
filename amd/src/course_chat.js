@@ -257,13 +257,17 @@ export const init = () => {
         });
         var body = el('tbody', table);
         var j = i + 2;
+        var rows = [];
         while (j < lines.length && mdIsRow(lines[j])) {
-            var row = el('tr', body);
-            mdCells(lines[j]).forEach(function(c) {
-                inline(c, el('td', row));
-            });
+            rows.push(lines[j]);
             j++;
         }
+        rows.forEach(function(line) {
+            var row = el('tr', body);
+            mdCells(line).forEach(function(c) {
+                inline(c, el('td', row));
+            });
+        });
         return j;
     }
 
@@ -510,7 +514,8 @@ export const init = () => {
                     }, window.location.origin);
                 }
             } catch (e) {
-                /* ignore */ }
+                // The parent page may not listen; the chat works without it.
+            }
             return node;
         }
         /**
