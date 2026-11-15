@@ -59,6 +59,10 @@ jobs:
       - name: Build AMD modules with grunt
         run: |
           cd moodle
+          # Use the Node version Moodle asks for (.nvmrc), as moodle-plugin-ci does.
+          source "$NVM_DIR/nvm.sh"
+          nvm install
+          nvm use
           npx grunt amd --root=blocks/fredkitheagent
           rm -rf ../plugin/amd/build
           cp -r blocks/fredkitheagent/amd/build ../plugin/amd/build
