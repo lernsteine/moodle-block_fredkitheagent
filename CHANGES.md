@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.1 (2026-11-15)
+
+* Code style only, no change in behaviour: stylesheet and JavaScript follow Moodle's stylelint and ESLint rules;
+  the Markdown renderer of the chat is split into small functions; AMD modules built with Moodle's grunt.
+
 ## 1.8.0 (2026-11-15)
 
 * Moodle Marketplace review: the plugin no longer contains booking buttons, prices or links to purchase pages
