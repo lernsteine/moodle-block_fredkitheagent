@@ -1,0 +1,147 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/activation
+
+    Activation page of FredKI The Agent: register, start for free, licence key, diagnostics.
+
+    Context variables required for this template:
+    * url - Form target (this page)
+    * sesskey - Session key
+    * steps - The three steps (label, number, done, current)
+    * register - Registration form or false
+    * pending - Start for free or false
+    * active - Status of an active site or false
+    * inactive - Label of an inactive state or false
+    * licenceform - Whether the licence key form is shown
+    * marketplaceurl - Page of the plugin in Moodle Marketplace
+    * registered - Whether the site is registered (connection reset)
+
+    Example context (json):
+    {
+        "url": "https://example.com/blocks/fredkitheagent/activation.php",
+        "sesskey": "abc",
+        "steps": [{"number": 1, "label": "Register", "done": true, "current": false}],
+        "register": false,
+        "pending": false,
+        "active": {"approved": true, "plan": "Free · Courses: 1 of 1"},
+        "inactive": false,
+        "licenceform": true,
+        "marketplaceurl": "https://marketplace.moodle.com/plugins/block_fredkitheagent",
+        "registered": true
+    }
+}}
+<div class="fk-act">
+    {{> block_fredkitheagent/card_head }}
+    <ol class="fk-steps">
+        {{#steps}}
+        <li class="fk-step{{#done}} is-done{{/done}}{{#current}} is-current{{/current}}">
+            <span class="fk-bubble">{{#done}}✓{{/done}}{{^done}}{{number}}{{/done}}</span>{{label}}
+        </li>
+        {{/steps}}
+    </ol>
+    <div class="fk-actbody">
+        {{#register}}
+            {{#connectionlost}}<div class="fk-actwarn">{{#str}} managedconnectionlost, block_fredkitheagent {{/str}}</div>{{/connectionlost}}
+            {{^connectionlost}}<p>{{#str}} managedregisterintro, block_fredkitheagent {{/str}}</p>{{/connectionlost}}
+            <form method="post" action="{{url}}">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="{{action}}">
+                <label for="contactemail">{{#str}} managedcontactemail, block_fredkitheagent {{/str}}</label>
+                <input type="email" name="contactemail" id="contactemail" maxlength="254" required class="form-control">
+                <input type="submit" class="fk-actbutton" value="{{buttonlabel}}">
+            </form>
+        {{/register}}
+
+        {{#pending}}
+            {{#freestart}}
+            <p>{{#str}} actfreestartintro, block_fredkitheagent {{/str}}</p>
+            <form method="post" action="{{url}}">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="startfree">
+                {{> block_fredkitheagent/legal_checks }}
+                <input type="submit" class="fk-actbutton" value="{{#cleanstr}} actfreestartbutton, block_fredkitheagent {{/cleanstr}}">
+            </form>
+            {{/freestart}}
+            {{^freestart}}<p>{{#str}} actpendingcaption, block_fredkitheagent {{/str}}</p>{{/freestart}}
+            {{#mailfallback}}
+            <div class="fk-actwarn">{{#str}} managednotificationfailed, block_fredkitheagent {{/str}}</div>
+            <a class="fk-actbutton" href="{{mailto}}">{{#str}} managedmailfallback, block_fredkitheagent {{/str}}</a>
+            {{/mailfallback}}
+        {{/pending}}
+
+        {{#active}}
+            {{#legalform}}
+            <form method="post" action="{{url}}" class="fk-actwarn">
+                <p>{{#str}} actlegalrequired, block_fredkitheagent {{/str}}</p>
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="acceptlegal">
+                {{> block_fredkitheagent/legal_checks }}
+                <input type="submit" class="fk-actbutton" value="{{#cleanstr}} actlegalconfirm, block_fredkitheagent {{/cleanstr}}">
+            </form>
+            {{/legalform}}
+            <div class="fk-actok">
+                <p>{{#str}} managedapproved, block_fredkitheagent {{/str}}</p>
+                <p><strong>{{#str}} managedapprovedslogan, block_fredkitheagent {{/str}}</strong></p>
+            </div>
+            {{#trialend}}<div class="fk-caption">{{.}}</div>{{/trialend}}
+            {{#freepackage}}<div class="fk-caption">{{#str}} actfreepackage, block_fredkitheagent {{/str}}</div>{{/freepackage}}
+            {{#quota}}{{> block_fredkitheagent/quota }}{{/quota}}
+            {{#quotacaption}}<div class="fk-caption">{{.}}</div>{{/quotacaption}}
+            {{#plan}}<div class="fk-caption">{{.}}</div>{{/plan}}
+            {{#licence}}<div class="fk-caption">{{.}}</div>{{/licence}}
+        {{/active}}
+
+        {{#inactive}}
+            <div class="fk-actwarn">{{.}}</div>
+        {{/inactive}}
+
+        {{#licenceform}}
+        <div class="fk-licence">
+            <h4 class="fk-licencetitle">{{#str}} actlicencetitle, block_fredkitheagent {{/str}}</h4>
+            <p>{{#str}} actlicenceintro, block_fredkitheagent {{/str}}</p>
+            <form method="post" action="{{url}}">
+                <input type="hidden" name="sesskey" value="{{sesskey}}">
+                <input type="hidden" name="action" value="licence">
+                <label for="fk-licencekey">{{#str}} actlicencekey, block_fredkitheagent {{/str}}</label>
+                <input type="text" name="licencekey" id="fk-licencekey" class="form-control fk-licenceinput" required
+                    maxlength="60" autocomplete="off" spellcheck="false" placeholder="FK2-XXXXX-XXXXX-…">
+                <input type="submit" class="fk-actbutton" value="{{#cleanstr}} actlicencebutton, block_fredkitheagent {{/cleanstr}}">
+            </form>
+            <p class="fk-caption">
+                <a href="{{marketplaceurl}}" target="_blank" rel="noopener">{{#str}} actmarketplacelink, block_fredkitheagent {{/str}}</a>
+            </p>
+        </div>
+        {{/licenceform}}
+    </div>
+    <details class="mt-4">
+        <summary>{{#str}} managedadvanced, block_fredkitheagent {{/str}}</summary>
+        <form method="post" action="{{url}}" class="mt-3">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="diagnose">
+            <input type="submit" class="btn btn-secondary" value="{{#cleanstr}} manageddiagnosebutton, block_fredkitheagent {{/cleanstr}}">
+        </form>
+        {{#registered}}
+        <form method="post" action="{{url}}" class="mt-3">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            <input type="hidden" name="action" value="reset">
+            <label><input type="checkbox" name="confirmreset" value="1" required> {{#str}} managedresetconfirm, block_fredkitheagent {{/str}}</label>
+            <input type="submit" class="btn btn-outline-secondary mt-2" value="{{#cleanstr}} managedresetbutton, block_fredkitheagent {{/cleanstr}}">
+        </form>
+        {{/registered}}
+    </details>
+</div>

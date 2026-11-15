@@ -131,64 +131,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect($PAGE->url, get_string('designsaved', 'block_fredkitheagent'));
 }
 
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('coursedesign', 'block_fredkitheagent'));
-echo html_writer::tag('p', get_string('coursedesignintro', 'block_fredkitheagent'));
-echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url->out(false),
-    'enctype' => 'multipart/form-data', 'style' => 'max-width:680px']);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
+$colorsdata = [];
 foreach ($colors as $name => $cfg) {
-    $current = \block_fredkitheagent\local\course_design::color($design, $name, $cfg['default']);
-    $input = html_writer::empty_tag('input', ['type' => 'color', 'name' => $name, 'id' => 'fna-' . $name,
-        'value' => $current, 'class' => 'form-control', 'style' => 'width:90px;height:42px;padding:3px']);
-    echo html_writer::div(
-        html_writer::tag('label', s($cfg['label']), ['for' => 'fna-' . $name]) . $input,
-        'mb-3 d-flex align-items-center justify-content-between'
-    );
+    $colorsdata[] = ['name' => $name, 'label' => $cfg['label'],
+        'value' => \block_fredkitheagent\local\course_design::color($design, $name, $cfg['default'])];
 }
 // Empty course texts use the global texts; show those as placeholder so teachers see what learners get.
 $globaltext = static function (string $setting, string $fallback): string {
     $text = trim((string)get_config('block_fredkitheagent', $setting));
     return $text !== '' ? $text : get_string($fallback, 'block_fredkitheagent');
 };
-$texts = [
-    'welcometext' => [get_string('chatwelcometext', 'block_fredkitheagent'), $globaltext('chatwelcometext', 'chatwelcomedefault')],
-    'footertext' => [get_string('chatfootertext', 'block_fredkitheagent'), $globaltext('chatfootertext', 'chatfooterdefault')],
-];
-foreach ($texts as $name => [$label, $global]) {
-    $value = $design ? (string)($design->{$name} ?? '') : '';
-    echo html_writer::tag('label', s($label), ['for' => 'fna-' . $name]);
-    echo html_writer::empty_tag('input', ['type' => 'text', 'name' => $name, 'id' => 'fna-' . $name,
-        'value' => $value, 'maxlength' => 255, 'class' => 'form-control',
-        'placeholder' => $global, 'aria-describedby' => 'fna-' . $name . '-hint']);
-    $hintattrs = ['class' => 'text-muted small mt-1 mb-3', 'id' => 'fna-' . $name . '-hint'];
-    echo html_writer::tag('p', s(get_string('designglobalhint', 'block_fredkitheagent')), $hintattrs);
+$textsdata = [];
+foreach (['welcometext' => 'chatwelcomedefault', 'footertext' => 'chatfooterdefault'] as $name => $fallback) {
+    $setting = $name === 'welcometext' ? 'chatwelcometext' : 'chatfootertext';
+    $textsdata[] = ['name' => $name, 'label' => get_string($setting, 'block_fredkitheagent'),
+        'value' => $design ? (string)($design->{$name} ?? '') : '', 'placeholder' => $globaltext($setting, $fallback)];
 }
-echo html_writer::tag('label', get_string('designcourselogo', 'block_fredkitheagent'), ['for' => 'fna-logo']);
-echo html_writer::empty_tag('input', ['type' => 'file', 'name' => 'courselogo', 'id' => 'fna-logo',
-    'accept' => 'image/png,image/jpeg,image/webp', 'class' => 'form-control mb-2']);
-echo html_writer::tag('p', get_string('designlogohint', 'block_fredkitheagent'), ['class' => 'text-muted small']);
-if (\block_fredkitheagent\local\course_design::logo_url($courseid)) {
-    echo html_writer::div(html_writer::checkbox(
-        'removelogo',
-        1,
-        false,
-        get_string('designremovelogo', 'block_fredkitheagent')
-    ), 'mb-3');
-}
-echo html_writer::tag('button', get_string('savechanges'), ['type' => 'submit', 'class' => 'btn btn-primary mt-3']);
-echo html_writer::end_tag('form');
-echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url->out(false), 'class' => 'mt-3']);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'resetdesign', 'value' => 1]);
-echo html_writer::tag(
-    'button',
-    get_string('designresetbutton', 'block_fredkitheagent'),
-    ['type' => 'submit', 'class' => 'btn btn-outline-secondary']
-);
-echo html_writer::end_tag('form');
-echo html_writer::div(
-    html_writer::link($back, get_string('chatbackcourse', 'block_fredkitheagent')),
-    'mt-4'
-);
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('coursedesign', 'block_fredkitheagent'));
+echo $OUTPUT->render_from_template('block_fredkitheagent/design', [
+    'url' => $PAGE->url->out(false),
+    'sesskey' => sesskey(),
+    'colors' => $colorsdata,
+    'texts' => $textsdata,
+    'haslogo' => (bool)\block_fredkitheagent\local\course_design::logo_url($courseid),
+    'backurl' => $back->out(false),
+]);
 echo $OUTPUT->footer();

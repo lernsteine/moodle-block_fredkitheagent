@@ -1,0 +1,60 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/chat_launcher
+
+    Floating button that opens the protected course chat in a panel.
+
+    Context variables required for this template:
+    * courseid - Course id
+    * userid - Current user id
+    * hidden - Whether the launcher starts hidden
+    * icon - Icon of the button
+    * chaturl - Embedded chat page
+
+    Example context (json):
+    {
+        "courseid": 2,
+        "userid": 5,
+        "hidden": false,
+        "icon": "https://example.com/icon.png",
+        "chaturl": "https://example.com/blocks/fredkitheagent/chat.php?courseid=2&embedded=1"
+    }
+}}
+<div class="fredkitheagent-floating-root" data-fredkitheagent-launcher="1" data-courseid="{{courseid}}" data-userid="{{userid}}"{{#hidden}} hidden{{/hidden}}>
+    <button type="button" class="fredkitheagent-floating-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="fredkitheagent-floating-panel-{{courseid}}">
+        <img src="{{icon}}" alt="" class="fredkitheagent-floating-icon"><span class="sr-only">{{#str}} managedchatopen, block_fredkitheagent {{/str}}</span>
+    </button>
+    <div class="fredkitheagent-floating-backdrop" hidden></div>
+    <div class="fredkitheagent-floating-panel" id="fredkitheagent-floating-panel-{{courseid}}" role="dialog" aria-label="{{#cleanstr}} managedchattitle, block_fredkitheagent {{/cleanstr}}" hidden>
+        <div class="fredkitheagent-floating-header">
+            <button type="button" class="fredkitheagent-floating-menu" aria-label="{{#cleanstr}} managedchatmenu, block_fredkitheagent {{/cleanstr}}">☰</button>
+            <button type="button" class="fredkitheagent-floating-expand" aria-label="{{#cleanstr}} managedchatexpand, block_fredkitheagent {{/cleanstr}}" aria-pressed="false">⤢</button>
+            <button type="button" class="fredkitheagent-floating-close" aria-label="{{#cleanstr}} managedchatclose, block_fredkitheagent {{/cleanstr}}">×</button>
+        </div>
+        <div class="fredkitheagent-floating-body">
+            <div class="fredkitheagent-floating-history" hidden data-fredkitheagent-history="1" data-label-delete="{{#cleanstr}} managedchathistorydelete, block_fredkitheagent {{/cleanstr}}" data-label-clear="{{#cleanstr}} managedchathistoryclear, block_fredkitheagent {{/cleanstr}}" data-label-empty="{{#cleanstr}} managedchathistoryempty, block_fredkitheagent {{/cleanstr}}">
+                <strong>{{#str}} managedchathistory, block_fredkitheagent {{/str}}</strong>
+                <p>{{#str}} managedchathistoryhint, block_fredkitheagent {{/str}}</p>
+                <div class="fredkitheagent-history-list" data-fredkitheagent-historylist="1"></div>
+            </div>
+            <div class="fredkitheagent-floating-main">
+                <iframe title="{{#cleanstr}} managedchattitle, block_fredkitheagent {{/cleanstr}}" data-chat-src="{{chaturl}}" class="fredkitheagent-floating-frame" loading="lazy" referrerpolicy="same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+</div>

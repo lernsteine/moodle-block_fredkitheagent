@@ -78,6 +78,23 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $gateway::start_free();
                 $message = get_string('actfreestarted', 'block_fredkitheagent');
                 break;
+            case 'licence':
+                // A package bought on the plugin's page in Moodle Marketplace comes with a licence key.
+                try {
+                    $gateway::activate_license(required_param('licencekey', PARAM_ALPHANUMEXT));
+                } catch (\block_fredkitheagent\local\managed_api_diagnostic_exception | \invalid_parameter_exception $e) {
+                    $reasons = [400 => 'actlicenceunknown', 404 => 'actlicenceunknown', 409 => 'actlicenceconflict',
+                        410 => 'actlicenceended', 429 => 'actlicencetoomany'];
+                    $code = $e instanceof \invalid_parameter_exception ? 400 : (int)$e->getCode();
+                    if (!isset($reasons[$code])) {
+                        throw $e;
+                    }
+                    throw new \block_fredkitheagent\local\managed_api_diagnostic_exception(
+                        get_string($reasons[$code], 'block_fredkitheagent')
+                    );
+                }
+                $message = get_string('actlicenceactivated', 'block_fredkitheagent');
+                break;
             case 'diagnose':
                 $diagnosis = $gateway::diagnose_connection();
                 if (!empty($diagnosis['ok'])) {
@@ -135,226 +152,120 @@ try {
 $state = (string)($status['state'] ?? 'unregistered');
 // Take the opening statement of the FredKI template agent over (at most every six hours).
 \block_fredkitheagent\local\welcome_sync::sync();
-echo $OUTPUT->header();
 $pn = 'block_fredkitheagent';
-if ($error !== '') {
-    echo $OUTPUT->notification($error, 'notifyproblem');
-}
-if ($message !== '') {
-    echo $OUTPUT->notification($message, 'notifysuccess');
-}
 $registered = $gateway::is_registered();
 $active = in_array($state, ['trial_active', 'licensed', 'setup_pending'], true);
 // Position in the three-step journey: 1 = register, 2 = approval, 3 = ready.
 $position = !$registered || $connectionlost ? 1 : ($active ? 3 : 2);
-// Package links come from the licence server and are already restricted to its https host.
-$checkouturl = (string)($status['checkout_url'] ?? '');
-$manageurl = (string)($status['manage_url'] ?? '');
-// The booking and subscription pages use the language of this Moodle site (German or English).
-$shoplang = str_starts_with(current_language(), 'de') ? 'de' : 'en';
-$serverbutton = static function (string $url, string $label) use ($shoplang): string {
-    $attributes = ['class' => 'fk-actbutton', 'target' => '_blank', 'rel' => 'noopener noreferrer'];
-    return html_writer::link($url . '&lang=' . $shoplang, s($label), $attributes);
-};
-echo html_writer::start_div('fk-act');
-echo html_writer::start_div('fk-head');
-echo html_writer::div(html_writer::span('', 'fk-eye') . html_writer::span('', 'fk-eye'), 'fk-orb', ['aria-hidden' => 'true']);
-echo html_writer::div(
-    html_writer::tag('strong', get_string('pluginname', $pn)) .
-    html_writer::tag('small', get_string('actsubtitle', $pn)),
-    'fk-headcopy'
-);
-echo html_writer::end_div();
-echo html_writer::start_tag('ol', ['class' => 'fk-steps']);
+$steps = [];
 foreach (['actstepregister', 'actstepapproval', 'actstepready'] as $index => $key) {
     $number = $index + 1;
-    $class = $number < $position || $position === 3 ? 'is-done' : ($number === $position ? 'is-current' : '');
-    echo html_writer::tag(
-        'li',
-        html_writer::span($class === 'is-done' ? '✓' : (string)$number, 'fk-bubble') . s(get_string($key, $pn)),
-        ['class' => trim('fk-step ' . $class)]
-    );
+    $done = $number < $position || $position === 3;
+    $steps[] = [
+        'number' => $number, 'label' => get_string($key, $pn), 'done' => $done,
+        'current' => !$done && $number === $position,
+    ];
 }
-echo html_writer::end_tag('ol');
-echo html_writer::start_div('fk-actbody');
 // Required checkboxes for the terms, privacy notice and data processing agreement.
-$legalchecks = static function (array $legal) use ($pn): string {
+$legalchecks = static function (array $legal) use ($pn): array {
     $link = static fn(string $url, string $text): string => html_writer::link(
         $url,
         s($text),
         ['target' => '_blank', 'rel' => 'noopener noreferrer']
     );
-    $checks = [
-        'acceptterms' => get_string('actfreestartterms', $pn, (object)[
+    return [
+        ['name' => 'acceptterms', 'label' => get_string('actfreestartterms', $pn, (object)[
             'terms' => $link($legal['terms_url'], get_string('actlegalterms', $pn)),
             'privacy' => $link($legal['privacy_url'], get_string('actlegalprivacy', $pn)),
-        ]),
-        'acceptavv' => get_string('actfreestartavv', $pn, (object)[
+        ])],
+        ['name' => 'acceptavv', 'label' => get_string('actfreestartavv', $pn, (object)[
             'avv' => $link($legal['avv_url'], get_string('actlegalavv', $pn)),
-        ]),
+        ])],
     ];
-    $html = '';
-    foreach ($checks as $name => $label) {
-        $html .= html_writer::div(
-            html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => $name, 'value' => 1,
-                'id' => 'fk-' . $name, 'class' => 'form-check-input', 'required' => 'required']) .
-            html_writer::tag('label', $label, ['for' => 'fk-' . $name, 'class' => 'form-check-label']),
-            'form-check mb-2'
-        );
-    }
-    return $html;
 };
+$data = [
+    'url' => $PAGE->url->out(false),
+    'sesskey' => sesskey(),
+    'subtitle' => get_string('actsubtitle', $pn),
+    'steps' => $steps,
+    'register' => false,
+    'pending' => false,
+    'active' => false,
+    'inactive' => false,
+    'licenceform' => false,
+    'marketplaceurl' => \block_fredkitheagent\local\managed_gateway::MARKETPLACE_URL,
+    'registered' => $registered,
+];
 if (!$registered || $connectionlost) {
-    if ($connectionlost) {
-        echo html_writer::div(s(get_string('managedconnectionlost', $pn)), 'fk-actwarn');
-    } else {
-        echo html_writer::tag('p', s(get_string('managedregisterintro', $pn)));
-    }
-    echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
-    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action',
-        'value' => $connectionlost ? 'reconnect' : 'register']);
-    echo html_writer::tag('label', get_string('managedcontactemail', $pn), ['for' => 'contactemail']);
-    echo html_writer::empty_tag('input', ['type' => 'email', 'name' => 'contactemail', 'id' => 'contactemail',
-        'maxlength' => 254, 'required' => 'required', 'class' => 'form-control']);
-    echo html_writer::empty_tag('input', ['type' => 'submit',
-        'value' => get_string($connectionlost ? 'managedreconnectbutton' : 'managedregisterbutton', $pn),
-        'class' => 'fk-actbutton']);
-    echo html_writer::end_tag('form');
+    $data['register'] = [
+        'connectionlost' => $connectionlost,
+        'action' => $connectionlost ? 'reconnect' : 'register',
+        'buttonlabel' => get_string($connectionlost ? 'managedreconnectbutton' : 'managedregisterbutton', $pn),
+    ];
 } else if ($state === 'pending') {
     $legal = $status['legal'] ?? null;
-    if ($checkouturl !== '' && is_array($legal)) {
-        // Free package first: the essential functionality needs no payment.
-        echo html_writer::tag('p', s(get_string('actfreestartintro', $pn)));
-        echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url]);
-        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'startfree']);
-        echo $legalchecks($legal);
-        echo html_writer::empty_tag('input', ['type' => 'submit',
-            'value' => get_string('actfreestartbutton', $pn), 'class' => 'fk-actbutton']);
-        echo html_writer::end_tag('form');
-    }
-    if ($checkouturl !== '') {
-        echo html_writer::tag('p', s(get_string('actbookintro', $pn)), ['class' => is_array($legal) ? 'mt-4' : '']);
-        echo $serverbutton($checkouturl, get_string('actbookbutton', $pn));
-    } else {
-        echo html_writer::tag('p', get_string('actpendingcaption', $pn));
-    }
-    $mailstatus = (string)($status['notification_status'] ?? 'unknown');
-    if ($mailstatus === 'failed') {
-        echo html_writer::div(get_string('managednotificationfailed', $pn), 'fk-actwarn');
+    $pending = ['freestart' => is_array($legal) ? ['checks' => $legalchecks($legal)] : false, 'mailfallback' => false];
+    if ((string)($status['notification_status'] ?? 'unknown') === 'failed') {
         // Mail is only a fallback if the host's outbound mail transport fails.
-        global $CFG;
         $domain = (string)parse_url((string)$CFG->wwwroot, PHP_URL_HOST);
-        $mail = 'mailto:info@lernsteine.com?subject=' . rawurlencode(get_string('activationmailsubject', $pn))
-            . '&body=' . rawurlencode(get_string('activationmailbody', $pn, $domain));
-        echo html_writer::link($mail, get_string('managedmailfallback', $pn), ['class' => 'fk-actbutton']);
+        $pending['mailfallback'] = ['mailto' => 'mailto:info@lernsteine.com?subject='
+            . rawurlencode(get_string('activationmailsubject', $pn))
+            . '&body=' . rawurlencode(get_string('activationmailbody', $pn, $domain))];
     }
+    $data['pending'] = $pending;
 } else if ($active) {
-    if (!empty($status['legal_required']) && is_array($status['legal'] ?? null)) {
-        // Sites that never accepted the legal texts (e.g. approved before they were part of the start) do it once.
-        echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url, 'class' => 'fk-actwarn']);
-        echo html_writer::tag('p', s(get_string('actlegalrequired', $pn)));
-        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'acceptlegal']);
-        echo $legalchecks($status['legal']);
-        echo html_writer::empty_tag('input', ['type' => 'submit',
-            'value' => get_string('actlegalconfirm', $pn), 'class' => 'fk-actbutton']);
-        echo html_writer::end_tag('form');
-    }
-    echo html_writer::div(
-        html_writer::tag('p', s(get_string('managedapproved', $pn))) .
-        html_writer::tag('p', html_writer::tag('strong', s(get_string('managedapprovedslogan', $pn)))),
-        'fk-actok'
-    );
-    if (!empty($status['trial_ends_at'])) {
-        echo html_writer::div(
-            s(get_string('managedtrialend', $pn) . ': ' . userdate((int)$status['trial_ends_at'])),
-            'fk-caption'
-        );
-        echo html_writer::div(s(get_string('actaftertrial', $pn)), 'fk-caption');
-    }
-    $freetier = ($status['tier'] ?? '') === 'free';
-    if ($freetier) {
-        echo html_writer::div(s(get_string('actfreepackage', $pn)), 'fk-caption');
-    }
+    $info = [
+        'legalform' => !empty($status['legal_required']) && is_array($status['legal'] ?? null)
+            ? ['checks' => $legalchecks($status['legal'])] : false,
+        'trialend' => !empty($status['trial_ends_at'])
+            ? get_string('managedtrialend', $pn) . ': ' . userdate((int)$status['trial_ends_at']) : false,
+        'freepackage' => ($status['tier'] ?? '') === 'free',
+        'quota' => false,
+        'quotacaption' => false,
+        'plan' => false,
+        'licence' => false,
+    ];
     $quota = $status['message_quota'] ?? ($status['free_quota'] ?? null);
-    $quotahigh = false;
     if (is_array($quota)) {
         $a = (object)[
             'used' => (int)$quota['used'], 'limit' => (int)$quota['limit'],
             'reset' => !empty($quota['resets_at'])
                 ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-',
         ];
-        $quotahigh = $a->used * 5 >= $a->limit * 4;
-        if ($quotahigh) {
-            // From 80 %: a clear box instead of the small caption; booking or extra messages follow below.
-            $full = $a->used >= $a->limit;
-            $textkey = ($full ? 'quotafull' : 'quotanearly') . ($freetier ? '' : 'paid') . 'admin';
-            $titlekey = ($full ? 'quotafulltitle' : 'quotanearlytitle') . ($freetier ? '' : 'paid');
-            echo html_writer::div(
-                html_writer::tag('strong', s(get_string($titlekey, $pn, $a))) .
-                html_writer::tag('progress', s($a->used . ' / ' . $a->limit), ['max' => $a->limit,
-                    'value' => min($a->used, $a->limit), 'class' => 'fk-quotabar',
-                    'aria-label' => get_string('quotabarlabel', $pn, $a)]) .
-                html_writer::tag('p', s(get_string($textkey, $pn, $a))),
-                'fk-quota' . ($full ? ' is-full' : ''),
-                ['role' => 'status']
-            );
+        if ($a->used * 5 >= $a->limit * 4) {
+            // From 80 %: a clear box instead of the small caption.
+            $info['quota'] = \block_fredkitheagent\local\output_helper::quota($a, true, $info['freepackage']);
         } else {
-            echo html_writer::div(s(get_string('actfreequota', $pn, $a)), 'fk-caption');
+            $info['quotacaption'] = get_string('actfreequota', $pn, $a);
         }
     }
     if (!empty($status['plan']) && !empty($status['course_limit'])) {
-        echo html_writer::div(s(get_string('actplan', $pn, (object)[
+        $info['plan'] = get_string('actplan', $pn, (object)[
             'plan' => $status['plan'], 'used' => (int)($status['courses_used'] ?? 0), 'limit' => (int)$status['course_limit'],
-        ])), 'fk-caption');
+        ]);
     }
-    if ($checkouturl !== '') {
-        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
+    if (!empty($status['licence'])) {
+        $info['licence'] = get_string('actlicenceactive', $pn, $status['licence']['hint']);
+        if (!empty($status['licence']['ends_at'])) {
+            $info['licence'] .= ' · ' . get_string('actlicenceends', $pn, userdate(
+                (int)$status['licence']['ends_at'],
+                get_string('strftimedate', 'langconfig')
+            ));
+        }
     }
-    if ($manageurl !== '' && $quotahigh && !$freetier) {
-        echo $serverbutton($manageurl, get_string('quotabuyextra', $pn));
-    }
-    if ($manageurl !== '') {
-        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
-    }
+    $data['active'] = $info;
+    $data['licenceform'] = !(bool)$info['legalform'];
 } else {
     $statelabel = get_string_manager()->string_exists('state' . $state, $pn) ? get_string('state' . $state, $pn) : $state;
-    echo html_writer::div(s(get_string('managednotactive', $pn) . ': ' . $statelabel), 'fk-actwarn');
-    if ($checkouturl !== '') {
-        echo $serverbutton($checkouturl, get_string('actbooknowbutton', $pn));
-    }
-    if ($manageurl !== '') {
-        echo $serverbutton($manageurl, get_string('actmanagebutton', $pn));
-    }
+    $data['inactive'] = get_string('managednotactive', $pn) . ': ' . $statelabel;
+    $data['licenceform'] = in_array($state, ['revoked', 'trial_expired'], true);
 }
-echo html_writer::end_div();
-// Technical diagnostics and connection reset are not part of the normal customer journey.
-echo html_writer::start_tag('details', ['class' => 'mt-4']);
-echo html_writer::tag('summary', get_string('managedadvanced', 'block_fredkitheagent'));
-echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url, 'class' => 'mt-3']);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'diagnose']);
-echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-secondary',
-    'value' => get_string('manageddiagnosebutton', 'block_fredkitheagent')]);
-echo html_writer::end_tag('form');
-if ($gateway::is_registered()) {
-    echo html_writer::start_tag('form', ['method' => 'post', 'action' => $PAGE->url, 'class' => 'mt-3']);
-    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-    echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'action', 'value' => 'reset']);
-    echo html_writer::tag(
-        'label',
-        html_writer::empty_tag('input', ['type' => 'checkbox', 'name' => 'confirmreset', 'value' => '1',
-        'required' => 'required']) . ' ' . get_string(
-            'managedresetconfirm',
-            'block_fredkitheagent'
-        )
-    );
-    echo html_writer::empty_tag('input', ['type' => 'submit', 'class' => 'btn btn-outline-secondary mt-2',
-        'value' => get_string('managedresetbutton', 'block_fredkitheagent')]);
-    echo html_writer::end_tag('form');
+echo $OUTPUT->header();
+if ($error !== '') {
+    echo $OUTPUT->notification($error, 'notifyproblem');
 }
-echo html_writer::end_tag('details');
-echo html_writer::end_div();
+if ($message !== '') {
+    echo $OUTPUT->notification($message, 'notifysuccess');
+}
+echo $OUTPUT->render_from_template('block_fredkitheagent/activation', $data);
 echo $OUTPUT->footer();

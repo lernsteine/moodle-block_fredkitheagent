@@ -130,10 +130,6 @@ class block_fredkitheagent extends block_base {
         }
         if ($canmanage) {
             $this->content->text = $this->render_managed_learning_card(true, $rec);
-            $this->page->requires->strings_for_js(
-                ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'],
-                'block_fredkitheagent'
-            );
             $this->page->requires->js_call_amd('block_fredkitheagent/learning_card', 'init');
             if ($this->can_show_chat_launcher($rec)) {
                 $this->content->text .= $this->render_chat_launcher(empty($rec->agentcoursevisible));
@@ -149,87 +145,61 @@ class block_fredkitheagent extends block_base {
 
 
     /**
-     * Modern, inline, same-origin Moodle chat card. Keeps the original server gateway.
-     */
-    /**
      * Card shown to teachers while the Moodle site is not yet activated at the licence server.
      *
      * @param bool $isadmin Whether the current user may open the activation page.
      * @return string HTML.
      */
     protected function render_inactive_card(bool $isadmin): string {
-        $pn = 'block_fredkitheagent';
-        $content = html_writer::start_div('fredki-next-card fredki-ios fk-inactive');
-        $content .= html_writer::start_div('fk-head');
-        $content .= html_writer::div(
-            html_writer::span('', 'fk-eye') . html_writer::span('', 'fk-eye'),
-            'fk-orb',
-            ['aria-hidden' => 'true']
-        );
-        $content .= html_writer::start_div('fk-headcopy');
-        $content .= html_writer::tag('strong', get_string('pluginname', $pn));
-        $content .= html_writer::tag('small', get_string('nextsubtitle', $pn));
-        $content .= html_writer::end_div();
-        $content .= html_writer::end_div();
-        $content .= html_writer::div(
-            html_writer::span('', 'fk-dot is-waiting') . s(get_string('iosinactivestatus', $pn)),
-            'fk-status is-waiting'
-        );
-        $content .= html_writer::tag('p', s(get_string('iosinactiveintro', $pn)), ['class' => 'fk-intro']);
-        if ($isadmin) {
-            $content .= html_writer::link(
-                new moodle_url('/blocks/fredkitheagent/activation.php'),
-                $this->ios_icon('sparkle') . s(get_string('iosinactiveopen', $pn)),
-                ['class' => 'fk-main']
-            );
-            $content .= html_writer::div(s(get_string('iosinactivetrial', $pn)), 'fk-caption');
-        } else {
-            $content .= html_writer::div(s(get_string('iosinactivenoadmin', $pn)), 'fk-note');
-        }
-        $content .= html_writer::end_div();
-        return $content;
+        global $OUTPUT;
+        return $OUTPUT->render_from_template('block_fredkitheagent/card_inactive', [
+            'isadmin' => $isadmin,
+            'activationurl' => (new moodle_url('/blocks/fredkitheagent/activation.php'))->out(false),
+            'icon' => ['sparkle' => true],
+        ]);
     }
 
     /**
-     * Select box with the agent roles offered by the licence server; empty if there is nothing to choose.
+     * Template data of the select box with the agent roles offered by the licence server.
      *
      * @param stdClass|null $rec Local course record.
      * @param string $class CSS class of the wrapper.
-     * @return string HTML.
+     * @return array|null Context for block_fredkitheagent/role_select, or null if there is nothing to choose.
      */
-    protected function role_select(?stdClass $rec, string $class): string {
+    protected function role_select(?stdClass $rec, string $class): ?array {
         try {
             $roles = \block_fredkitheagent\local\managed_gateway::status()['agent_roles'] ?? [];
         } catch (\Throwable $e) {
-            return '';
+            return null;
         }
         if (count($roles) < 2) {
-            return '';
+            return null;
         }
-        $pn = 'block_fredkitheagent';
         $current = $rec ? (string)($rec->agentrole ?? '') : '';
-        $options = '';
-        if ($current === '' && $rec && !empty($rec->agentid)) {
+        $legacy = $current === '' && $rec && !empty($rec->agentid);
+        $options = [];
+        if ($legacy) {
             // Course agent from before agent roles existed: keep it until the teacher chooses a role.
-            $options .= html_writer::tag('option', s(get_string('rolecurrent', $pn)), ['value' => '', 'selected' => 'selected']);
+            $options[] = ['value' => '', 'label' => get_string('rolecurrent', 'block_fredkitheagent'), 'title' => '',
+                'selected' => true];
         }
         foreach ($roles as $role) {
-            $attrs = ['value' => $role['id'], 'title' => $role['description']];
-            if ($role['id'] === $current || ($current === '' && !($rec && !empty($rec->agentid)) && $role['default'])) {
-                $attrs['selected'] = 'selected';
-            }
-            $options .= html_writer::tag('option', s($role['name']), $attrs);
+            $options[] = [
+                'value' => $role['id'],
+                'label' => $role['name'],
+                'title' => $role['description'],
+                'selected' => $role['id'] === $current || ($current === '' && !$legacy && $role['default']),
+            ];
         }
-        $id = 'fredki-role-' . (int)($rec->course ?? 0) . '-' . random_int(1000, 9999);
-        return html_writer::div(
-            html_writer::tag('label', s(get_string('rolelabel', $pn)), ['for' => $id]) .
-            html_writer::tag('select', $options, ['name' => 'agentrole', 'id' => $id, 'class' => 'fk-roleselect']),
-            $class
-        );
+        return [
+            'wrapclass' => $class,
+            'id' => 'fredki-role-' . (int)($rec->course ?? 0) . '-' . random_int(1000, 9999),
+            'options' => $options,
+        ];
     }
 
     /**
-     * Whether the booked package has no free place for a course that is not connected yet.
+     * Whether the package has no free place for a course that is not connected yet.
      *
      * @param stdClass|null $rec Local course record.
      * @return bool
@@ -249,125 +219,80 @@ class block_fredkitheagent extends block_base {
     }
 
     /**
-     * Inline stroke icons (static markup, no user data).
+     * Template data of one POST form to sync.php. The big button and the quiet "full check" row share it.
      *
-     * @param string $name The name.
-     * @return string The result.
+     * @param bool $fullcheck Whether all material is checked again.
+     * @param string $label Button label.
+     * @param string $busylabel Label while working.
+     * @param string $icon Icon name or empty.
+     * @param string $class Button class.
+     * @param array|null $roleselect Optional role select box.
+     * @return array Context for block_fredkitheagent/sync_form.
      */
-    protected function ios_icon(string $name): string {
-        $paths = [
-            'refresh' => '<path d="M20 11a8 8 0 0 0-14.3-4.6L4 8.5"/><path d="M4 4v4.5h4.5"/>' .
-                '<path d="M4 13a8 8 0 0 0 14.3 4.6L20 15.5"/><path d="M20 20v-4.5h-4.5"/>',
-            'sparkle' => '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/>' .
-                '<path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
-            'info' => '<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/>',
-            'gear' => '<circle cx="12" cy="12" r="3"/>' .
-                '<path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 ' .
-                '0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 ' .
-                '1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 ' .
-                '0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 ' .
-                '0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 ' .
-                '1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 ' .
-                '0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 ' .
-                '0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
-            'chevron' => '<path d="M9 6l6 6-6 6"/>',
-            'palette' => '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.7 0-.5-.2-.8-.4-1.2-.3-.4-.4-.7-.4-1.1 ' .
-                '0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4.4-4-8.4-9-8.4z"/>' .
-                '<circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
-        ];
-        return '<svg class="fk-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' .
-            'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' .
-            ($paths[$name] ?? '') . '</svg>';
-    }
-
-    /**
-     * One POST form to sync.php. The big button and the quiet "full check" row share it.
-     *
-     * @param bool $fullcheck The fullcheck.
-     * @param string $label The label.
-     * @param string $busylabel The busylabel.
-     * @param string $icon The icon.
-     * @param string $class The class.
-     * @param string $extra Extra form fields (e.g. the agent role).
-     * @return string The result.
-     */
-    protected function render_ios_sync_form(
+    protected function sync_form(
         bool $fullcheck,
         string $label,
         string $busylabel,
         string $icon,
         string $class,
-        string $extra = ''
-    ): string {
+        ?array $roleselect = null
+    ): array {
         global $COURSE;
-        $url = new moodle_url('/blocks/fredkitheagent/sync.php');
-        $form = html_writer::start_tag('form', ['method' => 'post', 'action' => $url, 'data-fk-syncform' => '1']);
-        $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'courseid', 'value' => (int)$COURSE->id]);
-        $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()]);
-        $form .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => 'fullcheck', 'value' => $fullcheck ? '1' : '0']);
-        $form .= $extra;
-        $inner = ($icon !== '' ? $this->ios_icon($icon) : '') . html_writer::span(s($label), 'fk-label');
-        $form .= html_writer::tag('button', $inner, [
-            'type' => 'submit', 'class' => $class,
-            'data-fk-label' => $label, 'data-fk-busylabel' => $busylabel,
-        ]);
-        $form .= html_writer::end_tag('form');
-        return $form;
+        return [
+            'url' => (new moodle_url('/blocks/fredkitheagent/sync.php'))->out(false),
+            'courseid' => (int)$COURSE->id,
+            'sesskey' => sesskey(),
+            'fullcheck' => $fullcheck ? 1 : 0,
+            'roleselect' => $roleselect ?? false,
+            'icon' => $icon !== '' ? [$icon => true] : false,
+            'label' => $label,
+            'busylabel' => $busylabel,
+            'class' => $class,
+        ];
     }
 
     /**
-     * Notice for site administrators and teachers when the free package's monthly messages are (nearly) used up.
+     * Template data of the notice shown when the monthly messages are (nearly) used up.
      *
-     * @return string HTML, empty below 80 %.
+     * @return array|null Context for block_fredkitheagent/quota, null below 80 %.
      */
-    protected function render_quota_notice(): string {
-        $pn = 'block_fredkitheagent';
+    protected function quota_notice(): ?array {
         try {
             $status = \block_fredkitheagent\local\managed_gateway::status();
         } catch (\Throwable $e) {
-            return '';
+            return null;
         }
-        $freetier = ($status['tier'] ?? '') === 'free';
         $quota = $status['message_quota'] ?? ($status['free_quota'] ?? null);
         if (!is_array($quota) || $quota['limit'] <= 0) {
-            return '';
+            return null;
         }
         $used = (int)$quota['used'];
         $limit = (int)$quota['limit'];
         if ($used * 5 < $limit * 4) {
             // Below 80 %: nothing to show.
-            return '';
+            return null;
         }
-        $full = $used >= $limit;
         $a = (object)['used' => $used, 'limit' => $limit, 'reset' => !empty($quota['resets_at'])
             ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-'];
-        $suffix = $freetier ? '' : 'paid';
-        $html = html_writer::tag('strong', s(get_string(($full ? 'quotafulltitle' : 'quotanearlytitle') . $suffix, $pn, $a)));
-        $html .= html_writer::tag('progress', s($used . ' / ' . $limit), ['max' => $limit, 'value' => min($used, $limit),
-            'class' => 'fk-quotabar', 'aria-label' => get_string('quotabarlabel', $pn, $a)]);
-        $siteadmin = has_capability('moodle/site:config', context_system::instance());
-        $textkey = ($full ? 'quotafull' : 'quotanearly') . $suffix . ($siteadmin ? 'admin' : 'teacher');
-        $html .= html_writer::tag('p', s(get_string($textkey, $pn, $a)));
-        if ($siteadmin) {
-            $html .= html_writer::link(
-                new moodle_url('/blocks/fredkitheagent/activation.php'),
-                s(get_string($freetier ? 'quotabook' : 'quotabuyextra', $pn)),
-                ['class' => 'fk-main']
-            );
-        }
-        return html_writer::div($html, 'fk-quota' . ($full ? ' is-full' : ''), ['role' => 'status']);
+        return \block_fredkitheagent\local\output_helper::quota(
+            $a,
+            has_capability('moodle/site:config', context_system::instance()),
+            ($status['tier'] ?? '') === 'free',
+            true
+        );
     }
 
     /**
-     * iPhone-style card: ONE big button for everything; extras sit quietly behind the gear.
+     * Card for teachers: one big button for everything; extras sit quietly behind the info button.
      *
-     * @param bool $canmanage The canmanage.
-     * @param stdClass|null $rec The rec.
-     * @return string The result.
+     * @param bool $canmanage Whether the user may manage the course.
+     * @param stdClass|null $rec Local course record.
+     * @return string HTML.
      */
     protected function render_managed_learning_card(bool $canmanage, ?stdClass $rec): string {
-        global $COURSE;
+        global $COURSE, $OUTPUT;
         $pn = 'block_fredkitheagent';
+        $courseid = (int)$COURSE->id;
         $ready = $this->can_show_chat_launcher($rec);
         if ($ready && $canmanage) {
             // Opening statement of the FredKI template agent as global welcome text (at most every six hours).
@@ -377,152 +302,74 @@ class block_fredkitheagent extends block_base {
         $docs = $rec ? (int)($rec->documentcount ?? 0) : 0;
         $last = ($rec && !empty($rec->timesynced)) ?
             userdate((int)$rec->timesynced, get_string('strftimedatetimeshort', 'langconfig')) : '';
-        $content = html_writer::start_div('fredki-next-card fredki-ios', [
-            'data-fredki-next-card' => '1',
-            'data-course-id' => (int)$COURSE->id,
-            'data-visibility-url' => (new moodle_url('/blocks/fredkitheagent/visibility.php'))->out(false),
-            'data-sesskey' => sesskey(),
-        ]);
-
-        // Main view.
-        $content .= html_writer::start_div('fk-view fk-view-main', ['data-fk-view' => 'main']);
-        $content .= html_writer::start_div('fk-head');
-        $content .= html_writer::div(
-            html_writer::span('', 'fk-eye') . html_writer::span('', 'fk-eye'),
-            'fk-orb',
-            ['aria-hidden' => 'true']
-        );
-        $content .= html_writer::start_div('fk-headcopy');
-        $content .= html_writer::tag('strong', get_string('pluginname', $pn));
-        $content .= html_writer::tag('small', get_string('nextsubtitle', $pn));
-        $content .= html_writer::end_div();
-        $content .= html_writer::end_div();
-        if ($canmanage) {
-            $content .= $this->render_quota_notice();
-        }
-
+        $busy = get_string('iosbusy', $pn);
+        $siteadmin = has_capability('moodle/site:config', context_system::instance());
+        $data = [
+            'courseid' => $courseid,
+            'visibilityurl' => (new moodle_url('/blocks/fredkitheagent/visibility.php'))->out(false),
+            'sesskey' => sesskey(),
+            'quota' => $canmanage ? ($this->quota_notice() ?? false) : false,
+            'detached' => false,
+            'limitfull' => false,
+            'ready' => false,
+            'setup' => false,
+            'settings' => false,
+        ];
         if ($rec && (string)$rec->status === 'detached') {
             // Disconnected by the licence server administrator. Nothing the teacher must repair;
             // once the course is released, the next check sets it up anew automatically.
-            $content .= html_writer::div(
-                html_writer::span('', 'fk-dot is-waiting') . s(get_string('coursedetachedstatus', $pn)),
-                'fk-status is-waiting'
-            );
-            $content .= html_writer::tag('p', s(get_string('coursedetachedintro', $pn)), ['class' => 'fk-intro']);
-            if ($canmanage) {
-                $content .= $this->render_ios_sync_form(
-                    false,
-                    get_string('coursedetachedretry', $pn),
-                    get_string('iosbusy', $pn),
-                    'refresh',
-                    'fk-main'
-                );
-                $content .= html_writer::div(s(get_string('coursedetachedhint', $pn)), 'fk-caption');
-            }
+            $data['detached'] = [
+                'form' => $canmanage ? $this->sync_form(false, get_string('coursedetachedretry', $pn), $busy, 'refresh', 'fk-main')
+                    : false,
+            ];
         } else if ($canmanage && !$agentcreated && $this->package_full($rec)) {
-            // The booked package has no free place: explain it before the teacher tries to set up the course.
+            // The package has no free place: explain it before the teacher tries to set up the course.
             $billing = \block_fredkitheagent\local\managed_gateway::status();
             $limit = (object)['used' => (int)$billing['courses_used'], 'limit' => (int)$billing['course_limit']];
-            $content .= html_writer::div(
-                html_writer::span('', 'fk-dot is-waiting') . s(get_string('limitfullstatus', $pn, $limit)),
-                'fk-status is-waiting'
-            );
-            // Only site administrators can book a package; teachers are pointed to them.
-            $siteadmin = has_capability('moodle/site:config', context_system::instance());
-            $content .= html_writer::tag(
-                'p',
-                s(get_string($siteadmin ? 'limitfullintro' : 'limitfullintroteacher', $pn, $limit)),
-                ['class' => 'fk-intro']
-            );
-            if ($siteadmin) {
-                $content .= html_writer::link(
-                    new moodle_url('/blocks/fredkitheagent/activation.php'),
-                    s(get_string('limitfullmanage', $pn)),
-                    ['class' => 'fk-main fk-main-secondary']
-                );
-            }
-            // A place may have been freed meanwhile: checking again sets the course up if possible.
-            $content .= $this->render_ios_sync_form(
-                true,
-                get_string('limitfullretry', $pn),
-                get_string('iosbusy', $pn),
-                '',
-                'fk-linkbutton'
-            );
-        } else if ($ready) {
-            $status = $docs > 0 ? get_string('iosready', $pn, $docs) : get_string('nextready', $pn);
-            $content .= html_writer::div(html_writer::span('', 'fk-dot is-ready') . s($status), 'fk-status');
-            $roleselect = $canmanage ? $this->role_select($rec, 'fk-rolepick') : '';
-            if ($roleselect !== '') {
-                // The teacher chooses which FredKI agent works in this course (Berater, Sparringspartner, ...).
-                $content .= html_writer::start_tag('form', ['method' => 'post', 'class' => 'fk-roleform',
-                    'action' => new moodle_url('/blocks/fredkitheagent/role.php')]);
-                $hidden = ['courseid' => (int)$COURSE->id, 'sesskey' => sesskey()];
-                foreach ($hidden as $name => $value) {
-                    $content .= html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $name, 'value' => $value]);
-                }
-                $content .= $roleselect;
-                $content .= html_writer::tag('button', s(get_string('rolechange', $pn)), [
-                    'type' => 'submit', 'class' => 'fk-rowbutton',
-                ]);
-                $content .= html_writer::end_tag('form');
-            }
-            $content .= $this->render_ios_sync_form(
-                false,
-                get_string('iosupdate', $pn),
-                get_string('iosbusy', $pn),
-                'refresh',
-                'fk-main'
-            );
-            if ($last !== '') {
-                $content .= html_writer::div(s(get_string('ioslastsync', $pn, $last)), 'fk-caption');
-            }
-            $content .= html_writer::tag('span', '', [
-                'class' => 'fk-result', 'data-fredki-next-result' => '1', 'role' => 'status', 'aria-live' => 'polite',
-            ]);
-            $content .= html_writer::div('', 'fk-rule');
-            $checkboxattrs = [
-                'type' => 'checkbox', 'class' => 'fk-switch', 'role' => 'switch',
-                'data-fredki-next-togglechat' => '1', 'id' => 'fredki-next-chatcheck-' . (int)$COURSE->id,
+            $data['limitfull'] = [
+                'status' => get_string('limitfullstatus', $pn, $limit),
+                'intro' => get_string($siteadmin ? 'limitfullintro' : 'limitfullintroteacher', $pn, $limit),
+                // Only site administrators can activate a package; teachers are pointed to them.
+                'manageurl' => $siteadmin ? (new moodle_url('/blocks/fredkitheagent/activation.php'))->out(false) : false,
+                // A place may have been freed meanwhile: checking again sets the course up if possible.
+                'form' => $this->sync_form(true, get_string('limitfullretry', $pn), $busy, '', 'fk-linkbutton'),
             ];
-            if (!empty($rec->agentcoursevisible)) {
-                $checkboxattrs['checked'] = 'checked';
+        } else if ($ready) {
+            $roleselect = $canmanage ? $this->role_select($rec, 'fk-rolepick') : null;
+            $data['ready'] = [
+                'status' => $docs > 0 ? get_string('iosready', $pn, $docs) : get_string('nextready', $pn),
+                // The teacher chooses which FredKI agent works in this course (Berater, Sparringspartner, ...).
+                'roleform' => $roleselect ? [
+                    'url' => (new moodle_url('/blocks/fredkitheagent/role.php'))->out(false),
+                    'courseid' => $courseid,
+                    'sesskey' => sesskey(),
+                    'roleselect' => $roleselect,
+                ] : false,
+                'form' => $this->sync_form(false, get_string('iosupdate', $pn), $busy, 'refresh', 'fk-main'),
+                'last' => $last !== '' ? $last : false,
+                'courseid' => $courseid,
+                'chatvisible' => !empty($rec->agentcoursevisible),
+                'designurl' => (new moodle_url('/blocks/fredkitheagent/design.php', ['courseid' => $courseid]))->out(false),
+                'paletteicon' => ['palette' => true],
+                'infoicon' => ['info' => true],
+            ];
+            if ($canmanage) {
+                $data['settings'] = [
+                    'form' => $this->sync_form(true, get_string('iosfullcheckrun', $pn), $busy, '', 'fk-rowbutton'),
+                    'facts' => [
+                        ['name' => get_string('iosagent', $pn),
+                            'value' => !empty($rec->agentid) ? '…' . substr((string)$rec->agentid, -6) : '–'],
+                        ['name' => get_string('iosknowledge', $pn),
+                            'value' => !empty($rec->knowledgeid) ? '…' . substr((string)$rec->knowledgeid, -6) : '–'],
+                        ['name' => get_string('iosdocs', $pn), 'value' => (string)$docs],
+                        ['name' => get_string('ioslast', $pn), 'value' => $last !== '' ? $last : '–'],
+                    ],
+                    // Free the course agent for another course: deletes agent and knowledge base in FredKI.
+                    'removeurl' => (new moodle_url('/blocks/fredkitheagent/remove.php', ['courseid' => $courseid]))->out(false),
+                ];
             }
-            $content .= html_writer::start_div('fk-footer');
-            $content .= html_writer::tag(
-                'label',
-                html_writer::span(s(get_string('ioschat', $pn)), 'fk-switchtext') .
-                html_writer::empty_tag('input', $checkboxattrs),
-                ['class' => 'fk-switchrow', 'for' => 'fredki-next-chatcheck-' . (int)$COURSE->id]
-            );
-            // Direct way to the agent's look, visible next to the settings gear.
-            $content .= html_writer::link(
-                new moodle_url('/blocks/fredkitheagent/design.php', ['courseid' => (int)$COURSE->id]),
-                $this->ios_icon('palette'),
-                ['class' => 'fk-gear fk-paint', 'aria-label' => get_string('iosdesign', $pn),
-                    'title' => get_string('iosdesign', $pn)]
-            );
-            $content .= html_writer::tag('button', $this->ios_icon('info'), [
-                'type' => 'button', 'class' => 'fk-gear fk-info', 'data-fk-open' => 'settings',
-                'aria-label' => get_string('iosinfo', $pn), 'title' => get_string('iosinfo', $pn),
-                'aria-expanded' => 'false',
-            ]);
-            $content .= html_writer::end_div();
         } else if ($canmanage) {
-            $content .= html_writer::tag(
-                'p',
-                get_string($agentcreated ? 'nextcreatedesc' : 'iosintro', $pn),
-                ['class' => 'fk-intro']
-            );
-            $content .= $this->render_ios_sync_form(
-                true,
-                get_string($agentcreated ? 'ioscontinue' : 'iossetup', $pn),
-                get_string('iosbusy', $pn),
-                'sparkle',
-                'fk-main',
-                $agentcreated ? '' : $this->role_select($rec, 'fk-rolepick fk-rolepick-setup')
-            );
-            $content .= html_writer::div(s(get_string('iossetupnote', $pn)), 'fk-caption');
+            $note = false;
             if ($rec && !empty($rec->lasterror)) {
                 $completion = \block_fredkitheagent\local\import_completion::class;
                 $heading = 'nextsyncfailed';
@@ -534,160 +381,54 @@ class block_fredkitheagent extends block_base {
                     $heading = 'nextpartial';
                     $detail = substr($detail, strlen($completion::PARTIAL_PREFIX));
                 }
-                $content .= html_writer::tag(
-                    'p',
-                    get_string($heading, $pn) .
-                    html_writer::tag('small', s($detail), ['class' => 'fk-detail']),
-                    ['class' => 'fk-note']
-                );
+                $note = ['heading' => get_string($heading, $pn), 'detail' => $detail];
             }
-        }
-        $content .= html_writer::end_div();
-
-        // Quiet settings sheet (only once the agent works).
-        if ($ready && $canmanage) {
-            $content .= html_writer::start_div('fk-view fk-view-settings', ['data-fk-view' => 'settings', 'hidden' => 'hidden']);
-            $content .= html_writer::start_div('fk-sheethead');
-            $content .= html_writer::tag('h4', get_string('iosinfo', $pn), ['class' => 'fk-sheettitle']);
-            $content .= html_writer::tag('button', get_string('iosdone', $pn), [
-                'type' => 'button', 'class' => 'fk-done', 'data-fk-close' => 'settings']);
-            $content .= html_writer::end_div();
-            // Course agent details and the full check, shown directly (appearance has its own button).
-            $content .= html_writer::start_div('fk-group');
-            $content .= html_writer::start_tag('div', ['class' => 'fk-row fk-row-form']);
-            $content .= html_writer::start_div('fk-rowtext');
-            $content .= html_writer::span(s(get_string('iosfullcheck', $pn)), 'fk-rowtitle');
-            $content .= html_writer::span(s(get_string('iosfullcheckdesc', $pn)), 'fk-rowdesc');
-            $content .= html_writer::end_div();
-            $content .= $this->render_ios_sync_form(
-                true,
-                get_string('iosfullcheckrun', $pn),
-                get_string('iosbusy', $pn),
-                '',
-                'fk-rowbutton'
-            );
-            $content .= html_writer::end_tag('div');
-            $content .= html_writer::end_div();
-            $content .= html_writer::start_div('fk-group fk-facts');
-            $facts = [
-                get_string('iosagent', $pn) => !empty($rec->agentid) ? '…' . substr((string)$rec->agentid, -6) : '–',
-                get_string('iosknowledge', $pn) => !empty($rec->knowledgeid) ? '…' . substr((string)$rec->knowledgeid, -6) : '–',
-                get_string('iosdocs', $pn) => (string)$docs,
-                get_string('ioslast', $pn) => $last !== '' ? $last : '–',
+            $data['setup'] = [
+                'intro' => get_string($agentcreated ? 'nextcreatedesc' : 'iosintro', $pn),
+                'form' => $this->sync_form(
+                    true,
+                    get_string($agentcreated ? 'ioscontinue' : 'iossetup', $pn),
+                    $busy,
+                    'sparkle',
+                    'fk-main',
+                    $agentcreated ? null : $this->role_select($rec, 'fk-rolepick fk-rolepick-setup')
+                ),
+                'note' => $note,
             ];
-            foreach ($facts as $name => $value) {
-                $content .= html_writer::div(html_writer::span(s($name), 'fk-rowtext') .
-                    html_writer::span(s($value), 'fk-value'), 'fk-row fk-row-fact');
-            }
-            $content .= html_writer::end_div();
-            $content .= html_writer::div(s(get_string('iosbindingnote', $pn)), 'fk-sheetnote');
-            // Free the course agent for another course: deletes agent and knowledge base in FredKI.
-            $content .= html_writer::start_div('fk-group fk-remove');
-            $content .= html_writer::start_div('fk-row fk-row-form');
-            $content .= html_writer::start_div('fk-rowtext');
-            $content .= html_writer::span(s(get_string('removeagent', $pn)), 'fk-rowtitle');
-            $content .= html_writer::span(s(get_string('removeagentdesc', $pn)), 'fk-rowdesc');
-            $content .= html_writer::end_div();
-            $content .= html_writer::link(
-                new moodle_url('/blocks/fredkitheagent/remove.php', ['courseid' => (int)$COURSE->id]),
-                s(get_string('removeagentbutton', $pn)),
-                ['class' => 'fk-rowbutton fk-danger']
-            );
-            $content .= html_writer::end_div();
-            $content .= html_writer::end_div();
-            $content .= html_writer::end_div();
         }
-        $content .= html_writer::end_div();
-        return $content;
+        return $OUTPUT->render_from_template('block_fredkitheagent/learning_card', $data);
     }
 
     /**
-     * Can show chat launcher.
+     * Whether the protected chat can be shown in this course.
      *
-     * @param ?stdClass $rec The rec.
-     * @return bool True on success.
+     * @param ?stdClass $rec Local course record.
+     * @return bool True if the chat is ready.
      */
     protected function can_show_chat_launcher(?stdClass $rec): bool {
         return \block_fredkitheagent\local\import_completion::chat_ready($rec);
     }
 
     /**
-     * Render chat launcher.
+     * Floating button that opens the protected course chat.
      *
-     * @param bool $initiallyhidden The initiallyhidden.
-     * @return string The result.
+     * @param bool $initiallyhidden Whether the launcher starts hidden (teachers before showing the chat).
+     * @return string HTML.
      */
     protected function render_chat_launcher(bool $initiallyhidden = false): string {
-        global $COURSE, $OUTPUT;
+        global $COURSE, $OUTPUT, $USER;
         // This script must run for BOTH teachers and learners; otherwise the launcher
         // remains an inert button after being moved out of Moodle's block drawer.
         $this->page->requires->js_call_amd('block_fredkitheagent/floating_chat', 'init');
-        $url = new moodle_url('/blocks/fredkitheagent/chat.php', [
-            'courseid' => (int)$COURSE->id, 'embedded' => 1,
-        ]);
         $courseicon = \block_fredkitheagent\local\course_design::logo_url((int)$COURSE->id);
-        $icon = $courseicon ?: $OUTPUT->image_url('icon', 'block_fredkitheagent')->out(false);
-        $open = html_writer::tag(
-            'button',
-            html_writer::empty_tag('img', ['src' => $icon, 'alt' => '', 'class' => 'fredkitheagent-floating-icon']) .
-            html_writer::tag('span', get_string('managedchatopen', 'block_fredkitheagent'), ['class' => 'sr-only']),
-            [
-            'type' => 'button', 'class' => 'fredkitheagent-floating-trigger',
-            'aria-haspopup' => 'dialog', 'aria-expanded' => 'false',
-            'aria-controls' => 'fredkitheagent-floating-panel-' . (int)$COURSE->id,
-            ]
-        );
-        $menu = html_writer::tag('button', '☰', [
-            'type' => 'button', 'class' => 'fredkitheagent-floating-menu',
-            'aria-label' => get_string('managedchatmenu', 'block_fredkitheagent'),
+        return $OUTPUT->render_from_template('block_fredkitheagent/chat_launcher', [
+            'courseid' => (int)$COURSE->id,
+            'userid' => (int)$USER->id,
+            'hidden' => $initiallyhidden,
+            'icon' => $courseicon ?: $OUTPUT->image_url('icon', 'block_fredkitheagent')->out(false),
+            'chaturl' => (new moodle_url('/blocks/fredkitheagent/chat.php', [
+                'courseid' => (int)$COURSE->id, 'embedded' => 1,
+            ]))->out(false),
         ]);
-        $expand = html_writer::tag('button', '⤢', [
-            'type' => 'button', 'class' => 'fredkitheagent-floating-expand',
-            'aria-label' => get_string('managedchatexpand', 'block_fredkitheagent'),
-            'aria-pressed' => 'false',
-        ]);
-        $close = html_writer::tag('button', '×', [
-            'type' => 'button', 'class' => 'fredkitheagent-floating-close',
-            'aria-label' => get_string('managedchatclose', 'block_fredkitheagent'),
-        ]);
-        $head = html_writer::div($menu . $expand . $close, 'fredkitheagent-floating-header');
-        $historytitle = html_writer::tag('strong', get_string('managedchathistory', 'block_fredkitheagent'));
-        $historyhint = html_writer::tag('p', get_string('managedchathistoryhint', 'block_fredkitheagent'));
-        $historylist = html_writer::tag(
-            'div',
-            '',
-            ['class' => 'fredkitheagent-history-list', 'data-fredkitheagent-historylist' => '1']
-        );
-        $history = html_writer::div($historytitle . $historyhint . $historylist, 'fredkitheagent-floating-history', [
-            'hidden' => 'hidden', 'data-fredkitheagent-history' => '1',
-            'data-label-delete' => get_string('managedchathistorydelete', 'block_fredkitheagent'),
-            'data-label-clear' => get_string('managedchathistoryclear', 'block_fredkitheagent'),
-            'data-label-empty' => get_string('managedchathistoryempty', 'block_fredkitheagent'),
-        ]);
-        $frame = html_writer::tag('iframe', '', [
-            'title' => get_string('managedchattitle', 'block_fredkitheagent'),
-            'data-chat-src' => $url->out(false), 'class' => 'fredkitheagent-floating-frame',
-            'loading' => 'lazy', 'referrerpolicy' => 'same-origin',
-        ]);
-        $content = html_writer::div(
-            $history . html_writer::div($frame, 'fredkitheagent-floating-main'),
-            'fredkitheagent-floating-body'
-        );
-        $panel = html_writer::div($head . $content, 'fredkitheagent-floating-panel', [
-            'id' => 'fredkitheagent-floating-panel-' . (int)$COURSE->id,
-            'role' => 'dialog',
-            'aria-label' => get_string('managedchattitle', 'block_fredkitheagent'),
-            'hidden' => 'hidden',
-        ]);
-        $backdrop = html_writer::div('', 'fredkitheagent-floating-backdrop', ['hidden' => 'hidden']);
-        $rootattrs = [
-            'data-fredkitheagent-launcher' => '1',
-            'data-courseid' => (int)$COURSE->id,
-            'data-userid' => (int)$USER->id,
-        ];
-        if ($initiallyhidden) {
-            $rootattrs['hidden'] = 'hidden';
-        }
-        return html_writer::div($open . $backdrop . $panel, 'fredkitheagent-floating-root', $rootattrs);
     }
 }

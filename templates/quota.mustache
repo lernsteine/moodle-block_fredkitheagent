@@ -1,0 +1,48 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/quota
+
+    Box shown from 80 % of the monthly messages.
+
+    Context variables required for this template:
+    * title - Heading
+    * used - Messages used
+    * limit - Messages per month
+    * barlabel - Accessible label of the progress bar
+    * text - Explanation
+    * full - Whether all messages are used
+    * link - Optional link (url, label)
+
+    Example context (json):
+    {
+        "title": "160 of 200 messages used",
+        "used": 160,
+        "limit": 200,
+        "barvalue": 160,
+        "barlabel": "Messages used",
+        "text": "The chat answers again from 1 December.",
+        "full": false,
+        "link": false
+    }
+}}
+<div class="fk-quota{{#full}} is-full{{/full}}" role="status">
+    <strong>{{title}}</strong>
+    <progress class="fk-quotabar" max="{{limit}}" value="{{barvalue}}" aria-label="{{barlabel}}">{{used}} / {{limit}}</progress>
+    <p>{{text}}</p>
+    {{#link}}<a class="fk-main" href="{{url}}"{{#external}} target="_blank" rel="noopener"{{/external}}>{{label}}</a>{{/link}}
+</div>

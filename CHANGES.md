@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.8.0 (2026-11-15)
+
+* Moodle Marketplace review: the plugin no longer contains booking buttons, prices or links to purchase pages
+  outside Moodle Marketplace. Packages with more courses and messages are offered on the plugin's page in
+  Moodle Marketplace; their licence key is entered on the activation page ("Licence key").
+* The free package (one course, 200 messages per month) stays available permanently, without payment method.
+* Output through Mustache templates (block, activation page, course chat, chat look, synchronisation progress).
+* JavaScript: the strings are loaded with `core/str`; the next stage of a synchronisation starts through the new
+  AMD module `sync_continue` instead of inline JavaScript.
+* The chat launcher keeps the chat history per user again (the user id was missing).
+
 ## 1.7.7 (2026-11-13)
 
 * Paid packages have a monthly message limit (licence server 13.38). From 80 % the block and the activation page show

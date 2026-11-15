@@ -1831,3 +1831,8 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
 .fk-quota.is-full .fk-quotabar {
     accent-color: #c4320a;
 }
+.fk-designform{max-width:680px}
+.fk-designform .fk-colorinput{width:90px;height:42px;padding:3px}
+.fk-act .fk-licence{margin-top:22px;padding-top:16px;border-top:1px solid #ececf0}
+.fk-act .fk-licencetitle{margin:0 0 8px;font-size:16px;font-weight:650}
+.fk-act input.fk-licenceinput{box-sizing:border-box;width:100%;height:48px;border-radius:14px;border:1px solid #d1d1d6;padding:0 14px;font-size:15px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}

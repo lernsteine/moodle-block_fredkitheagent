@@ -1,0 +1,35 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/legal_checks
+
+    Required checkboxes for the terms, the privacy notice and the data processing agreement.
+
+    Context variables required for this template:
+    * checks - List of name and label (label contains links to the legal texts)
+
+    Example context (json):
+    {
+        "checks": [{"name": "acceptterms", "label": "I accept the <a href=\"#\">terms</a>."}]
+    }
+}}
+{{#checks}}
+<div class="form-check mb-2">
+    <input type="checkbox" name="{{name}}" value="1" id="fk-{{name}}" class="form-check-input" required>
+    <label for="fk-{{name}}" class="form-check-label">{{{label}}}</label>
+</div>
+{{/checks}}

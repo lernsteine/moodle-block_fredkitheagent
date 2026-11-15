@@ -1,0 +1,69 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/chat_page
+
+    Protected course chat (Moodle-local page, optionally embedded in the floating panel).
+
+    Context variables required for this template:
+    * style - CSS variables with the course colours
+    * courseid, endpoint, sesskey, threadid - Data for the amd module course_chat
+    * embedded - Whether the page is shown in the floating panel
+    * backurl - Course page
+    * logo - Avatar of the agent
+    * title - "FredKI" and the role of the course agent
+    * subtitle - Subtitle and course name
+    * welcome - Opening statement (plain text)
+    * footer - Footer text
+
+    Example context (json):
+    {
+        "style": "--fredki-accent:#007f91;",
+        "courseid": 2,
+        "endpoint": "https://example.com/blocks/fredkitheagent/chat_send.php",
+        "sesskey": "abc",
+        "threadid": "fk123",
+        "embedded": false,
+        "backurl": "https://example.com/course/view.php?id=2",
+        "logo": "https://example.com/logo.png",
+        "title": "FredKI · Berater",
+        "subtitle": "Course agent · Example course",
+        "welcome": "Hello!",
+        "footer": "Answers can contain errors."
+    }
+}}
+<section class="fredki-course-chat" style="{{style}}" data-fredki-chat="1" data-courseid="{{courseid}}" data-endpoint="{{endpoint}}" data-sesskey="{{sesskey}}" data-threadid="{{threadid}}" data-typinglabel="{{#cleanstr}} chattyping, block_fredkitheagent {{/cleanstr}}">
+    <header class="fredki-course-header">
+        {{^embedded}}<a href="{{backurl}}" class="fredki-course-back">{{#str}} chatbackcourse, block_fredkitheagent {{/str}}</a>{{/embedded}}
+        <img src="{{logo}}" alt="FredKI" class="fredki-course-logo">
+        <div><strong>{{title}}</strong><span>{{subtitle}}</span></div>
+    </header>
+    <div class="fredki-course-messages" id="fredki-course-messages" aria-live="polite">
+        <div class="fredki-course-message bot">{{#welcomelines}}{{.}}<br>{{/welcomelines}}{{lastline}}</div>
+    </div>
+    {{! Fail closed when JavaScript is unavailable: Send stays disabled until the amd module has attached. }}
+    <form id="fredki-course-form" class="fredki-course-form" method="post" action="{{endpoint}}">
+        <input type="hidden" name="courseid" value="{{courseid}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="threadid" value="{{threadid}}">
+        <label class="sr-only" for="fredki-course-input">{{#str}} chatask, block_fredkitheagent {{/str}}</label>
+        <textarea id="fredki-course-input" name="message" rows="2" maxlength="5000" placeholder="{{#cleanstr}} chatask, block_fredkitheagent {{/cleanstr}}" required></textarea>
+        <button type="submit" class="fredki-course-send" disabled>{{#str}} chatsend, block_fredkitheagent {{/str}}</button>
+    </form>
+    <noscript><p class="alert alert-warning">{{#str}} chatneedsjavascript, block_fredkitheagent {{/str}}</p></noscript>
+    <footer class="fredki-course-footer">{{footer}}</footer>
+</section>

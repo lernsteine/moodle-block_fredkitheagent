@@ -166,34 +166,25 @@ try {
         $PAGE->set_pagelayout('incourse');
         $PAGE->set_title(get_string('syncprogresstitle', 'block_fredkitheagent'));
         $PAGE->set_heading(format_string($course->fullname));
-        $PAGE->requires->js_init_code(
-            "setTimeout(function(){var f=document.getElementById('fredki-sync-continue');if(f){f.submit();}},400);"
-        );
-        $progresstext = get_string(
-            $agentstage ? 'syncprogressagent' : 'syncprogress',
-            'block_fredkitheagent',
-            (object)['done' => $done, 'total' => $total]
-        );
-        $hidden = ['courseid' => $courseid, 'sesskey' => sesskey(), 'continue' => 1, 'fullcheck' => $fullcheck ? 1 : 0];
+        $PAGE->requires->js_call_amd('block_fredkitheagent/sync_continue', 'init', ['fredki-sync-continue']);
+        $hidden = [];
+        $fields = ['courseid' => $courseid, 'sesskey' => sesskey(), 'continue' => 1, 'fullcheck' => $fullcheck ? 1 : 0];
+        foreach ($fields as $n => $v) {
+            $hidden[] = ['name' => $n, 'value' => $v];
+        }
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('syncprogresstitle', 'block_fredkitheagent'));
-        echo html_writer::tag('p', s($progresstext));
-        echo html_writer::tag('progress', '', ['max' => $total, 'value' => $done, 'class' => 'w-100']);
-        echo html_writer::tag('p', s(get_string('syncprogresshint', 'block_fredkitheagent')), ['class' => 'text-muted']);
-        echo html_writer::start_tag('form', [
-            'method' => 'post',
-            'id' => 'fredki-sync-continue',
-            'action' => new moodle_url('/blocks/fredkitheagent/sync.php'),
+        echo $OUTPUT->render_from_template('block_fredkitheagent/sync_progress', [
+            'text' => get_string(
+                $agentstage ? 'syncprogressagent' : 'syncprogress',
+                'block_fredkitheagent',
+                (object)['done' => $done, 'total' => $total]
+            ),
+            'done' => $done,
+            'total' => $total,
+            'url' => (new moodle_url('/blocks/fredkitheagent/sync.php'))->out(false),
+            'hidden' => $hidden,
         ]);
-        foreach ($hidden as $name => $value) {
-            echo html_writer::empty_tag('input', ['type' => 'hidden', 'name' => $name, 'value' => $value]);
-        }
-        echo html_writer::tag(
-            'button',
-            s(get_string('syncprogresscontinue', 'block_fredkitheagent')),
-            ['type' => 'submit', 'class' => 'btn btn-secondary']
-        );
-        echo html_writer::end_tag('form');
         echo $OUTPUT->footer();
         exit;
     }

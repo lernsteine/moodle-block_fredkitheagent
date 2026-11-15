@@ -37,6 +37,9 @@ final class managed_gateway {
     /** @var string Frankenstyle component used for config values and language strings. */
     private const COMPONENT = 'block_fredkitheagent';
 
+    /** @var string Page of the plugin in Moodle Marketplace, where packages with more courses are offered. */
+    public const MARKETPLACE_URL = 'https://marketplace.moodle.com/plugins/block_fredkitheagent';
+
     /** @var string Default HTTPS endpoint of the FredKI licence server (disclosed in the privacy metadata). */
     private const DEFAULT_API_URL = 'https://fredki-theagent.lernsteine.de/api/v1/index.php';
 

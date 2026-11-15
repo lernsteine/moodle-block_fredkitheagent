@@ -33,7 +33,7 @@ use block_fredkitheagent\local\activation_state;
  */
 final class activation_state_test extends \basic_testcase {
     /**
-     * Valid package data and links to the licence server are accepted.
+     * Valid package data is accepted; booking links of older servers are ignored.
      *
      * @covers \block_fredkitheagent\local\activation_state::billing_from_server
      */
@@ -50,8 +50,8 @@ final class activation_state_test extends \basic_testcase {
         $this->assertSame('Bis 10 Kurse', $result['plan']);
         $this->assertSame(10, $result['course_limit']);
         $this->assertSame(3, $result['courses_used']);
-        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/buchen.php?', $result['checkout_url']);
-        $this->assertStringStartsWith('https://fredki-theagent.lernsteine.de/abo.php?', $result['manage_url']);
+        $this->assertArrayNotHasKey('checkout_url', $result);
+        $this->assertArrayNotHasKey('manage_url', $result);
     }
 
     /**
@@ -93,23 +93,16 @@ final class activation_state_test extends \basic_testcase {
     }
 
     /**
-     * Links to other hosts, plain http or with script content are dropped.
+     * Only the last characters of a licence key are accepted, never anything else.
      *
      * @covers \block_fredkitheagent\local\activation_state::billing_from_server
      */
-    public function test_foreign_or_unsafe_links_are_rejected(): void {
-        $unsafe = [
-            'https://evil.example/fredki-hub/buchen.php?i=1&t=2',
-            'http://fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t=2',
-            'https://fredki-theagent.lernsteine.de:8443/fredki-hub/buchen.php?i=1&t=2',
-            'https://user@fredki-theagent.lernsteine.de/fredki-hub/buchen.php?i=1&t=2',
-            'javascript:alert(1)',
-            'https://fredki-theagent.lernsteine.de/buchen.php?i=1&t="><script>',
-            42,
-        ];
-        foreach ($unsafe as $url) {
-            $result = activation_state::billing_from_server(['checkout_url' => $url], 'fredki-theagent.lernsteine.de');
-            $this->assertNull($result['checkout_url']);
+    public function test_licence_hint(): void {
+        $host = 'fredki-theagent.lernsteine.de';
+        $result = activation_state::billing_from_server(['license' => ['hint' => 'A1B2C', 'ends_at' => 1796079600]], $host);
+        $this->assertSame(['hint' => '…A1B2C', 'ends_at' => 1796079600], $result['licence']);
+        foreach ([['hint' => '<b>'], ['hint' => 'FK2-AAAAA-BBBBB'], 'A1B2C', ['ends_at' => 5]] as $invalid) {
+            $this->assertNull(activation_state::billing_from_server(['license' => $invalid], $host)['licence']);
         }
     }
 
@@ -124,7 +117,7 @@ final class activation_state_test extends \basic_testcase {
             'legal' => null,
             'legal_required' => false,
             'free_quota' => null,
-            'plan' => null, 'course_limit' => null, 'courses_used' => null, 'checkout_url' => null, 'manage_url' => null,
+            'plan' => null, 'course_limit' => null, 'courses_used' => null, 'licence' => null,
         ], activation_state::billing_from_server([], 'fredki-theagent.lernsteine.de'));
         $result = activation_state::billing_from_server(
             ['plan' => '<b>x</b>', 'course_limit' => '10', 'courses_used' => -1],

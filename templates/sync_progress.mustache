@@ -1,0 +1,44 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/sync_progress
+
+    Progress of a staged synchronisation; the next stage starts automatically (amd module sync_continue).
+
+    Context variables required for this template:
+    * text - Progress text
+    * done - Documents done
+    * total - Documents found
+    * url - sync.php
+    * hidden - Hidden form fields (name, value)
+
+    Example context (json):
+    {
+        "text": "12 of 40 documents transferred",
+        "done": 12,
+        "total": 40,
+        "url": "https://example.com/blocks/fredkitheagent/sync.php",
+        "hidden": [{"name": "courseid", "value": 2}]
+    }
+}}
+<p>{{text}}</p>
+<progress class="w-100" max="{{total}}" value="{{done}}"></progress>
+<p class="text-muted">{{#str}} syncprogresshint, block_fredkitheagent {{/str}}</p>
+<form method="post" id="fredki-sync-continue" action="{{url}}">
+    {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
+    <button type="submit" class="btn btn-secondary">{{#str}} syncprogresscontinue, block_fredkitheagent {{/str}}</button>
+</form>

@@ -21,22 +21,37 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import {getStrings} from 'core/str';
+
+/** @var {string[]} Language strings used by this module. */
+const STRINGKEYS = ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'];
+
 /**
  * Initialise the module.
  */
 export const init = () => {
+    const strings = {};
+    // Strings are only needed after user actions: load them without delaying the initialisation.
+    getStrings(STRINGKEYS.map((key) => ({key, component: 'block_fredkitheagent'})))
+        .then((values) => {
+            STRINGKEYS.forEach((key, index) => {
+                strings[key] = values[index];
+            });
+            return values;
+        })
+        .catch(() => {
+            // English fallbacks are used.
+        });
+
     /**
-     * Language string from Moodle (lang/<lang>/block_fredkitheagent.php), English fallback.
+     * Language string loaded through core/str, English fallback.
      *
      * @param {string} key The string identifier.
-     * @param {string} fallback English text if the string was not passed to the page.
+     * @param {string} fallback English text if the string could not be loaded.
      * @return {string} The text.
      */
     function str(key, fallback) {
-        if (window.M && M.str && M.str.block_fredkitheagent && M.str.block_fredkitheagent[key]) {
-            return M.str.block_fredkitheagent[key];
-        }
-        return fallback;
+        return strings[key] || fallback;
     }
     /**
      * Initialise.

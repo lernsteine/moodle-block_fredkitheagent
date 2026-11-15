@@ -40,33 +40,24 @@ are based on the materials of that course only.
 
 ## Costs
 
-* The plugin itself is **free and open source** (GNU GPL v3 or later). There is no licence key and
-  no payment inside Moodle.
+* The plugin itself is **free and open source** (GNU GPL v3 or later).
 * The plugin uses the hosted FredKI service by lernsteine.com. FredKI itself is open source
   (GNU GPL v3): <https://github.com/lernsteine/FredKI>.
 * A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
   FredKI The Agent → "Open activation"). Registration is free.
-* **Free package – no payment needed for the essential functionality.** Every site can use the
-  plugin without paying: one course with a course agent and 200 answered chat messages per month
-  (the counter starts again on the 1st of each month). All functions of the plugin are available
-  in that course: setting up the course agent, transferring the course material, the protected
-  course chat and agent roles.
+* **Free package – permanent, no payment needed.** Every site can use the plugin without paying and
+  without time limit: one course with a course agent and 200 answered chat messages per month (the counter
+  starts again on the 1st of each month). All functions of the plugin are available in that course: setting
+  up the course agent, transferring the course material, the protected course chat and agent roles.
 * After registration the administrator accepts the terms, the privacy notice and the data processing
   agreement (Art. 28 GDPR) and clicks **"Start for free"**: no payment method is needed. The licence
   server only checks automatically that the Moodle site is reachable at its domain.
-* Optionally a paid package can be booked instead or later, with a **7-day free trial**. When the
-  trial or a subscription ends without a new booking, the site automatically continues in the free
-  package.
-* **Paid packages** (optional) give more courses with a course agent and more messages per month
-  (from 2,000). When the monthly messages are used up, 1,000 extra messages for the current month
-  can be bought at any time ("Manage subscription"), or the package can be changed. They
-  are booked and paid on the booking page of the hosted service via Stripe (card, PayPal, SEPA
-  direct debit). Current packages and prices are shown before anything is ordered; prices are
-  maintained by the provider and may change. The package can be changed or cancelled at any time
-  via "Manage subscription".
+* **Packages with more courses and messages** (optional) are offered as paid options on the plugin's page in
+  Moodle Marketplace. After the purchase a licence key is sent by e-mail; the administrator enters it on the
+  activation page. When a package ends, the site automatically continues in the free package.
 * When the course limit is reached, further courses cannot be connected; connected courses keep
-  working. When the monthly messages of the free package are used up, the chat says so and is
-  available again next month. Questions: info@lernsteine.com
+  working. When the monthly messages are used up, the chat says so and is available again next month.
+  Questions: info@lernsteine.com
 
 ## Languages
 
@@ -81,8 +72,8 @@ translation portal AMOS (lang.moodle.org) and installed with the Moodle language
 3. As administrator open *Site administration → Plugins → Blocks → FredKI The Agent → Open activation*,
    enter a contact e-mail address and register the site.
 4. On the activation page accept the terms and the data processing agreement and click
-   "Start for free" – the site is ready immediately. Optionally choose "Book a package – test 7 days
-   free" instead, for more courses and messages.
+   "Start for free" – the site is ready immediately. For more courses and messages, enter the licence key of
+   a package from Moodle Marketplace on the same page.
 5. Add the block "FredKI The Agent" to a course and press the large button.
 
 ### Reinstalling the plugin
@@ -90,7 +81,7 @@ translation portal AMOS (lang.moodle.org) and installed with the Moodle language
 Uninstalling the plugin removes its stored connection and the blocks in the courses. After installing it again,
 register the site again on the activation page with the contact e-mail address. The licence server recognises the
 site (it checks `blocks/fredkitheagent/siteproof.php` on the site's usual address) and restores the existing
-connection: package, trial and course agents are kept. Then add the block to the courses again; course material that
+connection: package and course agents are kept. Then add the block to the courses again; course material that
 is already known is not transferred twice.
 
 ## Privacy
@@ -123,7 +114,7 @@ does not grant any right to use them for other products.
 
 Please report bugs and feature requests in the issue tracker:
 https://github.com/lernsteine/moodle-block_fredkitheagent/issues
-Questions about the hosted service, trial and subscription: info@lernsteine.com
+Questions about the hosted service and packages: info@lernsteine.com
 
 ---
 

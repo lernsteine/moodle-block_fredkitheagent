@@ -81,12 +81,12 @@ final class activation_state {
     /**
      * Parse the optional package fields of the licence server (server 13.18 and later).
      *
-     * Links are only accepted as https links to the configured licence server host, so a
-     * manipulated response can never send the administrator to a foreign page.
+     * Since 1.8.0 the plugin shows no booking or subscription links: packages are bought on the plugin's
+     * page in Moodle Marketplace and activated here with a licence key.
      *
      * @param array $data The status response.
-     * @param string $apihost Host name of the configured licence server.
-     * @return array plan, course_limit, courses_used, checkout_url, manage_url (null if absent or invalid).
+     * @param string $apihost Host name of the configured licence server (kept for compatibility).
+     * @return array plan, course_limit, courses_used, licence (null if absent or invalid).
      */
     public static function billing_from_server(array $data, string $apihost): array {
         $plan = $data['plan'] ?? null;
@@ -121,8 +121,7 @@ final class activation_state {
             'plan' => is_string($plan) && preg_match('/^[\p{L}\p{N} .+\-]{1,60}$/uD', $plan) ? $plan : null,
             'course_limit' => is_int($limit) && $limit > 0 && $limit <= 100000 ? $limit : null,
             'courses_used' => is_int($used) && $used >= 0 && $used <= 100000 ? $used : null,
-            'checkout_url' => self::server_link($data['checkout_url'] ?? null, $apihost),
-            'manage_url' => self::server_link($data['manage_url'] ?? null, $apihost),
+            'licence' => self::licence_from_server($data['license'] ?? null),
         ];
     }
 
@@ -155,25 +154,21 @@ final class activation_state {
     }
 
     /**
-     * Accept only an https link to the licence server host.
+     * The licence key bound to this site (only its last characters), if any.
      *
-     * @param mixed $url The link from the server response.
-     * @param string $apihost Host name of the configured licence server.
-     * @return string|null The link or null.
+     * @param mixed $licence The "license" object of the status response.
+     * @return array|null ['hint' => '…A1B2C', 'ends_at' => ?int] or null.
      */
-    private static function server_link($url, string $apihost): ?string {
-        if (!is_string($url) || strlen($url) > 500 || $apihost === '') {
+    private static function licence_from_server($licence): ?array {
+        if (!is_array($licence)) {
             return null;
         }
-        $parts = parse_url($url);
-        if (
-            !is_array($parts) || ($parts['scheme'] ?? '') !== 'https' || isset($parts['user']) || isset($parts['pass'])
-                || isset($parts['port']) || strtolower((string)($parts['host'] ?? '')) !== strtolower($apihost)
-                || !preg_match('~^https://[A-Za-z0-9.-]+/[A-Za-z0-9._/-]*\.php\?[A-Za-z0-9=&_-]+$~D', $url)
-        ) {
+        $hint = $licence['hint'] ?? null;
+        $ends = $licence['ends_at'] ?? null;
+        if (!is_string($hint) || !preg_match('/^[A-F0-9]{5}$/D', $hint)) {
             return null;
         }
-        return $url;
+        return ['hint' => '…' . $hint, 'ends_at' => is_int($ends) && $ends > 0 ? $ends : null];
     }
 
     /**

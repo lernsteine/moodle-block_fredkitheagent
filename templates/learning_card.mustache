@@ -1,0 +1,127 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_fredkitheagent/learning_card
+
+    Card of the block for teachers: one big button for everything; extras sit quietly behind the info button.
+
+    Context variables required for this template:
+    * courseid - Course id
+    * visibilityurl - Endpoint to show or hide the chat in the course
+    * sesskey - Session key
+    * quota - Optional quota box (block_fredkitheagent/quota)
+    * detached - Course disconnected by the licence server administrator
+    * limitfull - All places of the package are used
+    * ready - The course agent works
+    * setup - The course agent is not set up yet
+    * settings - Settings sheet (only when ready)
+
+    Example context (json):
+    {
+        "courseid": 2,
+        "visibilityurl": "https://example.com/blocks/fredkitheagent/visibility.php",
+        "sesskey": "abc",
+        "quota": false,
+        "detached": false,
+        "limitfull": false,
+        "ready": false,
+        "setup": {"intro": "One click sets up everything.", "form": {"label": "Set up", "busylabel": "Working", "class": "fk-main", "fullcheck": 1}, "note": false},
+        "settings": false
+    }
+}}
+<div class="fredki-next-card fredki-ios" data-fredki-next-card="1" data-course-id="{{courseid}}" data-visibility-url="{{visibilityurl}}" data-sesskey="{{sesskey}}">
+    <div class="fk-view fk-view-main" data-fk-view="main">
+        {{> block_fredkitheagent/card_head }}
+        {{#quota}}{{> block_fredkitheagent/quota }}{{/quota}}
+
+        {{#detached}}
+        <div class="fk-status is-waiting"><span class="fk-dot is-waiting"></span>{{#str}} coursedetachedstatus, block_fredkitheagent {{/str}}</div>
+        <p class="fk-intro">{{#str}} coursedetachedintro, block_fredkitheagent {{/str}}</p>
+        {{#form}}{{> block_fredkitheagent/sync_form }}
+        <div class="fk-caption">{{#str}} coursedetachedhint, block_fredkitheagent {{/str}}</div>{{/form}}
+        {{/detached}}
+
+        {{#limitfull}}
+        <div class="fk-status is-waiting"><span class="fk-dot is-waiting"></span>{{status}}</div>
+        <p class="fk-intro">{{intro}}</p>
+        {{#manageurl}}<a class="fk-main fk-main-secondary" href="{{.}}">{{#str}} limitfullmanage, block_fredkitheagent {{/str}}</a>{{/manageurl}}
+        {{#form}}{{> block_fredkitheagent/sync_form }}{{/form}}
+        {{/limitfull}}
+
+        {{#ready}}
+        <div class="fk-status"><span class="fk-dot is-ready"></span>{{status}}</div>
+        {{#roleform}}
+        <form method="post" class="fk-roleform" action="{{url}}">
+            <input type="hidden" name="courseid" value="{{courseid}}">
+            <input type="hidden" name="sesskey" value="{{sesskey}}">
+            {{#roleselect}}{{> block_fredkitheagent/role_select }}{{/roleselect}}
+            <button type="submit" class="fk-rowbutton">{{#str}} rolechange, block_fredkitheagent {{/str}}</button>
+        </form>
+        {{/roleform}}
+        {{#form}}{{> block_fredkitheagent/sync_form }}{{/form}}
+        {{#last}}<div class="fk-caption">{{#str}} ioslastsync, block_fredkitheagent, {{.}} {{/str}}</div>{{/last}}
+        <span class="fk-result" data-fredki-next-result="1" role="status" aria-live="polite"></span>
+        <div class="fk-rule"></div>
+        <div class="fk-footer">
+            <label class="fk-switchrow" for="fredki-next-chatcheck-{{courseid}}">
+                <span class="fk-switchtext">{{#str}} ioschat, block_fredkitheagent {{/str}}</span>
+                <input type="checkbox" class="fk-switch" role="switch" data-fredki-next-togglechat="1" id="fredki-next-chatcheck-{{courseid}}"{{#chatvisible}} checked{{/chatvisible}}>
+            </label>
+            <a class="fk-gear fk-paint" href="{{designurl}}" aria-label="{{#cleanstr}} iosdesign, block_fredkitheagent {{/cleanstr}}" title="{{#cleanstr}} iosdesign, block_fredkitheagent {{/cleanstr}}">{{#paletteicon}}{{> block_fredkitheagent/icon }}{{/paletteicon}}</a>
+            <button type="button" class="fk-gear fk-info" data-fk-open="settings" aria-label="{{#cleanstr}} iosinfo, block_fredkitheagent {{/cleanstr}}" title="{{#cleanstr}} iosinfo, block_fredkitheagent {{/cleanstr}}" aria-expanded="false">{{#infoicon}}{{> block_fredkitheagent/icon }}{{/infoicon}}</button>
+        </div>
+        {{/ready}}
+
+        {{#setup}}
+        <p class="fk-intro">{{intro}}</p>
+        {{#form}}{{> block_fredkitheagent/sync_form }}{{/form}}
+        <div class="fk-caption">{{#str}} iossetupnote, block_fredkitheagent {{/str}}</div>
+        {{#note}}<p class="fk-note">{{heading}}<small class="fk-detail">{{detail}}</small></p>{{/note}}
+        {{/setup}}
+    </div>
+
+    {{#settings}}
+    <div class="fk-view fk-view-settings" data-fk-view="settings" hidden>
+        <div class="fk-sheethead">
+            <h4 class="fk-sheettitle">{{#str}} iosinfo, block_fredkitheagent {{/str}}</h4>
+            <button type="button" class="fk-done" data-fk-close="settings">{{#str}} iosdone, block_fredkitheagent {{/str}}</button>
+        </div>
+        <div class="fk-group">
+            <div class="fk-row fk-row-form">
+                <div class="fk-rowtext">
+                    <span class="fk-rowtitle">{{#str}} iosfullcheck, block_fredkitheagent {{/str}}</span>
+                    <span class="fk-rowdesc">{{#str}} iosfullcheckdesc, block_fredkitheagent {{/str}}</span>
+                </div>
+                {{#form}}{{> block_fredkitheagent/sync_form }}{{/form}}
+            </div>
+        </div>
+        <div class="fk-group fk-facts">
+            {{#facts}}<div class="fk-row fk-row-fact"><span class="fk-rowtext">{{name}}</span><span class="fk-value">{{value}}</span></div>{{/facts}}
+        </div>
+        <div class="fk-sheetnote">{{#str}} iosbindingnote, block_fredkitheagent {{/str}}</div>
+        <div class="fk-group fk-remove">
+            <div class="fk-row fk-row-form">
+                <div class="fk-rowtext">
+                    <span class="fk-rowtitle">{{#str}} removeagent, block_fredkitheagent {{/str}}</span>
+                    <span class="fk-rowdesc">{{#str}} removeagentdesc, block_fredkitheagent {{/str}}</span>
+                </div>
+                <a class="fk-rowbutton fk-danger" href="{{removeurl}}">{{#str}} removeagentbutton, block_fredkitheagent {{/str}}</a>
+            </div>
+        </div>
+    </div>
+    {{/settings}}
+</div>

@@ -37,10 +37,6 @@ $PAGE->set_heading(format_string($course->fullname));
 if ($embedded) {
     $PAGE->add_body_class('fredkitheagent-embedded-chat');
 }
-$PAGE->requires->strings_for_js(
-    ['chatdetached', 'chaterrorempty', 'chaterrorload', 'chatshowfullanswer'],
-    'block_fredkitheagent'
-);
 $PAGE->requires->js_call_amd('block_fredkitheagent/course_chat', 'init');
 $color = static function (string $name, string $default): string {
     $value = (string)get_config('block_fredkitheagent', $name);
@@ -120,34 +116,23 @@ $backurl = (new moodle_url('/course/view.php', ['id' => $courseid]))->out(false)
 header('Cache-Control: private, no-store');
 header('Referrer-Policy: no-referrer');
 echo $OUTPUT->header();
-$vars = '--fredki-header:' . $header . ';--fredki-accent:' . $accent . ';--fredki-bg:' . $background .
-    ';--fredki-botbubble:' . $botbubble . ';--fredki-userbubble:' . $userbubble . ';';
-echo '<section class="fredki-course-chat" style="' . s($vars) . '" data-fredki-chat="1"'
-    . ' data-courseid="' . (int)$courseid . '" data-endpoint="' . s($endpoint) . '" data-sesskey="' . s(sesskey()) . '"'
-    . ' data-threadid="' . s($threadid) . '"'
-    . ' data-typinglabel="' . s(get_string('chattyping', 'block_fredkitheagent')) . '">';
-echo '<header class="fredki-course-header">'
-    . ($embedded ? '' : '<a href="' . s($backurl) . '" class="fredki-course-back">' .
-        s(get_string('chatbackcourse', 'block_fredkitheagent')) . '</a>')
-    . '<img src="' . s($logo) . '" alt="FredKI" class="fredki-course-logo">'
-    . '<div><strong>FredKI' . ($rolename !== '' ? ' · ' . s($rolename) : '') . '</strong><span>'
-    . s(get_string('nextsubtitle', 'block_fredkitheagent'))
-    . ' · ' . s(format_string($course->fullname)) . '</span></div>'
-    . '</header>';
-echo '<div class="fredki-course-messages" id="fredki-course-messages" aria-live="polite">'
-    . '<div class="fredki-course-message bot">' . nl2br(s($welcome)) . '</div></div>';
-// Fail closed when JavaScript is unavailable: the Send button is disabled until
-// the fetch handler has been installed. Never navigate the iframe to a Moodle page.
-echo '<form id="fredki-course-form" class="fredki-course-form" method="post" action="' . s($endpoint) . '">'
-    . '<input type="hidden" name="courseid" value="' . (int)$courseid . '">'
-    . '<input type="hidden" name="sesskey" value="' . s(sesskey()) . '">'
-    . '<input type="hidden" name="threadid" value="' . s($threadid) . '">'
-    . '<label class="sr-only" for="fredki-course-input">' . s(get_string('chatask', 'block_fredkitheagent')) . '</label>'
-    . '<textarea id="fredki-course-input" name="message" rows="2" maxlength="5000" placeholder="' .
-        s(get_string('chatask', 'block_fredkitheagent')) . '" required></textarea>'
-    . '<button type="submit" class="fredki-course-send" disabled="disabled">' .
-        s(get_string('chatsend', 'block_fredkitheagent')) . '</button>'
-    . '</form>';
-echo '<noscript><p class="alert alert-warning">' . s(get_string('chatneedsjavascript', 'block_fredkitheagent')) . '</p></noscript>';
-echo '<footer class="fredki-course-footer">' . s($footer) . '</footer></section>';
+// The opening statement keeps its line breaks; every line is escaped by the template.
+$welcomelines = preg_split('/\R/u', $welcome);
+$lastline = (string)array_pop($welcomelines);
+echo $OUTPUT->render_from_template('block_fredkitheagent/chat_page', [
+    'style' => '--fredki-header:' . $header . ';--fredki-accent:' . $accent . ';--fredki-bg:' . $background .
+        ';--fredki-botbubble:' . $botbubble . ';--fredki-userbubble:' . $userbubble . ';',
+    'courseid' => (int)$courseid,
+    'endpoint' => $endpoint,
+    'sesskey' => sesskey(),
+    'threadid' => $threadid,
+    'embedded' => (bool)$embedded,
+    'backurl' => $backurl,
+    'logo' => $logo,
+    'title' => 'FredKI' . ($rolename !== '' ? ' · ' . $rolename : ''),
+    'subtitle' => get_string('nextsubtitle', 'block_fredkitheagent') . ' · ' . format_string($course->fullname),
+    'welcomelines' => $welcomelines,
+    'lastline' => $lastline,
+    'footer' => $footer,
+]);
 echo $OUTPUT->footer();
