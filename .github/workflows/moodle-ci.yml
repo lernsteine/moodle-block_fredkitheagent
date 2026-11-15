@@ -128,8 +128,7 @@ jobs:
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci mustache
 
-      - name: Grunt (stylelint)
-        continue-on-error: true # advisory until the stylesheet has been reflowed
+      - name: Grunt (ESLint, stylelint, AMD build)
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0
 
