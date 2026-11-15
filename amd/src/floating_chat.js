@@ -31,7 +31,9 @@ export const init = () => {
      * @param {*} root Root.
      */
     function setup(root) {
-        if (root.dataset.ready) { return; }
+        if (root.dataset.ready) {
+            return;
+        }
         root.dataset.ready = '1';
         var courseid = root.getAttribute('data-courseid') || '0';
         var userid = root.getAttribute('data-userid') || '0';
@@ -39,7 +41,10 @@ export const init = () => {
         var block = root.closest('.block_fredkitheagent');
         var onlyLauncher = block && !block.querySelector('.fredkitheagent-brand-card') && !block.querySelector('.fredki-next-card');
         document.body.appendChild(root);
-        if (onlyLauncher) { block.hidden = true; block.style.display = 'none'; }
+        if (onlyLauncher) {
+            block.hidden = true;
+            block.style.display = 'none';
+        }
         var trigger = root.querySelector('.fredkitheagent-floating-trigger');
         var panel = root.querySelector('.fredkitheagent-floating-panel');
         var close = root.querySelector('.fredkitheagent-floating-close');
@@ -49,12 +54,18 @@ export const init = () => {
         var backdrop = root.querySelector('.fredkitheagent-floating-backdrop');
         var history = root.querySelector('[data-fredkitheagent-history="1"]');
         var historylist = root.querySelector('[data-fredkitheagent-historylist="1"]');
-        if (!trigger || !panel || !close || !frame || !backdrop || !expand || !menu || !history || !historylist) { return; }
+        if (!trigger || !panel || !close || !frame || !backdrop || !expand || !menu || !history || !historylist) {
+            return;
+        }
         /**
          * Load history.
          */
         function loadHistory() {
-            try { return JSON.parse(sessionStorage.getItem(storageKey) || '[]'); } catch (e) { return []; }
+            try {
+                return JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+            } catch (e) {
+                return [];
+            }
         }
         /**
          * Save history.
@@ -62,7 +73,11 @@ export const init = () => {
          * @param {*} items Items.
          */
         function saveHistory(items) {
-            try { sessionStorage.setItem(storageKey, JSON.stringify(items.slice(0, 20))); } catch (e) { /* ignore */ }
+            try {
+                sessionStorage.setItem(storageKey, JSON.stringify(items.slice(0, 20)));
+            } catch (e) {
+                // Storage may be unavailable (private mode); the history is optional.
+            }
         }
         /**
          * Render history.
@@ -80,18 +95,21 @@ export const init = () => {
                 historylist.appendChild(empty);
                 return;
             }
-            items.forEach(function (item) {
+            items.forEach(function(item) {
                 var row = document.createElement('div');
                 row.className = 'fredkitheagent-history-row';
                 var btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'fredkitheagent-history-item';
                 btn.textContent = item.prompt;
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
                     open();
-                    setTimeout(function () {
+                    setTimeout(function() {
                         if (frame.contentWindow) {
-                            frame.contentWindow.postMessage({type: 'fredki:prefill', prompt: item.prompt}, window.location.origin);
+                            frame.contentWindow.postMessage({
+                                type: 'fredki:prefill',
+                                prompt: item.prompt
+                            }, window.location.origin);
                         }
                     }, 200);
                 });
@@ -101,9 +119,9 @@ export const init = () => {
                 del.setAttribute('aria-label', labeldelete);
                 del.title = labeldelete;
                 del.textContent = '×';
-                del.addEventListener('click', function (event) {
+                del.addEventListener('click', function(event) {
                     event.stopPropagation();
-                    saveHistory(loadHistory().filter(function (entry) {
+                    saveHistory(loadHistory().filter(function(entry) {
                         return !(entry.prompt === item.prompt && entry.time === item.time);
                     }));
                     renderHistory();
@@ -116,7 +134,7 @@ export const init = () => {
             clear.type = 'button';
             clear.className = 'fredkitheagent-history-clear';
             clear.textContent = labelclear;
-            clear.addEventListener('click', function () {
+            clear.addEventListener('click', function() {
                 saveHistory([]);
                 renderHistory();
             });
@@ -128,9 +146,16 @@ export const init = () => {
          * @param {*} prompt Prompt.
          */
         function addHistory(prompt) {
-            if (!prompt) { return; }
-            var items = loadHistory().filter(function (item) { return item.prompt !== prompt; });
-            items.unshift({prompt: prompt, time: Date.now()});
+            if (!prompt) {
+                return;
+            }
+            var items = loadHistory().filter(function(item) {
+                return item.prompt !== prompt;
+            });
+            items.unshift({
+                prompt: prompt,
+                time: Date.now()
+            });
             saveHistory(items);
             renderHistory();
         }
@@ -138,16 +163,22 @@ export const init = () => {
          * Notify state.
          */
         function notifyState() {
-            window.postMessage({type: 'fredki:chatstate', open: !panel.hidden}, window.location.origin);
+            window.postMessage({
+                type: 'fredki:chatstate',
+                open: !panel.hidden
+            }, window.location.origin);
         }
         /**
          * Open.
          */
         function open() {
-            panel.hidden = false; backdrop.hidden = false;
+            panel.hidden = false;
+            backdrop.hidden = false;
             trigger.setAttribute('aria-expanded', 'true');
             document.body.classList.add('fredkitheagent-chat-open');
-            if (!frame.getAttribute('src')) { frame.setAttribute('src', frame.dataset.chatSrc); }
+            if (!frame.getAttribute('src')) {
+                frame.setAttribute('src', frame.dataset.chatSrc);
+            }
             renderHistory();
             notifyState();
         }
@@ -155,48 +186,73 @@ export const init = () => {
          * Close panel.
          */
         function closePanel() {
-            panel.hidden = true; backdrop.hidden = true;
+            panel.hidden = true;
+            backdrop.hidden = true;
             trigger.setAttribute('aria-expanded', 'false');
             document.body.classList.remove('fredkitheagent-chat-open');
             notifyState();
         }
-        trigger.addEventListener('click', function (event) {
+        trigger.addEventListener('click', function(event) {
             event.preventDefault();
-            if (panel.hidden) { open(); } else { closePanel(); }
+            if (panel.hidden) {
+                open();
+            } else {
+                closePanel();
+            }
         });
-        close.addEventListener('click', function () { closePanel(); });
-        backdrop.addEventListener('click', function () { closePanel(); });
-        menu.addEventListener('click', function () {
+        close.addEventListener('click', function() {
+            closePanel();
+        });
+        backdrop.addEventListener('click', function() {
+            closePanel();
+        });
+        menu.addEventListener('click', function() {
             history.hidden = !history.hidden;
             panel.classList.toggle('is-history-open', !history.hidden);
-            if (!history.hidden) { renderHistory(); }
+            if (!history.hidden) {
+                renderHistory();
+            }
         });
-        expand.addEventListener('click', function () {
+        expand.addEventListener('click', function() {
             var expanded = panel.classList.toggle('is-expanded');
             expand.setAttribute('aria-pressed', expanded ? 'true' : 'false');
         });
-        window.addEventListener('message', function (event) {
-            if (event.origin !== window.location.origin || event.source !== frame.contentWindow || !event.data) { return; }
+        window.addEventListener('message', function(event) {
+            if (event.origin !== window.location.origin || event.source !== frame.contentWindow || !event.data) {
+                return;
+            }
             if (event.data.type === 'fredki:history' && typeof event.data.prompt === 'string') {
                 addHistory(event.data.prompt);
             }
         });
         // Changing the teacher checkbox controls visibility of the fixed launcher.
         // No agent is created or deleted and the protected chat endpoint remains unchanged.
-        document.addEventListener('fredkitheagent:visibility', function (event) {
-            if (!event.detail || String(event.detail.courseid) !== courseid) { return; }
-            if (!event.detail.enabled) { closePanel(); }
+        document.addEventListener('fredkitheagent:visibility', function(event) {
+            if (!event.detail || String(event.detail.courseid) !== courseid) {
+                return;
+            }
+            if (!event.detail.enabled) {
+                closePanel();
+            }
             root.hidden = !event.detail.enabled;
         });
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && !panel.hidden) { event.preventDefault(); closePanel(); }
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !panel.hidden) {
+                event.preventDefault();
+                closePanel();
+            }
         });
         renderHistory();
     }
     /**
      * Ready.
      */
-    function ready() { document.querySelectorAll('[data-fredkitheagent-launcher="1"]').forEach(setup); }
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', ready); }
-    else { ready(); }
+    function ready() {
+        document.querySelectorAll('[data-fredkitheagent-launcher="1"]').forEach(setup);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ready);
+    } else {
+        ready();
+    }
 };

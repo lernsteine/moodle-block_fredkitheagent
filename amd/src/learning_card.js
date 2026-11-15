@@ -32,7 +32,10 @@ const STRINGKEYS = ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 
 export const init = () => {
     const strings = {};
     // Strings are only needed after user actions: load them without delaying the initialisation.
-    getStrings(STRINGKEYS.map((key) => ({key, component: 'block_fredkitheagent'})))
+    getStrings(STRINGKEYS.map((key) => ({
+            key,
+            component: 'block_fredkitheagent'
+        })))
         .then((values) => {
             STRINGKEYS.forEach((key, index) => {
                 strings[key] = values[index];
@@ -57,38 +60,56 @@ export const init = () => {
      * Initialise.
      */
     function initialise() {
-        document.querySelectorAll('[data-fredki-next-card="1"]').forEach(function (root) {
-            if (root.dataset.visibilityReady === '1') { return; }
+        document.querySelectorAll('[data-fredki-next-card="1"]').forEach(function(root) {
+            if (root.dataset.visibilityReady === '1') {
+                return;
+            }
             root.dataset.visibilityReady = '1';
             // Quiet settings sheet behind the gear.
             var views = {};
-            root.querySelectorAll('[data-fk-view]').forEach(function (view) { views[view.getAttribute('data-fk-view')] = view; });
+            root.querySelectorAll('[data-fk-view]').forEach(function(view) {
+                views[view.getAttribute('data-fk-view')] = view;
+            });
             /**
              * Show.
              *
              * @param {*} name Name.
              */
             function show(name) {
-                Object.keys(views).forEach(function (key) { views[key].hidden = key !== name; });
+                Object.keys(views).forEach(function(key) {
+                    views[key].hidden = key !== name;
+                });
                 var gear = root.querySelector('[data-fk-open="settings"]');
-                if (gear) { gear.setAttribute('aria-expanded', name === 'settings' ? 'true' : 'false'); }
+                if (gear) {
+                    gear.setAttribute('aria-expanded', name === 'settings' ? 'true' : 'false');
+                }
                 var focus = name === 'settings' ? root.querySelector('[data-fk-close="settings"]') : gear;
-                if (focus) { focus.focus(); }
+                if (focus) {
+                    focus.focus();
+                }
             }
-            root.querySelectorAll('[data-fk-open]').forEach(function (button) {
-                button.addEventListener('click', function () { show(button.getAttribute('data-fk-open')); });
+            root.querySelectorAll('[data-fk-open]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    show(button.getAttribute('data-fk-open'));
+                });
             });
-            root.querySelectorAll('[data-fk-close]').forEach(function (button) {
-                button.addEventListener('click', function () { show('main'); });
+            root.querySelectorAll('[data-fk-close]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    show('main');
+                });
             });
-            root.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape' && views.settings && !views.settings.hidden) { show('main'); }
+            root.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && views.settings && !views.settings.hidden) {
+                    show('main');
+                }
             });
             // The big button turns into a calm progress state while the synchronisation runs.
-            root.querySelectorAll('form[data-fk-syncform]').forEach(function (form) {
-                form.addEventListener('submit', function () {
+            root.querySelectorAll('form[data-fk-syncform]').forEach(function(form) {
+                form.addEventListener('submit', function() {
                     var button = form.querySelector('button[type="submit"]');
-                    if (!button || root.classList.contains('is-busy')) { return; }
+                    if (!button || root.classList.contains('is-busy')) {
+                        return;
+                    }
                     root.classList.add('is-busy');
                     button.classList.add('is-busy');
                     button.setAttribute('aria-busy', 'true');
@@ -97,8 +118,10 @@ export const init = () => {
                         label.textContent = button.getAttribute('data-fk-busylabel');
                     }
                     // Disable AFTER the browser has collected the form data.
-                    setTimeout(function () {
-                        root.querySelectorAll('button, input').forEach(function (control) { control.disabled = true; });
+                    setTimeout(function() {
+                        root.querySelectorAll('button, input').forEach(function(control) {
+                            control.disabled = true;
+                        });
                     }, 0);
                 });
             });
@@ -107,11 +130,15 @@ export const init = () => {
             var url = root.getAttribute('data-visibility-url');
             var courseid = root.getAttribute('data-course-id');
             var sesskey = root.getAttribute('data-sesskey');
-            if (!checkbox || !url || !courseid || !sesskey) { return; }
-            checkbox.addEventListener('change', function () {
+            if (!checkbox || !url || !courseid || !sesskey) {
+                return;
+            }
+            checkbox.addEventListener('change', function() {
                 var requested = checkbox.checked;
                 checkbox.disabled = true;
-                if (message) { message.textContent = str('visibilitysaving', 'Saving …'); }
+                if (message) {
+                    message.textContent = str('visibilitysaving', 'Saving …');
+                }
                 var body = new URLSearchParams({
                     courseid: courseid,
                     sesskey: sesskey,
@@ -126,37 +153,50 @@ export const init = () => {
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: body.toString(),
-                    redirect: 'error', cache: 'no-store'
-                }).then(function (response) {
+                    redirect: 'error',
+                    cache: 'no-store'
+                }).then(function(response) {
                     var contenttype = response.headers.get('content-type') || '';
                     if (!response.ok || contenttype.indexOf('application/json') === -1) {
                         throw new Error('Server rejected change');
                     }
                     return response.json();
-                }).then(function (payload) {
+                }).then(function(payload) {
                     if (!payload || payload.ok !== true || payload.visible !== requested) {
                         throw new Error('Invalid response');
                     }
                     document.dispatchEvent(new CustomEvent('fredkitheagent:visibility', {
-                        detail: {enabled: requested, courseid: courseid}
+                        detail: {
+                            enabled: requested,
+                            courseid: courseid
+                        }
                     }));
                     if (message) {
-                        message.textContent = requested
-                            ? str('visibilityshown', 'The chat is visible in the course.')
-                            : str('visibilityhidden', 'The chat is hidden in the course.');
+                        message.textContent = requested ?
+                            str('visibilityshown', 'The chat is visible in the course.') :
+                            str('visibilityhidden', 'The chat is hidden in the course.');
                     }
-                }).catch(function () {
+                    return payload;
+                }).catch(function() {
                     checkbox.checked = !requested;
-                    if (message) { message.textContent = str('visibilityfailed', 'Saving failed. Please try again.'); }
-                }).finally(function () {
+                    if (message) {
+                        message.textContent = str('visibilityfailed', 'Saving failed. Please try again.');
+                    }
+                }).finally(function() {
                     checkbox.disabled = false;
                 });
             });
         });
     }
     // Coming back via the browser's back button must not leave a disabled card behind.
-    window.addEventListener('pageshow', function (event) { if (event.persisted) { window.location.reload(); } });
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initialise);
-    } else { initialise(); }
+    } else {
+        initialise();
+    }
 };

@@ -32,7 +32,10 @@ const STRINGKEYS = ['chatdetached', 'chaterrorempty', 'chaterrorload', 'chatshow
 export const init = () => {
     const strings = {};
     // Strings are only needed after user actions: load them without delaying the initialisation.
-    getStrings(STRINGKEYS.map((key) => ({key, component: 'block_fredkitheagent'})))
+    getStrings(STRINGKEYS.map((key) => ({
+            key,
+            component: 'block_fredkitheagent'
+        })))
         .then((values) => {
             STRINGKEYS.forEach((key, index) => {
                 strings[key] = values[index];
@@ -54,7 +57,6 @@ export const init = () => {
         return strings[key] || fallback;
     }
 
-
     /* ------------------------------------------------------------------
      * Minimal, safe Markdown renderer for model answers.
      * Builds DOM nodes with createElement/createTextNode ONLY (never innerHTML),
@@ -71,7 +73,9 @@ export const init = () => {
      */
     function el(name, parent) {
         var node = document.createElement(name);
-        if (parent) { parent.appendChild(node); }
+        if (parent) {
+            parent.appendChild(node);
+        }
         return node;
     }
     /**
@@ -81,27 +85,50 @@ export const init = () => {
      * @param {*} parent Parent.
      */
     function inline(text, parent) {
-        var rules = [
-            {re: /`([^`\n]+)`/, make: function (m, host) { el('code', host).textContent = m[1]; }},
-            {re: /\*\*([^\n]+?)\*\*/, make: function (m, host) { inline(m[1], el('strong', host)); }},
-            {re: /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/, make: function (m, host) {
+        var rules = [{
+            re: /`([^`\n]+)`/,
+            make: function(m, host) {
+                el('code', host).textContent = m[1];
+            }
+        }, {
+            re: /\*\*([^\n]+?)\*\*/,
+            make: function(m, host) {
+                inline(m[1], el('strong', host));
+            }
+        }, {
+            re: /\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/,
+            make: function(m, host) {
                 var a = el('a', host);
                 a.href = m[2];
                 a.target = '_blank';
                 a.rel = 'noopener noreferrer nofollow';
                 inline(m[1], a);
-            }},
-            {re: /\*([^*\s][^*\n]*?)\*/, make: function (m, host) { inline(m[1], el('em', host)); }}
-        ];
+            }
+        }, {
+            re: /\*([^*\s][^*\n]*?)\*/,
+            make: function(m, host) {
+                inline(m[1], el('em', host));
+            }
+        }];
         var rest = text;
         while (rest.length) {
             var best = null;
             for (var i = 0; i < rules.length; i++) {
                 var m = rules[i].re.exec(rest);
-                if (m && (best === null || m.index < best.m.index)) { best = {m: m, rule: rules[i]}; }
+                if (m && (best === null || m.index < best.m.index)) {
+                    best = {
+                        m: m,
+                        rule: rules[i]
+                    };
+                }
             }
-            if (!best) { parent.appendChild(document.createTextNode(rest)); return; }
-            if (best.m.index > 0) { parent.appendChild(document.createTextNode(rest.slice(0, best.m.index))); }
+            if (!best) {
+                parent.appendChild(document.createTextNode(rest));
+                return;
+            }
+            if (best.m.index > 0) {
+                parent.appendChild(document.createTextNode(rest.slice(0, best.m.index)));
+            }
             best.rule.make(best.m, parent);
             rest = rest.slice(best.m.index + best.m[0].length);
         }
@@ -113,134 +140,301 @@ export const init = () => {
      * @param {*} parent Parent.
      */
     function inlineLines(lines, parent) {
-        lines.forEach(function (line, index) {
-            if (index > 0) { el('br', parent); }
+        lines.forEach(function(line, index) {
+            if (index > 0) {
+                el('br', parent);
+            }
             inline(line, parent);
         });
     }
+    /** @var {RegExp} A list item: indentation, bullet or number, text. */
+    var ITEMRE = /^(\s*)([-*+•]|\d+[.)])\s+(.*)$/;
+
+    /**
+     * Whether a line is empty.
+     *
+     * @param {string} line Line.
+     * @return {boolean}
+     */
+    function mdBlank(line) {
+        return /^\s*$/.test(line);
+    }
+
+    /**
+     * Whether a line is a table row.
+     *
+     * @param {string} line Line.
+     * @return {boolean}
+     */
+    function mdIsRow(line) {
+        return /^\s*\|.*\|\s*$/.test(line);
+    }
+
+    /**
+     * Cells of a table row.
+     *
+     * @param {string} line Line.
+     * @return {string[]}
+     */
+    function mdCells(line) {
+        return line.trim().replace(/^\||\|$/g, '').split('|').map(function(c) {
+            return c.trim();
+        });
+    }
+
+    /**
+     * Fenced code block.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no code block.
+     */
+    function mdCode(lines, i, root) {
+        if (!/^\s*```/.test(lines[i])) {
+            return i;
+        }
+        var code = [];
+        var j = i + 1;
+        while (j < lines.length && !/^\s*```/.test(lines[j])) {
+            code.push(lines[j]);
+            j++;
+        }
+        el('code', el('pre', root)).textContent = code.join('\n');
+        return j + 1;
+    }
+
+    /**
+     * Heading.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no heading.
+     */
+    function mdHeading(lines, i, root) {
+        var m = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(lines[i]);
+        if (!m) {
+            return i;
+        }
+        inline(m[2], el('h' + Math.min(6, m[1].length + 2), root));
+        return i + 1;
+    }
+
+    /**
+     * Horizontal rule.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no rule.
+     */
+    function mdRule(lines, i, root) {
+        if (!/^\s*([-*_])(\s*\1){2,}\s*$/.test(lines[i])) {
+            return i;
+        }
+        el('hr', root);
+        return i + 1;
+    }
+
+    /**
+     * Table with a header row and a separator row.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no table.
+     */
+    function mdTable(lines, i, root) {
+        var separator = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
+        if (!mdIsRow(lines[i]) || i + 1 >= lines.length || !separator.test(lines[i + 1])) {
+            return i;
+        }
+        var table = el('table', root);
+        var headrow = el('tr', el('thead', table));
+        mdCells(lines[i]).forEach(function(c) {
+            inline(c, el('th', headrow));
+        });
+        var body = el('tbody', table);
+        var j = i + 2;
+        while (j < lines.length && mdIsRow(lines[j])) {
+            var row = el('tr', body);
+            mdCells(lines[j]).forEach(function(c) {
+                inline(c, el('td', row));
+            });
+            j++;
+        }
+        return j;
+    }
+
+    /**
+     * Block quote.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no quote.
+     */
+    function mdQuote(lines, i, root) {
+        var quote = [];
+        var j = i;
+        while (j < lines.length && /^\s*>/.test(lines[j])) {
+            quote.push(lines[j].replace(/^\s*>\s?/, ''));
+            j++;
+        }
+        if (j > i) {
+            inlineLines(quote, el('blockquote', root));
+        }
+        return j;
+    }
+
+    /**
+     * Add one list item, opening or closing nested lists by indentation.
+     *
+     * @param {Array} match Result of ITEMRE.
+     * @param {Object} state stack of {indent, list}, last item, root.
+     */
+    function mdListItem(match, state) {
+        var indent = match[1].replace(/\t/g, '    ').length;
+        var ordered = /\d/.test(match[2].charAt(0));
+        while (state.stack.length && indent < state.stack[state.stack.length - 1].indent) {
+            state.stack.pop();
+        }
+        if (!state.stack.length || indent > state.stack[state.stack.length - 1].indent) {
+            var host = state.stack.length && state.last ? state.last : state.root;
+            var list = el(ordered ? 'ol' : 'ul', host);
+            if (ordered && /^\d+/.test(match[2]) && parseInt(match[2], 10) !== 1) {
+                list.start = parseInt(match[2], 10);
+            }
+            state.stack.push({indent: indent, list: list});
+        }
+        state.last = el('li', state.stack[state.stack.length - 1].list);
+        inline(match[3], state.last);
+    }
+
+    /**
+     * Index of the next line that is not empty.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} from Start.
+     * @return {number}
+     */
+    function mdNextNonBlank(lines, from) {
+        while (from < lines.length && mdBlank(lines[from])) {
+            from++;
+        }
+        return from;
+    }
+
+    /**
+     * Lists, nested by indentation; indented plain lines continue the current item.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line, or i if this is no list.
+     */
+    function mdList(lines, i, root) {
+        if (!ITEMRE.test(lines[i])) {
+            return i;
+        }
+        var state = {stack: [], last: null, root: root};
+        var j = i;
+        while (j < lines.length) {
+            var cur = lines[j];
+            var match = ITEMRE.exec(cur);
+            if (mdBlank(cur)) {
+                var peek = mdNextNonBlank(lines, j);
+                if (peek >= lines.length || !ITEMRE.test(lines[peek])) {
+                    break;
+                }
+                j = peek;
+            } else if (match) {
+                mdListItem(match, state);
+                j++;
+            } else if (/^\s+\S/.test(cur) && state.last) {
+                el('br', state.last);
+                inline(cur.trim(), state.last);
+                j++;
+            } else {
+                break;
+            }
+        }
+        return j;
+    }
+
+    /**
+     * Paragraph: all following lines up to the next block.
+     *
+     * @param {string[]} lines All lines.
+     * @param {number} i Current line.
+     * @param {Node} root Target.
+     * @return {number} Next line.
+     */
+    function mdParagraph(lines, i, root) {
+        var para = [];
+        var j = i;
+        while (j < lines.length && !mdBlank(lines[j]) && !ITEMRE.test(lines[j]) &&
+            !/^(#{1,6})\s/.test(lines[j]) && !/^\s*```/.test(lines[j]) && !/^\s*>/.test(lines[j])) {
+            para.push(lines[j]);
+            j++;
+        }
+        if (!para.length) {
+            para.push(lines[j]);
+            j++;
+        }
+        inlineLines(para, el('p', root));
+        return j;
+    }
+
     /**
      * Render markdown.
      *
      * @param {*} source Source.
+     * @return {DocumentFragment}
      */
     function renderMarkdown(source) {
         var root = document.createDocumentFragment();
         var lines = String(source).replace(/\r\n?/g, '\n').split('\n');
+        var blocks = [mdCode, mdHeading, mdRule, mdTable, mdQuote, mdList, mdParagraph];
         var i = 0;
-        var itemre = /^(\s*)([-*+•]|\d+[.)])\s+(.*)$/;
-        /**
-         * Blank.
-         *
-         * @param {*} line Line.
-         */
-        function blank(line) { return /^\s*$/.test(line); }
-        /**
-         * Nextnonblank.
-         *
-         * @param {*} from From.
-         */
-        function nextnonblank(from) {
-            while (from < lines.length && blank(lines[from])) { from++; }
-            return from;
-        }
-        /**
-         * Isrow.
-         *
-         * @param {*} line Line.
-         */
-        function isrow(line) { return /^\s*\|.*\|\s*$/.test(line); }
-        /**
-         * Cells.
-         *
-         * @param {*} line Line.
-         */
-        function cells(line) { return line.trim().replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }); }
         while (i < lines.length) {
-            var line = lines[i];
-            var m;
-            if (blank(line)) { i++; continue; }
-            if (/^\s*```/.test(line)) {
-                var code = [];
-                i++;
-                while (i < lines.length && !/^\s*```/.test(lines[i])) { code.push(lines[i]); i++; }
-                i++;
-                el('code', el('pre', root)).textContent = code.join('\n');
-                continue;
-            }
-            if ((m = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line))) {
-                inline(m[2], el('h' + Math.min(6, m[1].length + 2), root));
+            if (mdBlank(lines[i])) {
                 i++;
                 continue;
             }
-            if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { el('hr', root); i++; continue; }
-            if (isrow(line) && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/.test(lines[i + 1])) {
-                var table = el('table', root);
-                const headrow = el('tr', el('thead', table));
-                cells(line).forEach(function (c) { inline(c, el('th', headrow)); });
-                var body = el('tbody', table);
-                i += 2;
-                while (i < lines.length && isrow(lines[i])) {
-                    const row = el('tr', body);
-                    cells(lines[i]).forEach(function (c) { inline(c, el('td', row)); });
-                    i++;
-                }
-                continue;
-            }
-            if (/^\s*>/.test(line)) {
-                var quote = [];
-                while (i < lines.length && /^\s*>/.test(lines[i])) { quote.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
-                inlineLines(quote, el('blockquote', root));
-                continue;
-            }
-            if (itemre.test(line)) {
-                // Nested lists by indentation; indented plain lines continue the current item.
-                var stack = [];   // {indent, list}
-                var lastitem = null;
-                while (i < lines.length) {
-                    var cur = lines[i];
-                    if (blank(cur)) {
-                        var peek = nextnonblank(i);
-                        if (peek < lines.length && itemre.test(lines[peek])) { i = peek; continue; }
-                        break;
-                    }
-                    var im = itemre.exec(cur);
-                    if (im) {
-                        var indent = im[1].replace(/\t/g, '    ').length;
-                        var ordered = /\d/.test(im[2].charAt(0));
-                        while (stack.length && indent < stack[stack.length - 1].indent) { stack.pop(); }
-                        if (!stack.length || indent > stack[stack.length - 1].indent) {
-                            var host = stack.length && lastitem ? lastitem : root;
-                            var list = el(ordered ? 'ol' : 'ul', host);
-                            if (ordered && /^\d+/.test(im[2]) && parseInt(im[2], 10) !== 1) {
-                                list.start = parseInt(im[2], 10);
-                            }
-                            stack.push({indent: indent, list: list});
-                        }
-                        lastitem = el('li', stack[stack.length - 1].list);
-                        inline(im[3], lastitem);
-                        i++;
-                        continue;
-                    }
-                    if (/^\s+\S/.test(cur) && lastitem) {
-                        el('br', lastitem);
-                        inline(cur.trim(), lastitem);
-                        i++;
-                        continue;
-                    }
+            for (var b = 0; b < blocks.length; b++) {
+                var next = blocks[b](lines, i, root);
+                if (next > i) {
+                    i = next;
                     break;
                 }
-                continue;
             }
-            var para = [];
-            while (i < lines.length && !blank(lines[i]) && !itemre.test(lines[i]) &&
-                    !/^(#{1,6})\s/.test(lines[i]) && !/^\s*```/.test(lines[i]) && !/^\s*>/.test(lines[i])) {
-                para.push(lines[i]);
-                i++;
-            }
-            if (!para.length) { para.push(lines[i]); i++; }
-            inlineLines(para, el('p', root));
         }
         return root;
+    }
+
+    /**
+     * Error for a refused chat request, from the JSON answer of chat_send.php.
+     *
+     * @param {Object} payload JSON answer.
+     * @return {Error}
+     */
+    function chatError(payload) {
+        var code = payload && payload.error_code;
+        var text = payload && typeof payload.error === 'string' ? payload.error : '';
+        var error;
+        if (code === 'CHAT_EMPTY') {
+            error = new Error('CHAT_EMPTY');
+        } else if (code === 'FREE_QUOTA' || code === 'COURSE_LIMIT') {
+            error = new Error('LIMIT');
+        } else if (code === 'COURSE_DETACHED') {
+            error = new Error('COURSE_DETACHED');
+        } else {
+            error = new Error('Unexpected chat response');
+        }
+        error.text = text;
+        return error;
     }
 
     /**
@@ -248,12 +442,16 @@ export const init = () => {
      */
     function initializeChat() {
         var root = document.querySelector('[data-fredki-chat="1"]');
-        if (!root || root.dataset.chatInitialized === '1') { return; }
+        if (!root || root.dataset.chatInitialized === '1') {
+            return;
+        }
         var form = document.getElementById('fredki-course-form');
         var input = document.getElementById('fredki-course-input');
         var list = document.getElementById('fredki-course-messages');
         var button = form && form.querySelector('button[type="submit"]');
-        if (!form || !input || !list || !button || typeof fetch !== 'function') { return; }
+        if (!form || !input || !list || !button || typeof fetch !== 'function') {
+            return;
+        }
         var endpoint = root.dataset.endpoint || '';
         var courseid = root.dataset.courseid || '';
         var sesskey = root.dataset.sesskey || '';
@@ -306,9 +504,13 @@ export const init = () => {
             list.scrollTop = list.scrollHeight;
             try {
                 if (window.parent && window.parent !== window && type === 'user') {
-                    window.parent.postMessage({type: 'fredki:history', prompt: text}, window.location.origin);
+                    window.parent.postMessage({
+                        type: 'fredki:history',
+                        prompt: text
+                    }, window.location.origin);
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) {
+                /* ignore */ }
             return node;
         }
         /**
@@ -340,18 +542,27 @@ export const init = () => {
             var hidden = [];
             while (walker.nextNode()) {
                 var current = walker.currentNode;
-                if (current.nodeType === 3) { texts.push(current); }
-                else if (current.tagName === 'HR') { rules.push(current); }
-                else if (!/^(STRONG|EM|CODE|A|BR|SPAN)$/.test(current.tagName)) { hidden.push(current); }
+                if (current.nodeType === 3) {
+                    texts.push(current);
+                } else if (current.tagName === 'HR') {
+                    rules.push(current);
+                } else if (!/^(STRONG|EM|CODE|A|BR|SPAN)$/.test(current.tagName)) {
+                    hidden.push(current);
+                }
             }
-            texts.forEach(function (textnode) {
+            texts.forEach(function(textnode) {
                 var tokens = textnode.nodeValue.match(/\S+\s*/g);
-                if (!tokens) { return; }   // whitespace only: keep as is
+                if (!tokens) {
+                    // Whitespace only: keep as is.
+                    return;
+                }
                 // Keep leading whitespace (e.g. the space after a bold phrase) with the first word.
                 var lead = /^\s+/.exec(textnode.nodeValue);
-                if (lead) { tokens[0] = lead[0] + tokens[0]; }
+                if (lead) {
+                    tokens[0] = lead[0] + tokens[0];
+                }
                 var fragment = document.createDocumentFragment();
-                tokens.forEach(function (token) {
+                tokens.forEach(function(token) {
                     var word = document.createElement('span');
                     word.className = 'fredki-word';
                     word.hidden = true;
@@ -360,11 +571,19 @@ export const init = () => {
                 });
                 textnode.parentNode.replaceChild(fragment, textnode);
             });
-            hidden.forEach(function (block) { block.hidden = true; });
-            rules.forEach(function (rule) { rule.hidden = true; });
+            hidden.forEach(function(block) {
+                block.hidden = true;
+            });
+            rules.forEach(function(rule) {
+                rule.hidden = true;
+            });
             // Document order of words and rules.
-            node.querySelectorAll('.fredki-word, hr').forEach(function (piece) { pieces.push(piece); });
-            if (!pieces.length) { return Promise.resolve(); }
+            node.querySelectorAll('.fredki-word, hr').forEach(function(piece) {
+                pieces.push(piece);
+            });
+            if (!pieces.length) {
+                return Promise.resolve();
+            }
             node.classList.add('fredki-revealing');
             // Only announce the finished, verified answer to screen readers.
             node.setAttribute('aria-hidden', 'true');
@@ -385,7 +604,9 @@ export const init = () => {
              * @param {*} piece Piece.
              */
             function uncover(piece) {
-                for (var up = piece; up && up !== node; up = up.parentElement) { up.hidden = false; }
+                for (var up = piece; up && up !== node; up = up.parentElement) {
+                    up.hidden = false;
+                }
             }
             /**
              * Nearbottom.
@@ -393,14 +614,18 @@ export const init = () => {
             function nearbottom() {
                 return list.scrollHeight - list.scrollTop - list.clientHeight < 120;
             }
-            return new Promise(function (resolve) {
+            return new Promise(function(resolve) {
                 /**
                  * Finish.
                  */
                 function finish() {
-                    if (completed) { return; }
+                    if (completed) {
+                        return;
+                    }
                     completed = true;
-                    if (frameid) { cancelAnimationFrame(frameid); }
+                    if (frameid) {
+                        cancelAnimationFrame(frameid);
+                    }
                     node.textContent = '';
                     node.appendChild(renderMarkdown(answer));
                     node.classList.remove('fredki-revealing');
@@ -415,17 +640,29 @@ export const init = () => {
                  * @param {*} timestamp Timestamp.
                  */
                 function draw(timestamp) {
-                    if (completed) { return; }
-                    if (!start) { start = timestamp; }
+                    if (completed) {
+                        return;
+                    }
+                    if (!start) {
+                        start = timestamp;
+                    }
                     var target = Math.min(pieces.length, Math.floor((timestamp - start) / perword) + 1);
                     if (target > count) {
                         var follow = nearbottom();
-                        for (; count < target; count++) { uncover(pieces[count]); }
+                        for (; count < target; count++) {
+                            uncover(pieces[count]);
+                        }
                         // Follow the text smoothly, but only while the reader has not scrolled away.
                         if (follow && timestamp - lastscroll > 250) {
                             lastscroll = timestamp;
-                            if (list.scrollTo) { list.scrollTo({top: list.scrollHeight, behavior: 'smooth'}); }
-                            else { list.scrollTop = list.scrollHeight; }
+                            if (list.scrollTo) {
+                                list.scrollTo({
+                                    top: list.scrollHeight,
+                                    behavior: 'smooth'
+                                });
+                            } else {
+                                list.scrollTop = list.scrollHeight;
+                            }
                         }
                     }
                     if (count >= pieces.length) {
@@ -439,10 +676,12 @@ export const init = () => {
                 frameid = requestAnimationFrame(draw);
             });
         }
-        form.addEventListener('submit', function (event) {
+        form.addEventListener('submit', function(event) {
             event.preventDefault(); // MUST be installed before enabling Send.
             var question = input.value.trim();
-            if (busy || !question || question.length > 5000) { return; }
+            if (busy || !question || question.length > 5000) {
+                return;
+            }
             busy = true;
             button.disabled = true;
             input.value = '';
@@ -455,39 +694,29 @@ export const init = () => {
                 message: question
             });
             fetch(endpoint, {
-                method: 'POST', credentials: 'same-origin',
+                method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: body.toString(), cache: 'no-store', redirect: 'error'
-            }).then(function (response) {
+                body: body.toString(),
+                cache: 'no-store',
+                redirect: 'error'
+            }).then(function(response) {
                 // Moodle redirects and HTML errors must NEVER be embedded as the bot reply.
                 var type = response.headers && response.headers.get('content-type') || '';
                 if (response.redirected || type.indexOf('application/json') === -1) {
                     throw new Error('Unexpected chat response');
                 }
-                return response.json().then(function (payload) {
-                    if (!response.ok) {
-                        if (payload && payload.error_code === 'CHAT_EMPTY') {
-                            throw new Error('CHAT_EMPTY');
-                        }
-                        if (payload && (payload.error_code === 'FREE_QUOTA' || payload.error_code === 'COURSE_LIMIT')) {
-                            var limit = new Error('LIMIT');
-                            limit.text = typeof payload.error === 'string' ? payload.error : '';
-                            throw limit;
-                        }
-                        if (payload && payload.error_code === 'COURSE_DETACHED') {
-                            var detached = new Error('COURSE_DETACHED');
-                            detached.text = typeof payload.error === 'string' ? payload.error : '';
-                            throw detached;
-                        }
-                        throw new Error('Unexpected chat response');
-                    }
-                    return payload;
-                });
-            }).then(function (answer) {
+                return Promise.all([response.ok, response.json()]);
+            }).then(function(result) {
+                if (!result[0]) {
+                    throw chatError(result[1]);
+                }
+                return result[1];
+            }).then(function(answer) {
                 if (!answer || answer.ok !== true || typeof answer.answer !== 'string') {
                     throw new Error('Chat reply missing');
                 }
@@ -495,22 +724,22 @@ export const init = () => {
                     throw new Error('CHAT_EMPTY');
                 }
                 return revealAnswer(waiting, answer.answer);
-            }).catch(function (error) {
+            }).catch(function(error) {
                 if (error && error.message === 'LIMIT') {
                     finishTyping(waiting, error.text || str('chaterrorload', 'The answer could not be loaded. Please try again.'));
                     return;
                 }
                 if (error && error.message === 'COURSE_DETACHED') {
-                    finishTyping(waiting, error.text
-                        || str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
+                    finishTyping(waiting, error.text ||
+                        str('chatdetached', 'The FredKI chat is not available for this course at the moment.'));
                     input.disabled = true;
                     return;
                 }
-                finishTyping(waiting, error && error.message === 'CHAT_EMPTY'
-                    ? str('chaterrorempty',
-                        'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.')
-                    : str('chaterrorload', 'The answer could not be loaded. Please try again.'));
-            }).finally(function () {
+                finishTyping(waiting, error && error.message === 'CHAT_EMPTY' ?
+                    str('chaterrorempty',
+                        'FredKI produced no answer text. Please check the AI model and the answer node of the course agent.') :
+                    str('chaterrorload', 'The answer could not be loaded. Please try again.'));
+            }).finally(function() {
                 busy = false;
                 // Stays disabled only after the course was disconnected by the administrator.
                 button.disabled = input.disabled;
@@ -518,10 +747,10 @@ export const init = () => {
                 input.focus();
             });
         });
-        window.addEventListener('message', function (event) {
+        window.addEventListener('message', function(event) {
             if (event.origin !== window.location.origin || event.source !== window.parent ||
-                    !event.data || event.data.type !== 'fredki:prefill' ||
-                    typeof event.data.prompt !== 'string' || event.data.prompt.length > 1200) {
+                !event.data || event.data.type !== 'fredki:prefill' ||
+                typeof event.data.prompt !== 'string' || event.data.prompt.length > 1200) {
                 return;
             }
             input.value = event.data.prompt;
