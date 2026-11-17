@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.2 (2026-11-17)
+
+* Activation page, text only: "Do you have a licence key for a FredKI® course package? Enter it here …" – the key
+  works no matter where the package was ordered. The link to the plugin's page in Moodle Marketplace stays
+  ("Course packages: FredKI® The Agent in Moodle Marketplace").
+
 ## 1.8.1 (2026-11-15)
 
 * Code style only, no change in behaviour: stylesheet and JavaScript follow Moodle's stylelint and ESLint rules;
