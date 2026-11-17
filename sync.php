@@ -280,11 +280,11 @@ try {
             if ($connected) {
                 $links = [];
                 foreach ($connected as $c) {
-                    $links[] = html_writer::link(new moodle_url('/course/view.php', ['id' => $c->id]),
-                        format_string($c->fullname, true, ['context' => context_course::instance($c->id)]));
+                    $name = format_string($c->fullname, true, ['context' => context_course::instance($c->id)]);
+                    $links[] = html_writer::link(new moodle_url('/course/view.php', ['id' => $c->id]), $name);
                 }
-                \core\notification::info(get_string('courselimitconnected', 'block_fredkitheagent',
-                    (object)['count' => count($connected), 'list' => implode(', ', $links)]));
+                $a = (object)['count' => count($connected), 'list' => implode(', ', $links)];
+                \core\notification::info(get_string('courselimitconnected', 'block_fredkitheagent', $a));
             }
         }
         redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
