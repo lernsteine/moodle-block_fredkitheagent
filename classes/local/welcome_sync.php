@@ -46,7 +46,10 @@ final class welcome_sync {
      */
     public static function follows_template(string $current, string $lastsynced, string $plugindefault): bool {
         $current = trim($current);
-        return $current === '' || $current === trim($plugindefault) || ($lastsynced !== '' && $current === trim($lastsynced));
+        // 1.8.5: the former default text still counts as "not changed by the administrator".
+        $former = ['I will help you find the right information.'];
+        return $current === '' || $current === trim($plugindefault) || in_array($current, $former, true)
+            || ($lastsynced !== '' && $current === trim($lastsynced));
     }
 
     /**

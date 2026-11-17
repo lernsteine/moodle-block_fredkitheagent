@@ -8,6 +8,8 @@
   files without readable text (for example scanned PDFs) are reported once. The result names every file that
   was not transferred, with the reason. Temporary errors still keep the chat locked and are retried.
 * Shorter result notices.
+* Customize course agent: the colour fields are shown in full width again (Moodle's flex style had shrunk them).
+* Warmer default welcome text.
 
 ## 1.8.4 (2026-11-17)
 
