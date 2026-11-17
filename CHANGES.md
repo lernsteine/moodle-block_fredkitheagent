@@ -5,6 +5,8 @@
 * Course limit reached: managers additionally see which courses are connected to FredKI and hold the places of
   the package (with links), so they can decide which course agent to remove. Teachers see the short notice only.
 * An older error of that course is cleared, so the block no longer shows a second, outdated message.
+* Remove course agent: if the licence server no longer knows the course (for example removed there before),
+  the course agent is removed in Moodle as well instead of showing "requires licence server 13.19".
 * Connection test: "Connection successful. Licence server reachable, API ready." – no mention of the former
   7-day trial; texts about reconnecting no longer mention a trial.
 

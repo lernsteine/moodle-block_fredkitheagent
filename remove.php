@@ -43,6 +43,13 @@ $PAGE->set_heading(format_string($course->fullname));
 if ($confirm && confirm_sesskey()) {
     try {
         \block_fredkitheagent\local\managed_gateway::remove_course($courseid);
+    } catch (\block_fredkitheagent\local\managed_api_diagnostic_exception $e) {
+        // 1.8.3: 404 = the licence server no longer knows this course (for example removed there
+        // before). Nothing is left in FredKI, so the course agent is removed here as well.
+        if ($e->getCode() !== 404) {
+            $error = \block_fredkitheagent\local\managed_gateway::safe_error($e);
+            redirect($back, $error, null, \core\output\notification::NOTIFY_ERROR);
+        }
     } catch (\Throwable $e) {
         redirect($back, \block_fredkitheagent\local\managed_gateway::safe_error($e), null, \core\output\notification::NOTIFY_ERROR);
     }
