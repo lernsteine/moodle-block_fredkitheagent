@@ -37,6 +37,18 @@ $fullcheck = optional_param('fullcheck', 0, PARAM_INT) ? true : false;
 // 1.6.0: agent role chosen when the course agent is set up for the first time.
 $agentrole = optional_param('agentrole', '', PARAM_ALPHANUMEXT);
 $continuing = optional_param('continue', 0, PARAM_INT) ? true : false;
+// 1.8.4: the block runs the stages with fetch() and shows the progress itself (JSON answers).
+$ajax = optional_param('ajax', 0, PARAM_INT) ? true : false;
+$courseurl = new moodle_url('/course/view.php', ['id' => $courseid]);
+$finish = static function () use ($ajax, $courseurl): void {
+    if ($ajax) {
+        // Notifications stay queued in the session and appear on the reloaded course page.
+        @header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['state' => 'done', 'url' => $courseurl->out(false)]);
+        exit;
+    }
+    redirect($courseurl);
+};
 // Long synchronisations run in stages, so no stage exceeds the timeout of a web server
 // or proxy in front of Moodle. The stage state lives in the teacher's session only.
 $requeststart = microtime(true);
@@ -161,6 +173,20 @@ try {
         $SESSION->fredki_theagent_sync[$courseid] = $stagestate;
         $total = max(1, (int)($stats['found'] ?? 0));
         $done = max(0, $total - (int)$stats['remaining']);
+        if ($ajax) {
+            @header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'state' => 'progress',
+                'done' => $done,
+                'total' => $total,
+                'text' => get_string(
+                    $agentstage ? 'syncprogressagentshort' : 'syncprogressshort',
+                    'block_fredkitheagent',
+                    (object)['done' => $done, 'total' => $total]
+                ),
+            ]);
+            exit;
+        }
         $PAGE->set_url(new moodle_url('/blocks/fredkitheagent/sync.php', ['courseid' => $courseid]));
         $PAGE->set_context($context);
         $PAGE->set_pagelayout('incourse');
@@ -254,7 +280,7 @@ try {
     } else {
         \core\notification::warning($notice . ' ' . get_string('syncnoticeincomplete', 'block_fredkitheagent'));
     }
-    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+    $finish();
 } catch (\Throwable $e) {
     unset($SESSION->fredki_theagent_sync[$courseid]);
     if (
@@ -264,7 +290,7 @@ try {
         // Disconnected by the licence server administrator: not an error of the teacher.
         \block_fredkitheagent\local\course_agent_manager::mark_detached($courseid);
         \core\notification::warning(get_string('coursedetachednotice', 'block_fredkitheagent'));
-        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+        $finish();
     }
     if (
         $e instanceof \block_fredkitheagent\local\managed_api_diagnostic_exception
@@ -287,7 +313,7 @@ try {
                 \core\notification::info(get_string('courselimitconnected', 'block_fredkitheagent', $a));
             }
         }
-        redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+        $finish();
     }
     $code = \block_fredkitheagent\local\managed_gateway::safe_error($e);
     // Keep stable IDs and previous snapshots. Never delete knowledge bases,
@@ -306,6 +332,6 @@ try {
     // Stage and whitelisted diagnostic codes only. No secrets, URLs or student data.
     debugging('[FredKI The Agent] ' . $stage . ': ' . $code, DEBUG_DEVELOPER);
     \core\notification::error(get_string('syncfailedstage', 'block_fredkitheagent', (object)['stage' => $stage, 'code' => $code]));
-    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+    $finish();
 }
-redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
+$finish();

@@ -3552,3 +3552,49 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     letter-spacing: .02em;
 }
+/* 1.8.4: progress of a synchronisation inside the block, visible remove link */
+.fredki-ios .fk-progress {
+    margin-top: 12px;
+}
+.fredki-ios .fk-progressbar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e3eef0;
+}
+.fredki-ios .fk-progressbar span {
+    display: block;
+    width: 3%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #0e9fae, #0b7f8c);
+    transition: width .4s ease;
+}
+.fredki-ios .fk-progresstext {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #3f4245;
+    text-align: center;
+}
+.fredki-ios .fk-progresshint {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #6b6f73;
+    text-align: center;
+}
+.fredki-ios .fk-removelink {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #b3261e;
+    text-align: center;
+    text-decoration: none;
+}
+.fredki-ios .fk-removelink:hover,
+.fredki-ios .fk-removelink:focus {
+    color: #8c1d18;
+    text-decoration: underline;
+}
+.fredki-ios.is-busy .fk-removelink {
+    visibility: hidden;
+}

@@ -39,7 +39,7 @@
         "detached": false,
         "limitfull": false,
         "ready": false,
-        "setup": {"intro": "One click sets up everything.", "form": {"url": "https://example.com/blocks/fredkitheagent/sync.php", "courseid": 2, "sesskey": "abc", "fullcheck": 1, "roleselect": false, "icon": {"sparkle": true}, "label": "Set up", "busylabel": "Working", "class": "fk-main"}, "note": false},
+        "setup": {"removeurl": false, "intro": "One click sets up everything.", "form": {"url": "https://example.com/blocks/fredkitheagent/sync.php", "courseid": 2, "sesskey": "abc", "fullcheck": 1, "roleselect": false, "icon": {"sparkle": true}, "label": "Set up", "busylabel": "Working", "class": "fk-main"}, "note": false},
         "settings": false
     }
 }}
@@ -84,6 +84,7 @@
             <a class="fk-gear fk-paint" href="{{designurl}}" aria-label="{{#cleanstr}} iosdesign, block_fredkitheagent {{/cleanstr}}" title="{{#cleanstr}} iosdesign, block_fredkitheagent {{/cleanstr}}">{{#paletteicon}}{{> block_fredkitheagent/icon }}{{/paletteicon}}</a>
             <button type="button" class="fk-gear fk-info" data-fk-open="settings" aria-label="{{#cleanstr}} iosinfo, block_fredkitheagent {{/cleanstr}}" title="{{#cleanstr}} iosinfo, block_fredkitheagent {{/cleanstr}}" aria-expanded="false">{{#infoicon}}{{> block_fredkitheagent/icon }}{{/infoicon}}</button>
         </div>
+        {{#removeurl}}<a class="fk-removelink" href="{{.}}">{{#str}} removeagent, block_fredkitheagent {{/str}}</a>{{/removeurl}}
         {{/ready}}
 
         {{#setup}}
@@ -91,6 +92,7 @@
         {{#form}}{{> block_fredkitheagent/sync_form }}{{/form}}
         <div class="fk-caption">{{#str}} iossetupnote, block_fredkitheagent {{/str}}</div>
         {{#note}}<p class="fk-note">{{heading}}<small class="fk-detail">{{detail}}</small></p>{{/note}}
+        {{#removeurl}}<a class="fk-removelink" href="{{.}}">{{#str}} removeagent, block_fredkitheagent {{/str}}</a>{{/removeurl}}
         {{/setup}}
     </div>
 

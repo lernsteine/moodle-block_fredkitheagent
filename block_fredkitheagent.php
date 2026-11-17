@@ -304,6 +304,7 @@ class block_fredkitheagent extends block_base {
             userdate((int)$rec->timesynced, get_string('strftimedatetimeshort', 'langconfig')) : '';
         $busy = get_string('iosbusy', $pn);
         $siteadmin = has_capability('moodle/site:config', context_system::instance());
+        $removeurl = (new moodle_url('/blocks/fredkitheagent/remove.php', ['courseid' => $courseid]))->out(false);
         $data = [
             'courseid' => $courseid,
             'visibilityurl' => (new moodle_url('/blocks/fredkitheagent/visibility.php'))->out(false),
@@ -352,6 +353,8 @@ class block_fredkitheagent extends block_base {
                 'designurl' => (new moodle_url('/blocks/fredkitheagent/design.php', ['courseid' => $courseid]))->out(false),
                 'paletteicon' => ['palette' => true],
                 'infoicon' => ['info' => true],
+                // 1.8.4: removing the course agent is visible right in the card, not only behind the info button.
+                'removeurl' => $canmanage ? $removeurl : false,
             ];
             if ($canmanage) {
                 $data['settings'] = [
@@ -394,6 +397,8 @@ class block_fredkitheagent extends block_base {
                     $agentcreated ? null : $this->role_select($rec, 'fk-rolepick fk-rolepick-setup')
                 ),
                 'note' => $note,
+                // A course agent that exists but is not ready (for example after an interrupted setup) can be removed.
+                'removeurl' => $agentcreated ? $removeurl : false,
             ];
         }
         return $OUTPUT->render_from_template('block_fredkitheagent/learning_card', $data);

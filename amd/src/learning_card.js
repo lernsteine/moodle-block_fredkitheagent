@@ -24,7 +24,90 @@
 import {getStrings} from 'core/str';
 
 /** @var {string[]} Language strings used by this module. */
-const STRINGKEYS = ['visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'];
+const STRINGKEYS = ['syncprogresshint2', 'visibilityfailed', 'visibilityhidden', 'visibilitysaving', 'visibilityshown'];
+
+/**
+ * Show the progress bar of a running synchronisation inside the block.
+ *
+ * @param {HTMLFormElement} form The synchronisation form.
+ * @param {string} hint Short hint under the bar.
+ * @return {object} Elements of the progress box (bar, text).
+ */
+const progressBox = (form, hint) => {
+    let box = form.parentNode.querySelector('.fk-progress');
+    if (!box) {
+        box = document.createElement('div');
+        box.className = 'fk-progress';
+        box.setAttribute('role', 'status');
+        box.setAttribute('aria-live', 'polite');
+        box.innerHTML = '<div class="fk-progressbar"><span></span></div><div class="fk-progresstext"></div>' +
+            '<div class="fk-progresshint"></div>';
+        form.parentNode.insertBefore(box, form.nextSibling);
+    }
+    box.querySelector('.fk-progresshint').textContent = hint;
+    return {bar: box.querySelector('.fk-progressbar span'), text: box.querySelector('.fk-progresstext')};
+};
+
+/**
+ * Send one stage of the synchronisation and read the JSON answer.
+ *
+ * @param {string} url Address of sync.php.
+ * @param {string} fields Form fields of the synchronisation form (URL encoded).
+ * @param {boolean} continuing Whether this is a following stage.
+ * @return {Promise<object>} The answer (state, done, total, text, url).
+ */
+const syncStage = (url, fields, continuing) => {
+    const body = new URLSearchParams(fields);
+    body.set('ajax', '1');
+    if (continuing) {
+        body.set('continue', '1');
+    }
+    return fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8', 'Accept': 'application/json'},
+        body: body.toString(),
+        cache: 'no-store'
+    }).then((response) => {
+        const type = response.headers.get('content-type') || '';
+        if (!response.ok || type.indexOf('application/json') === -1) {
+            throw new Error('No JSON answer');
+        }
+        return response.json();
+    });
+};
+
+/**
+ * Run all stages of a synchronisation inside the block, then reload the course page.
+ * Falls back to the classic form submission if the server does not answer with JSON.
+ *
+ * @param {HTMLFormElement} form The synchronisation form.
+ * @param {string} hint Short hint under the bar.
+ * @param {HTMLFormElement|null} anchor Form under which the bar is shown (the main button), else the form itself.
+ */
+const runSync = (form, hint, anchor) => {
+    const ui = progressBox(anchor || form, hint);
+    // Read the fields now: the controls of the card are disabled while the synchronisation runs.
+    const fields = new URLSearchParams(new FormData(form)).toString();
+    const step = (continuing) => syncStage(form.action, fields, continuing).then((answer) => {
+        if (answer.state === 'progress') {
+            const percent = Math.max(3, Math.min(100, Math.round(100 * answer.done / Math.max(1, answer.total))));
+            ui.bar.style.width = percent + '%';
+            ui.text.textContent = answer.text || '';
+            return step(true);
+        }
+        ui.bar.style.width = '100%';
+        window.location.href = answer.url || window.location.href;
+        return answer;
+    });
+    step(false).catch(() => {
+        // Classic flow: the server shows its own progress page.
+        form.querySelectorAll('input, select, button').forEach((control) => {
+            control.disabled = false;
+        });
+        HTMLFormElement.prototype.submit.call(form);
+    });
+};
 
 /**
  * Initialise the module.
@@ -105,10 +188,20 @@ export const init = () => {
             });
             // The big button turns into a calm progress state while the synchronisation runs.
             root.querySelectorAll('form[data-fk-syncform]').forEach(function(form) {
-                form.addEventListener('submit', function() {
+                form.addEventListener('submit', function(event) {
                     var button = form.querySelector('button[type="submit"]');
                     if (!button || root.classList.contains('is-busy')) {
                         return;
+                    }
+                    // 1.8.4: the stages run in the background; the block shows the progress.
+                    if (window.fetch && window.FormData && window.URLSearchParams) {
+                        event.preventDefault();
+                        // From the info sheet back to the main view, where the bar is shown.
+                        var mainform = root.querySelector('[data-fk-view="main"] form[data-fk-syncform]');
+                        if (views.main && views.settings && !views.settings.hidden) {
+                            show('main');
+                        }
+                        runSync(form, str('syncprogresshint2', 'Please keep the page open.'), mainform);
                     }
                     root.classList.add('is-busy');
                     button.classList.add('is-busy');

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.4 (2026-11-17)
+
+* Synchronisation runs in the background: the block shows a slim progress bar ("18 of 120 materials
+  transferred") instead of a separate progress page. Without JavaScript the previous progress page is used.
+* "Remove course agent" is visible directly in the card (also for a course agent whose setup was interrupted),
+  not only behind the info button.
+* Shorter notices when FredKI sets up a knowledge base or course agent anew.
+
 ## 1.8.3 (2026-11-17)
 
 * Course limit reached: managers additionally see which courses are connected to FredKI and hold the places of
