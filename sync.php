@@ -154,7 +154,9 @@ try {
         $trustedprior,
         $fullcheck,
         $requeststart + $stagebudget,
-        (int)$stagestate['since']
+        (int)$stagestate['since'],
+        // 1.8.5: scan the course only in the first stage of a synchronisation.
+        (int)$stagestate['stages'] === 0
     );
     $stagestate['stages']++;
     foreach (['synced', 'unchanged', 'deleted'] as $counter) {

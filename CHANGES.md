@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.5 (2026-11-17)
+
+* Faster synchronisation of large courses: only the first stage scans the course; the following stages
+  transfer the remaining material right away instead of scanning the whole course again.
+
 ## 1.8.4 (2026-11-17)
 
 * Synchronisation runs in the background: the block shows a slim progress bar ("18 of 120 materials

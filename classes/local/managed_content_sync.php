@@ -58,6 +58,7 @@ final class managed_content_sync {
      * @param bool $fullcheck The fullcheck.
      * @param float $deadline Unix time (microtime) after which no further transfer starts; 0 = no limit.
      * @param int $since Start of a staged synchronisation spanning several requests; 0 = single request.
+     * @param bool $scan Scan the course again; a following stage of the same synchronisation skips it.
      * @return array The result. 'remaining' > 0 means: call again to continue.
      */
     public static function run(
@@ -66,7 +67,8 @@ final class managed_content_sync {
         bool $trustedprior = false,
         bool $fullcheck = false,
         float $deadline = 0.0,
-        int $since = 0
+        int $since = 0,
+        bool $scan = true
     ): array {
         global $DB;
         $lockfactory = \core\lock\lock_config::get_lock_factory('block_fredkitheagent');
@@ -78,8 +80,13 @@ final class managed_content_sync {
             $started = microtime(true);
             // The original importer builds file/HTML representations of visible
             // resource, folder, page, label, glossary, book, lesson etc.
-            $importer = new course_content_importer();
-            $stats = $importer->import_course_content($course, $record, null, true);
+            // 1.8.5: the first stage scans the whole course and marks new or changed material; the
+            // following stages of the same synchronisation only transfer what is still open.
+            $stats = [];
+            if ($scan) {
+                $importer = new course_content_importer();
+                $stats = $importer->import_course_content($course, $record, null, true);
+            }
             $counts = ['synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0,
                 'remaining' => 0];
             // At least one transfer per request, so every stage makes progress even after a slow scan.
