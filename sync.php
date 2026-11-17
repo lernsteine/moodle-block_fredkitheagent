@@ -246,13 +246,16 @@ try {
         (string)$result['agent_id']
     );
     $rec->agentid = (string)$result['agent_id'];
-    $documentcomplete = (int)($stats['found'] ?? 0) > 0 &&
+    // 1.8.5: files FredKI cannot take (too large, no readable text) are listed but do not block the course agent.
+    $effectivefound = (int)($stats['found'] ?? 0) - (int)($stats['unsupported'] ?? 0);
+    $documentcomplete = $effectivefound > 0 &&
         (int)($stats['failed'] ?? 0) === 0 &&
-        (int)($stats['verified'] ?? 0) === (int)($stats['found'] ?? 0) &&
+        (int)($stats['verified'] ?? 0) === $effectivefound &&
         (int)($rec->verifiedat ?? 0) > 0;
     $rec->status = $documentcomplete ? 'ready' : 'agent_created';
-    $rec->lasterror = $documentcomplete ? null :
-        (string)($stats['warning'] ?? get_string('syncmaterialpending', 'block_fredkitheagent'));
+    // Keep the specific reason written by the transfer (for example the files that failed).
+    $rec->lasterror = $documentcomplete ? null : (string)($stats['warning'] ?? ((string)($rec->lasterror ?? '') !== ''
+        ? $rec->lasterror : get_string('syncmaterialpending', 'block_fredkitheagent')));
     $rec->timemodified = time();
     $DB->update_record('block_fredkitheagent', $rec);
 
@@ -270,6 +273,11 @@ try {
     ]);
     if ($fullcheck) {
         $notice .= ' ' . get_string('syncnoticefull', 'block_fredkitheagent');
+    }
+    // 1.8.5: name the files that were not transferred and why.
+    $problems = \block_fredkitheagent\local\managed_content_sync::problem_files((int)$rec->id);
+    if ($problems['count'] > 0) {
+        $notice .= ' ' . get_string('syncnoticeproblems', 'block_fredkitheagent', (object)$problems);
     }
     if ($documentcomplete && \block_fredkitheagent\local\import_completion::chat_ready($rec)) {
         \core\notification::success($notice);

@@ -31,6 +31,62 @@ namespace block_fredkitheagent\local;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class managed_content_sync {
+    /** 1.8.5: largest file the licence server accepts (bytes); larger files are not sent at all. */
+    public const MAX_FILE_BYTES = 30 * 1024 * 1024;
+
+    /**
+     * Whether a map row was marked as a file FredKI cannot take (too large, no readable text).
+     *
+     * @param \stdClass $map The map row.
+     * @return bool True for such a file.
+     */
+    public static function is_unsupported(\stdClass $map): bool {
+        return (string)($map->status ?? '') === 'error' && str_starts_with((string)($map->lastresult ?? ''), 'unsupported');
+    }
+
+    /**
+     * The reason of a failed transfer, from the diagnostic code of the licence server.
+     *
+     * @param string $code Diagnostic code.
+     * @return string 'unsupported_toolarge', 'unsupported_notext' or 'error' (temporary, retried).
+     */
+    public static function failure_kind(string $code): string {
+        if (preg_match('/-413$/', $code)) {
+            return 'unsupported_toolarge';
+        }
+        if (preg_match('/-422$/', $code)) {
+            return 'unsupported_notext';
+        }
+        return 'error';
+    }
+
+    /**
+     * Course files that were not transferred, with a short reason, for the teacher.
+     *
+     * @param int $recordid Id of the course record.
+     * @param int $limit Maximum number of names.
+     * @return array{list:string,count:int} Comma separated "name (reason)" and the total number.
+     */
+    public static function problem_files(int $recordid, int $limit = 5): array {
+        global $DB;
+        $rows = $DB->get_records(
+            'block_fredkitheagent_map',
+            ['activityid' => $recordid, 'status' => 'error'],
+            'filename',
+            'id, filename, lastresult'
+        );
+        $names = [];
+        foreach (array_slice(array_values($rows), 0, $limit) as $row) {
+            $result = (string)$row->lastresult;
+            $key = 'syncreason_' . (str_starts_with($result, 'unsupported_') ? substr($result, 12) : 'error');
+            $names[] = format_string((string)$row->filename) . ' (' . get_string($key, 'block_fredkitheagent') . ')';
+        }
+        if (count($rows) > $limit) {
+            $names[] = '…';
+        }
+        return ['list' => implode(', ', $names), 'count' => count($rows)];
+    }
+
     /**
      * Run a gateway call and repeat it once after a short pause when the failure looks transient.
      *
@@ -88,7 +144,7 @@ final class managed_content_sync {
                 $stats = $importer->import_course_content($course, $record, null, true);
             }
             $counts = ['synced' => 0, 'unchanged' => 0, 'cached' => 0, 'deleted' => 0, 'failed' => 0, 'verified' => 0,
-                'remaining' => 0];
+                'remaining' => 0, 'unsupported' => 0];
             // At least one transfer per request, so every stage makes progress even after a slow scan.
             $transfers = 0;
             $outoftime = static function () use ($deadline, &$transfers): bool {
@@ -167,6 +223,21 @@ final class managed_content_sync {
                     $counts['verified']++; // Confirmed remotely in an earlier run or stage.
                     continue;
                 }
+                // 1.8.5: a file FredKI cannot take is not sent again while it is unchanged (a full check retries
+                // it once per synchronisation). Changed files are marked 'pending' by the course scan.
+                if (self::is_unsupported($map) && (!$fullcheck || ($since > 0 && (int)$map->timemodified >= $since))) {
+                    $counts['unsupported']++;
+                    continue;
+                }
+                if ((int)($map->filesize ?? 0) > self::MAX_FILE_BYTES) {
+                    $map->status = 'error';
+                    $map->lastresult = 'unsupported_toolarge';
+                    $map->lasterror = get_string('syncreason_toolarge', 'block_fredkitheagent');
+                    $map->timemodified = time();
+                    $DB->update_record('block_fredkitheagent_map', $map);
+                    $counts['unsupported']++;
+                    continue;
+                }
                 if (sync_policy::failed_since($map, $since)) {
                     $counts['failed']++; // Already tried in this staged synchronisation.
                     continue;
@@ -216,14 +287,15 @@ final class managed_content_sync {
                     $counts['verified']++;
                 } catch (\Throwable $e) {
                     $map->status = 'error';
-                    $map->lastresult = 'error';
                     // Expose only predefined gateway diagnostic codes, never
                     // URLs, secret tokens or the raw central API response.
                     $code = $e instanceof managed_api_diagnostic_exception ? $e->getMessage() : 'DIAG-SYNC-INTERNAL';
+                    // 1.8.5: too large or without readable text: FredKI will never take this file as it is.
+                    $map->lastresult = self::failure_kind($code);
                     $map->lasterror = get_string('syncuploadfailed', 'block_fredkitheagent', $code);
                     $map->timemodified = time();
                     $DB->update_record('block_fredkitheagent_map', $map);
-                    $counts['failed']++;
+                    $counts[$map->lastresult === 'error' ? 'failed' : 'unsupported']++;
                 } finally {
                     if ($tmp && is_file($tmp)) {
                         @unlink($tmp);
@@ -280,8 +352,12 @@ final class managed_content_sync {
                 $DB->update_record('block_fredkitheagent', $record);
                 return array_merge($stats, $counts);
             }
-            $complete = import_completion::successful($counts + $stats, (int)$record->documentcount)
-                && $counts['verified'] === $counts['found'];
+            // 1.8.5: files FredKI cannot take (too large, no readable text) do not block the course agent;
+            // the teacher sees them listed. Temporary failures still do.
+            $effective = ['found' => max(0, $counts['found'] - $counts['unsupported'])] + $counts + $stats;
+            $complete = $counts['verified'] > 0
+                && import_completion::successful($effective, (int)$record->documentcount)
+                && $counts['verified'] === $effective['found'];
             // A failed/empty import must never unlock protected course knowledge.
             // The button remains retryable; no new registration or agent is needed.
             $record->timesynced = $complete ? time() : null;
@@ -296,9 +372,11 @@ final class managed_content_sync {
                     ['aid' => $record->id, 'status' => 'error'],
                     IGNORE_MISSING
                 );
+                $problems = self::problem_files((int)$record->id);
                 $record->lasterror = get_string('syncfileserrors', 'block_fredkitheagent', (object)[
                     'count' => $counts['failed'],
-                    'first' => (string)($firsterror ?: get_string('syncunavailable', 'block_fredkitheagent')),
+                    'first' => $problems['list'] !== '' ? $problems['list']
+                        : (string)($firsterror ?: get_string('syncunavailable', 'block_fredkitheagent')),
                 ]);
             } else {
                 $record->lasterror = $counts['warning'] ??

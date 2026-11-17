@@ -4,6 +4,10 @@
 
 * Faster synchronisation of large courses: only the first stage scans the course; the following stages
   transfer the remaining material right away instead of scanning the whole course again.
+* Files FredKI cannot take no longer block the course agent: files larger than 30 MB are not sent at all,
+  files without readable text (for example scanned PDFs) are reported once. The result names every file that
+  was not transferred, with the reason. Temporary errors still keep the chat locked and are retried.
+* Shorter result notices.
 
 ## 1.8.4 (2026-11-17)
 
