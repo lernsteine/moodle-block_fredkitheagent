@@ -124,9 +124,10 @@ Questions about the hosted service and packages: info@lernsteine.com
 Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
 bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig kostenlos
-registriert. Ohne Bezahlung steht das kostenlose Paket zur Verfügung („Kostenlos starten“, keine
-Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
-Funktionen des Plugins. Optional kann ein bezahltes Paket mit 7 Tagen Test gebucht werden; endet der
-Test oder ein Abo ohne neue Buchung, geht es automatisch im kostenlosen Paket weiter. Bezahlte Pakete (monatliches Hosting-Abo bei LERNSTEINE®) bieten mehr Kurse
-und mehr Nachrichten pro Monat (ab 2.000, bei Bedarf 1.000 zusätzliche Nachrichten nachbuchbar); aktuelle Preise stehen auf der Buchungsseite. Das Plugin selbst
+registriert. **Das kostenlose Paket gilt dauerhaft, ohne Zahlung und ohne Zeitlimit** („Kostenlos starten“,
+keine Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
+Funktionen des Plugins. Pakete mit mehr Kursen und mehr Nachrichten werden optional als kostenpflichtige
+Varianten auf der Seite des Plugins im Moodle Marketplace angeboten. Nach dem Kauf kommt ein Lizenzschlüssel
+per E-Mail, den die Administration auf der Aktivierungsseite einträgt. Endet ein Paket, geht es automatisch
+im kostenlosen Paket weiter. Das Plugin selbst
 ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.
