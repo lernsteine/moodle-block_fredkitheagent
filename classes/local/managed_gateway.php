@@ -729,12 +729,12 @@ final class managed_gateway {
         $host = strtolower((string)parse_url((string)$CFG->wwwroot, PHP_URL_HOST));
         try {
             $response = self::request('diagnostics/ping', ['probe' => true], false);
-            if (($response['status'] ?? '') !== 'ok' || (int)($response['trial_days'] ?? 0) !== 7) {
+            if (($response['status'] ?? '') !== 'ok') {
                 throw new managed_api_diagnostic_exception(
                     'DIAG-RESPONSE: The licence server responded but returned an unknown API version.'
                 );
             }
-            return ['ok' => true, 'message' => 'Connection successful. Licence server reachable, API ready, 7-day rule active.'];
+            return ['ok' => true, 'message' => get_string('diagconnectionok', 'block_fredkitheagent')];
         } catch (managed_api_diagnostic_exception $e) {
             return ['ok' => false, 'message' => $e->getMessage()];
         } catch (\Throwable $e) {

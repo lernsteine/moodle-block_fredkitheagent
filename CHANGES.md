@@ -5,6 +5,8 @@
 * Course limit reached: managers additionally see which courses are connected to FredKI and hold the places of
   the package (with links), so they can decide which course agent to remove. Teachers see the short notice only.
 * An older error of that course is cleared, so the block no longer shows a second, outdated message.
+* Connection test: "Connection successful. Licence server reachable, API ready." – no mention of the former
+  7-day trial; texts about reconnecting no longer mention a trial.
 
 ## 1.8.2 (2026-11-17)
 
