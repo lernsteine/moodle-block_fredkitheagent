@@ -271,7 +271,22 @@ try {
             && $e->getCode() === 402
     ) {
         // Package course limit: nothing was created on the server; existing courses keep working.
+        // 1.8.3: one clear message only - an older error of this course would only confuse.
+        \block_fredkitheagent\local\course_agent_manager::clear_stale_error($courseid);
         \core\notification::warning(get_string('courselimitnotice', 'block_fredkitheagent'));
+        // 1.8.3: managers see which courses currently hold the places of the package.
+        if (has_capability('moodle/category:manage', context_system::instance())) {
+            $connected = \block_fredkitheagent\local\course_agent_manager::connected_courses($courseid);
+            if ($connected) {
+                $links = [];
+                foreach ($connected as $c) {
+                    $links[] = html_writer::link(new moodle_url('/course/view.php', ['id' => $c->id]),
+                        format_string($c->fullname, true, ['context' => context_course::instance($c->id)]));
+                }
+                \core\notification::info(get_string('courselimitconnected', 'block_fredkitheagent',
+                    (object)['count' => count($connected), 'list' => implode(', ', $links)]));
+            }
+        }
         redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     }
     $code = \block_fredkitheagent\local\managed_gateway::safe_error($e);

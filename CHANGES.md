@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.3 (2026-11-17)
+
+* Course limit reached: managers additionally see which courses are connected to FredKI and hold the places of
+  the package (with links), so they can decide which course agent to remove. Teachers see the short notice only.
+* An older error of that course is cleared, so the block no longer shows a second, outdated message.
+
 ## 1.8.2 (2026-11-17)
 
 * Activation page, text only: "Do you have a licence key for a FredKI® course package? Enter it here …" – the key

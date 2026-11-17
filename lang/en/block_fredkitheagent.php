@@ -93,6 +93,7 @@ $string['coursedetachedintro'] = 'The FredKI administrator has disconnected this
 $string['coursedetachednotice'] = 'This course has been disconnected from FredKI by the administrator. Chat and synchronisation are paused until the administrator releases the course again.';
 $string['coursedetachedretry'] = 'Check again';
 $string['coursedetachedstatus'] = 'Disconnected by the administrator';
+$string['courselimitconnected'] = 'For managers: these {$a->count} courses are connected to FredKI and hold the places of the package: {$a->list}';
 $string['courselimitnotice'] = 'The course limit of the FredKI package has been reached, so this course could not be connected. Courses that are already connected keep working. To free a place, remove the course agent of another course (info button → Remove course agent), or ask a site administrator about a package with more courses.';
 $string['debuglog'] = 'Enable debug log';
 $string['designaccentcolor'] = 'Accent colour';

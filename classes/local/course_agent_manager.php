@@ -70,6 +70,45 @@ class course_agent_manager {
     }
 
     /**
+     * Clear an older error of a course whose connection was refused because of the course limit.
+     *
+     * Nothing was created on the server, so the previous error text no longer describes the
+     * situation; the course limit notice explains it.
+     *
+     * @param int $courseid The course id.
+     */
+    public static function clear_stale_error(int $courseid): void {
+        global $DB;
+        $rec = self::get_record($courseid);
+        if (!$rec || empty($rec->lasterror)) {
+            return;
+        }
+        $rec->lasterror = null;
+        $rec->timemodified = time();
+        $DB->update_record('block_fredkitheagent', $rec);
+    }
+
+    /**
+     * Courses of this site that are connected to FredKI (they hold a place of the package).
+     *
+     * @param int $exclude A course id that is left out (the course that could not be connected).
+     * @return array Course records (id, fullname), at most 50, by name.
+     */
+    public static function connected_courses(int $exclude = 0): array {
+        global $DB;
+        if (!$DB->get_manager()->table_exists('block_fredkitheagent')) {
+            return [];
+        }
+        $notempty = $DB->sql_isnotempty('block_fredkitheagent', 'b.agentid', true, false);
+        $sql = "SELECT c.id, c.fullname
+                  FROM {block_fredkitheagent} b
+                  JOIN {course} c ON c.id = b.course
+                 WHERE $notempty AND b.status NOT IN ('detached', 'deleted', 'new') AND c.id <> :exclude
+              ORDER BY c.fullname";
+        return array_values($DB->get_records_sql($sql, ['exclude' => $exclude], 0, 50));
+    }
+
+    /**
      * Mark a course as disconnected by the licence server administrator.
      *
      * Chat and the management card react to the status 'detached'. Stored IDs are kept
