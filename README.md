@@ -52,9 +52,8 @@ are based on the materials of that course only.
 * After registration the administrator accepts the terms, the privacy notice and the data processing
   agreement (Art. 28 GDPR) and clicks **"Start for free"**: no payment method is needed. The licence
   server only checks automatically that the Moodle site is reachable at its domain.
-* **Packages with more courses and messages** (optional) are offered as paid options on the plugin's page in
-  Moodle Marketplace. After the purchase a licence key is sent by e-mail; the administrator enters it on the
-  activation page. When a package ends, the site automatically continues in the free package.
+* **Packages with more courses and messages** (optional) are activated with a licence key, which the
+  administrator enters on the activation page. When a package ends, the site automatically continues in the free package.
 * When the course limit is reached, further courses cannot be connected; connected courses keep
   working. When the monthly messages are used up, the chat says so and is available again next month.
   Questions: info@lernsteine.com
@@ -73,7 +72,7 @@ translation portal AMOS (lang.moodle.org) and installed with the Moodle language
    enter a contact e-mail address and register the site.
 4. On the activation page accept the terms and the data processing agreement and click
    "Start for free" – the site is ready immediately. For more courses and messages, enter the licence key of
-   a package from Moodle Marketplace on the same page.
+   a package on the same page.
 5. Add the block "FredKI The Agent" to a course and press the large button.
 
 ### Reinstalling the plugin
@@ -126,8 +125,7 @@ bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein ex
 (FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig kostenlos
 registriert. **Das kostenlose Paket gilt dauerhaft, ohne Zahlung und ohne Zeitlimit** („Kostenlos starten“,
 keine Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
-Funktionen des Plugins. Pakete mit mehr Kursen und mehr Nachrichten werden optional als kostenpflichtige
-Varianten auf der Seite des Plugins im Moodle Marketplace angeboten. Nach dem Kauf kommt ein Lizenzschlüssel
-per E-Mail, den die Administration auf der Aktivierungsseite einträgt. Endet ein Paket, geht es automatisch
+Funktionen des Plugins. Pakete mit mehr Kursen und mehr Nachrichten werden optional
+mit einem Lizenzschlüssel freigeschaltet, den die Administration auf der Aktivierungsseite einträgt. Endet ein Paket, geht es automatisch
 im kostenlosen Paket weiter. Das Plugin selbst
 ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.

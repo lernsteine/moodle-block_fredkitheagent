@@ -79,7 +79,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $message = get_string('actfreestarted', 'block_fredkitheagent');
                 break;
             case 'licence':
-                // A package bought on the plugin's page in Moodle Marketplace comes with a licence key.
+                // A package comes with a licence key, which is entered on this page.
                 try {
                     $gateway::activate_license(required_param('licencekey', PARAM_ALPHANUMEXT));
                 } catch (\block_fredkitheagent\local\managed_api_diagnostic_exception | \invalid_parameter_exception $e) {
@@ -193,7 +193,6 @@ $data = [
     'active' => false,
     'inactive' => false,
     'licenceform' => false,
-    'marketplaceurl' => \block_fredkitheagent\local\managed_gateway::MARKETPLACE_URL,
     'registered' => $registered,
 ];
 if (!$registered || $connectionlost) {

@@ -81,8 +81,7 @@ final class activation_state {
     /**
      * Parse the optional package fields of the licence server (server 13.18 and later).
      *
-     * Since 1.8.0 the plugin shows no booking or subscription links: packages are bought on the plugin's
-     * page in Moodle Marketplace and activated here with a licence key.
+     * The plugin shows no booking or subscription links: a package is activated here with a licence key.
      *
      * @param array $data The status response.
      * @param string $apihost Host name of the configured licence server (kept for compatibility).

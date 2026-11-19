@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.6 (2026-11-19)
+
+* The activation page and the notices no longer point to the plugin's page in Moodle Marketplace (nothing
+  purchasable there yet); a package is activated with a licence key. README adjusted accordingly.
+
 ## 1.8.5 (2026-11-17)
 
 * Faster synchronisation of large courses: only the first stage scans the course; the following stages

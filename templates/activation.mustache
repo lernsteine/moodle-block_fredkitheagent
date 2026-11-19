@@ -28,7 +28,6 @@
     * active - Status of an active site or false
     * inactive - Label of an inactive state or false
     * licenceform - Whether the licence key form is shown
-    * marketplaceurl - Page of the plugin in Moodle Marketplace
     * registered - Whether the site is registered (connection reset)
 
     Example context (json):
@@ -41,7 +40,6 @@
         "active": {"approved": true, "plan": "Free · Courses: 1 of 1"},
         "inactive": false,
         "licenceform": true,
-        "marketplaceurl": "https://marketplace.moodle.com/plugins/block_fredkitheagent",
         "registered": true
     }
 }}
@@ -122,9 +120,6 @@
                     maxlength="60" autocomplete="off" spellcheck="false" placeholder="FK2-XXXXX-XXXXX-…">
                 <input type="submit" class="fk-actbutton" value="{{#cleanstr}} actlicencebutton, block_fredkitheagent {{/cleanstr}}">
             </form>
-            <p class="fk-caption">
-                <a href="{{marketplaceurl}}" target="_blank" rel="noopener">{{#str}} actmarketplacelink, block_fredkitheagent {{/str}}</a>
-            </p>
         </div>
         {{/licenceform}}
     </div>
