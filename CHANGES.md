@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.8.7 (2026-11-23)
+
+* Description only: README states plainly what is free (the plugin, registration, the permanent free package of
+  one course and 200 agent answers per month) and what is paid (packages with more courses and messages,
+  activated with a licence key). No functional changes.
+
 ## 1.8.6 (2026-11-19)
 
 * The activation page and the notices no longer point to the plugin's page in Moodle Marketplace (nothing
