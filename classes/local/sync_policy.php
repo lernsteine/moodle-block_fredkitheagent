@@ -23,6 +23,7 @@
  */
 
 namespace block_fredkitheagent\local;
+
 /**
  * Decide whether a remotely acknowledged document may be reused after a complete Moodle rescan.
  */

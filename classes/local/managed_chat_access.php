@@ -23,6 +23,7 @@
  */
 
 namespace block_fredkitheagent\local;
+
 /**
  * Managed chat access class.
  *

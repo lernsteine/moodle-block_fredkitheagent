@@ -128,6 +128,10 @@ jobs:
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci mustache
 
+      - name: Make plugin git objects writable (grunt restores a backup of the plugin directory)
+        if: ${{ !cancelled() }}
+        run: find moodle -path '*/blocks/fredkitheagent/.git' -prune -exec chmod -R u+w {} +
+
       - name: Grunt (ESLint, stylelint, AMD build)
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci grunt --max-lint-warnings 0

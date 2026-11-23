@@ -23,6 +23,7 @@
  */
 
 namespace block_fredkitheagent\local;
+
 /**
  * Display-only course-specific design; never stores or changes FredKI credentials.
  */

@@ -23,6 +23,7 @@
  */
 
 namespace block_fredkitheagent;
+
 /**
  * Full Moodle scan; delta transfer unless an explicit complete server recheck is requested.
  *
