@@ -41,19 +41,20 @@ are based on the materials of that course only.
 ## Costs
 
 * The plugin itself is **free and open source** (GNU GPL v3 or later).
-* The plugin uses the hosted FredKI service by lernsteine.com. FredKI itself is open source
-  (GNU GPL v3): <https://github.com/lernsteine/FredKI>.
+* The AI does not run in your Moodle: the plugin uses the hosted FredKI® service by LERNSTEINE® (servers in
+  Germany), to which the course material is transferred. FredKI® itself is open source (GNU GPL v3):
+  <https://github.com/lernsteine/FredKI>.
 * A site administrator registers the Moodle site once (Site administration → Plugins → Blocks →
   FredKI The Agent → "Open activation"). Registration is free.
-* **Free package – permanent, no payment needed.** Every site can use the plugin without paying and
-  without time limit: one course with a course agent and 200 answered chat messages per month (the counter
-  starts again on the 1st of each month). All functions of the plugin are available in that course: setting
-  up the course agent, transferring the course material, the protected course chat and agent roles.
-* After registration the administrator accepts the terms, the privacy notice and the data processing
-  agreement (Art. 28 GDPR) and clicks **"Start for free"**: no payment method is needed. The licence
-  server only checks automatically that the Moodle site is reachable at its domain.
-* **Packages with more courses and messages** (optional) are activated with a licence key, which the
-  administrator enters on the activation page. When a package ends, the site automatically continues in the free package.
+* **Free package – permanent, no payment needed.** After registration the administrator accepts the terms, the
+  privacy notice and the data processing agreement (Art. 28 GDPR) and clicks **"Start for free"**: no payment
+  method, no time limit. It includes one course with a course agent and 200 answers of the agent per month (the
+  counter starts again on the 1st of each month), with all functions of the plugin: setting up the course
+  agent, transferring the course material, the protected course chat and agent roles. The licence server only
+  checks automatically that the Moodle site is reachable at its domain.
+* **More courses or messages** need a **paid package**. A package is activated with a licence key, which the
+  administrator enters on the activation page. When the package ends, the site automatically continues in the
+  free package (one course, 200 answers per month).
 * When the course limit is reached, further courses cannot be connected; connected courses keep
   working. When the monthly messages are used up, the chat says so and is available again next month.
   Questions: info@lernsteine.com
@@ -119,13 +120,20 @@ Questions about the hosted service and packages: info@lernsteine.com
 
 ## Kurzbeschreibung (Deutsch)
 
-„FredKI The Agent“ legt per Klick für jeden Kurs eine eigene Wissensbasis und einen eigenen
-Kurs-Agenten an, überträgt das Kursmaterial und stellt den Lernenden einen geschützten Chat im Kurs
-bereit. Der Block ist nur für Lehrkräfte sichtbar. Für den Betrieb ist ein externer Dienst
-(FredKI-Freigabeserver von LERNSTEINE®) nötig; die Moodle-Installation wird einmalig kostenlos
-registriert. **Das kostenlose Paket gilt dauerhaft, ohne Zahlung und ohne Zeitlimit** („Kostenlos starten“,
-keine Zahlungsart nötig): ein Kurs mit Kurs-Agent und 200 beantwortete Nachrichten pro Monat, mit allen
-Funktionen des Plugins. Pakete mit mehr Kursen und mehr Nachrichten werden optional
-mit einem Lizenzschlüssel freigeschaltet, den die Administration auf der Aktivierungsseite einträgt. Endet ein Paket, geht es automatisch
-im kostenlosen Paket weiter. Das Plugin selbst
-ist kostenlos (GNU GPL v3 oder später). FredKI ist Open Source: <https://github.com/lernsteine/FredKI>.
+„FredKI® The Agent“ richtet per Klick für jeden Kurs einen eigenen KI-Agenten ein: Das Kursmaterial
+wird zu seiner Wissensbasis, und die Lernenden erhalten im Kurs einen geschützten Chat, in dem der
+Agent aus genau diesem Material antwortet. Der Block ist nur für Kursleitende sichtbar.
+
+**Plugin und Dienst.** Das Plugin ist kostenlos und Open Source (GNU GPL v3 oder später). Die KI läuft
+aber nicht in Ihrem Moodle, sondern im FredKI®-Dienst von LERNSTEINE® (Server in Deutschland); dorthin wird
+das Kursmaterial übertragen. FredKI® selbst ist Open Source: <https://github.com/lernsteine/FredKI>.
+Dafür registriert die Administration die Moodle-Installation einmalig auf der Aktivierungsseite –
+die Registrierung kostet nichts.
+
+**Kostenloses Grundpaket – dauerhaft.** Nach der Registrierung genügt ein Klick auf „Kostenlos starten“:
+keine Zahlungsart, kein Zeitlimit. Enthalten sind ein Kurs mit Kurs-Agent und 200 Antworten des Agenten
+pro Monat, mit allen Funktionen des Plugins.
+
+**Mehr Kurse oder Nachrichten.** Dafür gibt es kostenpflichtige Pakete. Ein Paket wird mit einem
+Lizenzschlüssel freigeschaltet, den die Administration auf der Aktivierungsseite einträgt. Endet das Paket,
+arbeitet die Installation automatisch im kostenlosen Grundpaket weiter (ein Kurs, 200 Antworten pro Monat).
