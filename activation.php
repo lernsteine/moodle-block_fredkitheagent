@@ -218,12 +218,11 @@ if (!$registered || $connectionlost) {
             ? ['checks' => $legalchecks($status['legal'])] : false,
         'trialend' => !empty($status['trial_ends_at'])
             ? get_string('managedtrialend', $pn) . ': ' . userdate((int)$status['trial_ends_at']) : false,
-        'freepackage' => ($status['tier'] ?? '') === 'free',
         'quota' => false,
-        'quotacaption' => false,
-        'plan' => false,
-        'licence' => false,
+        'usage' => false,
     ];
+    $free = ($status['tier'] ?? '') === 'free';
+    $meters = [];
     $quota = $status['message_quota'] ?? ($status['free_quota'] ?? null);
     if (is_array($quota)) {
         $a = (object)[
@@ -232,25 +231,42 @@ if (!$registered || $connectionlost) {
                 ? userdate((int)$quota['resets_at'], get_string('strftimedate', 'langconfig')) : '-',
         ];
         if ($a->used * 5 >= $a->limit * 4) {
-            // From 80 %: a clear box instead of the small caption.
-            $info['quota'] = \block_fredkitheagent\local\output_helper::quota($a, true, $info['freepackage']);
-        } else {
-            $info['quotacaption'] = get_string('actfreequota', $pn, $a);
+            // From 80 %: a clear box in addition to the meter.
+            $info['quota'] = \block_fredkitheagent\local\output_helper::quota($a, true, $free);
         }
+        $meters[] = [
+            'label' => get_string('actmetermessages', $pn),
+            'value' => get_string('actmeterof', $pn, $a),
+            'current' => min($a->used, $a->limit), 'max' => max(1, $a->limit),
+            'sub' => get_string('actmeterreset', $pn, $a->reset),
+        ];
     }
-    if (!empty($status['plan']) && !empty($status['course_limit'])) {
-        $info['plan'] = get_string('actplan', $pn, (object)[
-            'plan' => $status['plan'], 'used' => (int)($status['courses_used'] ?? 0), 'limit' => (int)$status['course_limit'],
-        ]);
+    if (!empty($status['course_limit'])) {
+        $cu = (object)['used' => (int)($status['courses_used'] ?? 0), 'limit' => (int)$status['course_limit']];
+        $meters[] = [
+            'label' => get_string('actmetercourses', $pn),
+            'value' => get_string('actmeterof', $pn, $cu),
+            'current' => min($cu->used, $cu->limit), 'max' => max(1, $cu->limit), 'sub' => false,
+        ];
     }
+    $licence = false;
     if (!empty($status['licence'])) {
-        $info['licence'] = get_string('actlicenceactive', $pn, $status['licence']['hint']);
+        $licence = get_string('actlicenceactive', $pn, $status['licence']['hint']);
         if (!empty($status['licence']['ends_at'])) {
-            $info['licence'] .= ' · ' . get_string('actlicenceends', $pn, userdate(
+            $licence .= ' · ' . get_string('actlicenceends', $pn, userdate(
                 (int)$status['licence']['ends_at'],
                 get_string('strftimedate', 'langconfig')
             ));
         }
+    }
+    if ($free || !empty($status['plan']) || $meters) {
+        $info['usage'] = [
+            'badge' => $free ? get_string('actbadgefree', $pn) : get_string('actpackage', $pn, (string)($status['plan'] ?? '')),
+            'free' => $free,
+            'badgesub' => $free ? get_string('actbadgefreesub', $pn) : false,
+            'meters' => $meters,
+            'licence' => $licence,
+        ];
     }
     $data['active'] = $info;
     $data['licenceform'] = !(bool)$info['legalform'];

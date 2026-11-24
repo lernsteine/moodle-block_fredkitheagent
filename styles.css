@@ -3602,3 +3602,108 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
 .fredki-ios.is-busy .fk-removelink {
     visibility: hidden;
 }
+
+/* 1.9.0: inviting activation page - usage card with meters, strong primary buttons, licence card. */
+.fk-act .fk-actbutton,
+.fk-act .fk-actbutton:visited {
+    border: 0;
+    background: linear-gradient(135deg, #0a9fb1 0%, #00818f 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 129, 143, .24), inset 0 1px 0 rgba(255, 255, 255, .22);
+    text-decoration: none;
+}
+.fk-act .fk-actbutton:hover,
+.fk-act .fk-actbutton:focus,
+.fk-act a.fk-actbutton:hover,
+.fk-act a.fk-actbutton:focus {
+    background: linear-gradient(135deg, #0aa7ba 0%, #006f7c 100%);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(0, 129, 143, .30), inset 0 1px 0 rgba(255, 255, 255, .26);
+    text-decoration: none;
+}
+.fk-act .fk-actbutton:focus-visible {
+    outline: 3px solid rgba(0, 129, 143, .38);
+    outline-offset: 3px;
+}
+.fk-act .fk-usage {
+    margin-top: 16px;
+    padding: 16px 18px 14px;
+    border: 1px solid #d9ecef;
+    border-radius: 20px;
+    background: #f4fafb;
+}
+.fk-act .fk-usagehead {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    margin-bottom: 14px;
+}
+.fk-act .fk-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0a9fb1 0%, #00818f 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 650;
+}
+.fk-act .fk-badge.is-free {
+    background: #dff1f4;
+    color: #0b5a63;
+}
+.fk-act .fk-badgesub {
+    font-size: 12.5px;
+    color: #5f6b6e;
+}
+.fk-act .fk-meter + .fk-meter {
+    margin-top: 14px;
+}
+.fk-act .fk-meterline {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-size: 14px;
+}
+.fk-act .fk-meterline strong {
+    font-size: 15px;
+    font-weight: 650;
+    color: #0b5a63;
+}
+.fk-act .fk-meterbar {
+    display: block;
+    width: 100%;
+    height: 10px;
+    margin-top: 6px;
+    border: 0;
+    border-radius: 999px;
+    background: #dbe9ec;
+    overflow: hidden;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.fk-act .fk-meterbar::-webkit-progress-bar {
+    background: #dbe9ec;
+    border-radius: 999px;
+}
+.fk-act .fk-meterbar::-webkit-progress-value {
+    background: linear-gradient(90deg, #0e9fae, #0b7f8c);
+    border-radius: 999px;
+}
+.fk-act .fk-meterbar::-moz-progress-bar {
+    background: linear-gradient(90deg, #0e9fae, #0b7f8c);
+    border-radius: 999px;
+}
+.fk-act .fk-metersub {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: #5f6b6e;
+}
+.fk-act .fk-licence {
+    margin-top: 18px;
+    padding: 18px 18px 20px;
+    border: 1px solid #d9ecef;
+    border-radius: 20px;
+    background: #f9fcfd;
+}

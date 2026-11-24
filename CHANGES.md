@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.0 (2026-11-24)
+
+* More inviting activation page: a usage card shows the package, the messages of this month and the courses with a
+  course agent as meters; the main buttons are stronger; the licence key sits in its own card.
+* No functional changes to the chat, the synchronisation or the licence handling.
+
 ## 1.8.8 (2026-11-23)
 
 * Description only: README states plainly what is free (the plugin, registration, the permanent free package of

@@ -25,7 +25,7 @@
     * steps - The three steps (label, number, done, current)
     * register - Registration form or false
     * pending - Start for free or false
-    * active - Status of an active site or false
+    * active - Status of an active site (quota box, usage card with meters) or false
     * inactive - Label of an inactive state or false
     * licenceform - Whether the licence key form is shown
     * registered - Whether the site is registered (connection reset)
@@ -97,11 +97,23 @@
                 <p><strong>{{#str}} managedapprovedslogan, block_fredkitheagent {{/str}}</strong></p>
             </div>
             {{#trialend}}<div class="fk-caption">{{.}}</div>{{/trialend}}
-            {{#freepackage}}<div class="fk-caption">{{#str}} actfreepackage, block_fredkitheagent {{/str}}</div>{{/freepackage}}
             {{#quota}}{{> block_fredkitheagent/quota }}{{/quota}}
-            {{#quotacaption}}<div class="fk-caption">{{.}}</div>{{/quotacaption}}
-            {{#plan}}<div class="fk-caption">{{.}}</div>{{/plan}}
-            {{#licence}}<div class="fk-caption">{{.}}</div>{{/licence}}
+            {{#usage}}
+            <div class="fk-usage">
+                <div class="fk-usagehead">
+                    <span class="fk-badge{{#free}} is-free{{/free}}">{{badge}}</span>
+                    {{#badgesub}}<span class="fk-badgesub">{{.}}</span>{{/badgesub}}
+                </div>
+                {{#meters}}
+                <div class="fk-meter">
+                    <div class="fk-meterline"><span>{{label}}</span><strong>{{value}}</strong></div>
+                    <progress class="fk-meterbar" max="{{max}}" value="{{current}}" aria-label="{{label}}: {{value}}">{{value}}</progress>
+                    {{#sub}}<div class="fk-metersub">{{.}}</div>{{/sub}}
+                </div>
+                {{/meters}}
+                {{#licence}}<div class="fk-metersub">{{.}}</div>{{/licence}}
+            </div>
+            {{/usage}}
         {{/active}}
 
         {{#inactive}}

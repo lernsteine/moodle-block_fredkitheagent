@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['actfreepackage'] = 'Free package: one course with course agent and 200 answered messages per month.';
-$string['actfreequota'] = 'Messages this month: {$a->used} of {$a->limit} · new messages from {$a->reset}';
+$string['actbadgefree'] = 'Free package';
+$string['actbadgefreesub'] = 'Permanent, no payment needed';
 $string['actfreestartaccept'] = 'Please accept the terms, the privacy notice and the data processing agreement to start for free.';
 $string['actfreestartavv'] = 'I conclude the {$a->avv} (Art. 28 GDPR) on behalf of the organisation running this Moodle site. It covers the course content, questions and forum posts that FredKI processes on our behalf.';
 $string['actfreestartbutton'] = 'Start for free';
@@ -51,8 +51,12 @@ $string['actlicencekey'] = 'Licence key';
 $string['actlicencetitle'] = 'Licence key';
 $string['actlicencetoomany'] = 'Too many attempts. Please try again in an hour.';
 $string['actlicenceunknown'] = 'This licence key is not known. Please check the key from the e-mail.';
+$string['actmetercourses'] = 'Courses with course agent';
+$string['actmetermessages'] = 'Messages this month';
+$string['actmeterof'] = '{$a->used} of {$a->limit}';
+$string['actmeterreset'] = 'New messages from {$a}';
+$string['actpackage'] = 'Package: {$a}';
 $string['actpendingcaption'] = 'LERNSTEINE® has been notified and will activate access shortly. You do not need to register again.';
-$string['actplan'] = 'Package: {$a->plan} · Courses with course agent: {$a->used} of {$a->limit}';
 $string['actstepapproval'] = 'Approval';
 $string['actstepready'] = 'Ready';
 $string['actstepregister'] = 'Register';
