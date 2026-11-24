@@ -96,17 +96,13 @@ final class course_design_logo_test extends \advanced_testcase {
     }
 
     /**
-     * Settings saved by version 1.9.2 still work.
+     * The shape value "square" of version 1.9.2 is read as rounded corners.
      */
-    public function test_settings_of_version_192_are_still_read(): void {
+    public function test_square_of_version_192_means_rounded(): void {
         $this->resetAfterTest();
         set_config('chatlogoshape', 'square', 'block_fredkitheagent');
-        set_config('chatlogosize', 96, 'block_fredkitheagent');
         $a = course_design::logo_appearance();
         $this->assertSame('rounded', $a['logoshape']);
-        $this->assertSame('rounded', $a['buttonshape']);
-        $this->assertSame(96, $a['width']);
-        $this->assertSame(96, $a['height']);
     }
 
     /**

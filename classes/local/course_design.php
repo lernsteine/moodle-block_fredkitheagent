@@ -189,11 +189,10 @@ final class course_design {
      */
     public static function logo_appearance(): array {
         $cfg = get_config('block_fredkitheagent');
-        $legacysize = self::button_size($cfg->chatlogosize ?? 0, self::BUTTON_DEFAULT);
         $logoshape = self::shape($cfg->chatlogoshape ?? '', 'round');
         $buttonshape = self::shape($cfg->chatbuttonshape ?? ($cfg->chatlogoshape ?? ''), 'rounded');
-        $width = self::button_size($cfg->chatbuttonwidth ?? 0, $legacysize);
-        $height = self::button_size($cfg->chatbuttonheight ?? 0, $legacysize);
+        $width = self::button_size($cfg->chatbuttonwidth ?? 0, self::BUTTON_DEFAULT);
+        $height = self::button_size($cfg->chatbuttonheight ?? 0, self::BUTTON_DEFAULT);
         $frame = isset($cfg->chatlogoframe) ? !empty($cfg->chatlogoframe) : true;
         $keepratio = isset($cfg->chatbuttonkeepratio) ? !empty($cfg->chatbuttonkeepratio) : true;
 
