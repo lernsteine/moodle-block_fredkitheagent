@@ -101,7 +101,7 @@
             {{#usage}}
             <div class="fk-usage">
                 <div class="fk-usagehead">
-                    <span class="fk-badge{{#free}} is-free{{/free}}">{{badge}}</span>
+                    {{#badge}}<span class="fk-badge{{#free}} is-free{{/free}}">{{.}}</span>{{/badge}}
                     {{#badgesub}}<span class="fk-badgesub">{{.}}</span>{{/badgesub}}
                 </div>
                 {{#meters}}

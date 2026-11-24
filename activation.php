@@ -238,7 +238,7 @@ if (!$registered || $connectionlost) {
             'label' => get_string('actmetermessages', $pn),
             'value' => get_string('actmeterof', $pn, $a),
             'current' => min($a->used, $a->limit), 'max' => max(1, $a->limit),
-            'sub' => get_string('actmeterreset', $pn, $a->reset),
+            'sub' => !empty($quota['resets_at']) ? get_string('actmeterreset', $pn, $a->reset) : false,
         ];
     }
     if (!empty($status['course_limit'])) {
@@ -259,9 +259,15 @@ if (!$registered || $connectionlost) {
             ));
         }
     }
-    if ($free || !empty($status['plan']) || $meters) {
+    $badge = false;
+    if ($free) {
+        $badge = get_string('actbadgefree', $pn);
+    } else if (!empty($status['plan'])) {
+        $badge = get_string('actpackage', $pn, (string)$status['plan']);
+    }
+    if ($badge !== false || $meters) {
         $info['usage'] = [
-            'badge' => $free ? get_string('actbadgefree', $pn) : get_string('actpackage', $pn, (string)($status['plan'] ?? '')),
+            'badge' => $badge,
             'free' => $free,
             'badgesub' => $free ? get_string('actbadgefreesub', $pn) : false,
             'meters' => $meters,

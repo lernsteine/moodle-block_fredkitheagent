@@ -1,0 +1,61 @@
+diff --git a/activation.php b/activation.php
+index a522cc5..994776b 100644
+--- a/activation.php
++++ b/activation.php
+@@ -275,6 +275,15 @@ if (!$registered || $connectionlost) {
+     $data['inactive'] = get_string('managednotactive', $pn) . ': ' . $statelabel;
+     $data['licenceform'] = in_array($state, ['revoked', 'trial_expired'], true);
+ }
++if ($registered && !$connectionlost) {
++    // Edition from fredki.com: more courses or messages are booked on the FredKI website.
++    $data['booking'] = [
++        'url' => 'https://fredki-theagent.lernsteine.de/kurspakete.php?product=agent',
++        'title' => get_string('actbookingtitle', $pn),
++        'text' => get_string('actbookingtext', $pn),
++        'label' => get_string('actbookingbutton', $pn),
++    ];
++}
+ echo $OUTPUT->header();
+ if ($error !== '') {
+     echo $OUTPUT->notification($error, 'notifyproblem');
+diff --git a/lang/en/block_fredkitheagent.php b/lang/en/block_fredkitheagent.php
+index 9e86ad0..39e41b3 100644
+--- a/lang/en/block_fredkitheagent.php
++++ b/lang/en/block_fredkitheagent.php
+@@ -24,6 +24,9 @@
+ 
+ $string['actbadgefree'] = 'Free package';
+ $string['actbadgefreesub'] = 'Permanent, no payment needed';
++$string['actbookingbutton'] = 'Book more courses and messages';
++$string['actbookingtext'] = 'Choose a package on the FredKI® website. You receive a licence key by e-mail and enter it below – no new installation is needed.';
++$string['actbookingtitle'] = 'More courses or more messages?';
+ $string['actfreestartaccept'] = 'Please accept the terms, the privacy notice and the data processing agreement to start for free.';
+ $string['actfreestartavv'] = 'I conclude the {$a->avv} (Art. 28 GDPR) on behalf of the organisation running this Moodle site. It covers the course content, questions and forum posts that FredKI processes on our behalf.';
+ $string['actfreestartbutton'] = 'Start for free';
+diff --git a/templates/activation.mustache b/templates/activation.mustache
+index ae8652b..c2cd08a 100644
+--- a/templates/activation.mustache
++++ b/templates/activation.mustache
+@@ -27,6 +27,7 @@
+     * pending - Start for free or false
+     * active - Status of an active site (quota box, usage card with meters) or false
+     * inactive - Label of an inactive state or false
++    * booking - Booking card (title, text, label, url) or false
+     * licenceform - Whether the licence key form is shown
+     * registered - Whether the site is registered (connection reset)
+ 
+@@ -120,6 +121,14 @@
+             <div class="fk-actwarn">{{.}}</div>
+         {{/inactive}}
+ 
++        {{#booking}}
++        <div class="fk-usage fk-booking">
++            <h4 class="fk-licencetitle">{{title}}</h4>
++            <p>{{text}}</p>
++            <a class="fk-actbutton" href="{{url}}" target="_blank" rel="noopener">{{label}}</a>
++        </div>
++        {{/booking}}
++
+         {{#licenceform}}
+         <div class="fk-licence">
+             <h4 class="fk-licencetitle">{{#str}} actlicencetitle, block_fredkitheagent {{/str}}</h4>

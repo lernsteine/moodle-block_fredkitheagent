@@ -139,3 +139,125 @@ jobs:
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpunit --fail-on-warning
+
+  test-direct:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: 'postgres'
+          POSTGRES_HOST_AUTH_METHOD: 'trust'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MYSQL_USER: 'root'
+          MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+          MYSQL_COLLATION_SERVER: "utf8mb4_unicode_ci"
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mariadb-admin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.3'
+            moodle-branch: 'MOODLE_501_STABLE'
+            database: 'pgsql'
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: Apply the direct edition (card "Book more courses and messages")
+        run: patch -d plugin -p1 < plugin/editions/direct/direct-edition.patch
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.extensions }}
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          sudo locale-gen en_AU.UTF-8
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
+
+      - name: Install moodle-plugin-ci
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: Collect check output as annotations
+        continue-on-error: true
+        if: ${{ !cancelled() }}
+        run: |
+          for c in "phpcs --max-warnings 0" "phpdoc --max-warnings 0" "validate"; do
+            moodle-plugin-ci $c > /tmp/out.txt 2>&1 || true
+            msg=$(sed 's#/home/runner/work/[^ ]*/blocks/fredkitheagent/##' /tmp/out.txt | head -c 30000 | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')
+            echo "::notice title=${c%% *}::$msg"
+          done
+
+      - name: PHP Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: PHP Mess Detector
+        continue-on-error: true # advisory only
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpmd
+
+      - name: Moodle Code Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Moodle PHPDoc Checker
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpdoc --max-warnings 0
+
+      - name: Validating
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
+
+      - name: Mustache Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci mustache
+
+      - name: Make plugin git objects writable (grunt restores a backup of the plugin directory)
+        if: ${{ !cancelled() }}
+        run: find moodle -path '*/blocks/fredkitheagent/.git' -prune -exec chmod -R u+w {} +
+
+      - name: Grunt (ESLint, stylelint, AMD build)
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci grunt --max-lint-warnings 0
+
+      - name: PHPUnit tests
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phpunit --fail-on-warning
