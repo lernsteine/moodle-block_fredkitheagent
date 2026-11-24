@@ -3786,6 +3786,7 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
 .fredki-course-chat[data-logoshape="square"] .fredki-course-logo {
     border-radius: 10px;
 }
+
 @media (max-width: 560px) {
     .fredkitheagent-floating-trigger {
         width: calc(var(--fk-logo-size) - 8px);
