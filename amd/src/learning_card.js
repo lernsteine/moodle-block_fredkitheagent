@@ -89,18 +89,27 @@ const runSync = (form, hint, anchor) => {
     const ui = progressBox(anchor || form, hint);
     // Read the fields now: the controls of the card are disabled while the synchronisation runs.
     const fields = new URLSearchParams(new FormData(form)).toString();
-    const step = (continuing) => syncStage(form.action, fields, continuing).then((answer) => {
+    // A stage that gets no answer (a short network interruption, a busy server) is repeated twice before the
+    // classic page is used; the stages continue where the previous one stopped, so repeating is safe.
+    const step = (continuing, attempt) => syncStage(form.action, fields, continuing).then((answer) => {
         if (answer.state === 'progress') {
             const percent = Math.max(3, Math.min(100, Math.round(100 * answer.done / Math.max(1, answer.total))));
             ui.bar.style.width = percent + '%';
             ui.text.textContent = answer.text || '';
-            return step(true);
+            return step(true, 0);
         }
         ui.bar.style.width = '100%';
         window.location.href = answer.url || window.location.href;
         return answer;
+    }, (error) => {
+        if (attempt >= 2) {
+            throw error;
+        }
+        return new Promise((resolve) => {
+            window.setTimeout(resolve, 2000);
+        }).then(() => step(true, attempt + 1));
     });
-    step(false).catch(() => {
+    step(false, 0).catch(() => {
         // Classic flow: the server shows its own progress page.
         form.querySelectorAll('input, select, button').forEach((control) => {
             control.disabled = false;

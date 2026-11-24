@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_fredkitheagent';
-$plugin->version = 2026112404;
+$plugin->version = 2026112405;
 $plugin->requires = 2024100700;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [405, 503];
-$plugin->release = '1.9.3';
+$plugin->release = '1.9.4';

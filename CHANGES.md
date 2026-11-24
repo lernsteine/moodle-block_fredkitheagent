@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.4 (2026-11-24)
+
+* Quieter synchronisation: the progress page between two stages (only shown when the background transfer in the block
+  gets no answer) is now a small note with a thin bar instead of a large heading and button. The "Continue now" link
+  only appears if the page has not continued by itself after 15 seconds.
+* A stage of the background transfer that gets no answer is repeated twice before the classic page is used.
+
 ## 1.9.3 (2026-11-24)
 
 * Plugin settings "Chat logo": shape of the logo in the chat window and of the chat button (round, rounded corners or

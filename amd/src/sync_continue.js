@@ -22,15 +22,21 @@
  */
 
 /**
- * Submit the continue form shortly after the progress page is shown.
+ * Submit the continue form shortly after the progress page is shown. The manual button only appears
+ * if nothing has happened after a while.
  *
  * @param {string} formid Id of the continue form.
  */
 export const init = (formid) => {
+    const form = document.getElementById(formid);
+    if (!form) {
+        return;
+    }
+    form.hidden = true;
     window.setTimeout(() => {
-        const form = document.getElementById(formid);
-        if (form) {
-            form.submit();
-        }
+        form.hidden = false;
+    }, 15000);
+    window.setTimeout(() => {
+        form.submit();
     }, 400);
 };

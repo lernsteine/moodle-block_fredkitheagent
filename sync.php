@@ -201,7 +201,6 @@ try {
             $hidden[] = ['name' => $n, 'value' => $v];
         }
         echo $OUTPUT->header();
-        echo $OUTPUT->heading(get_string('syncprogresstitle', 'block_fredkitheagent'));
         echo $OUTPUT->render_from_template('block_fredkitheagent/sync_progress', [
             'text' => get_string(
                 $agentstage ? 'syncprogressagent' : 'syncprogress',

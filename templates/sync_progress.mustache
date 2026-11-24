@@ -35,10 +35,12 @@
         "hidden": [{"name": "courseid", "value": 2}]
     }
 }}
-<p>{{text}}</p>
-<progress class="w-100" max="{{total}}" value="{{done}}"></progress>
-<p class="text-muted">{{#str}} syncprogresshint, block_fredkitheagent {{/str}}</p>
-<form method="post" id="fredki-sync-continue" action="{{url}}">
-    {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
-    <button type="submit" class="btn btn-secondary">{{#str}} syncprogresscontinue, block_fredkitheagent {{/str}}</button>
-</form>
+<div class="fk-syncpage" role="status" aria-live="polite">
+    <p class="fk-syncpage-text">{{text}}</p>
+    <progress class="fk-syncpage-bar" max="{{total}}" value="{{done}}"></progress>
+    <p class="fk-syncpage-hint">{{#str}} syncprogresshint, block_fredkitheagent {{/str}}</p>
+    <form method="post" id="fredki-sync-continue" class="fk-syncpage-form" action="{{url}}">
+        {{#hidden}}<input type="hidden" name="{{name}}" value="{{value}}">{{/hidden}}
+        <button type="submit" class="btn btn-link p-0">{{#str}} syncprogresscontinue, block_fredkitheagent {{/str}}</button>
+    </form>
+</div>
