@@ -78,6 +78,40 @@ const syncStage = (url, fields, continuing) => {
 };
 
 /**
+ * Wait a moment, then send the same stage again.
+ *
+ * @param {string} url Address of sync.php.
+ * @param {string} fields Form fields of the synchronisation form (URL encoded).
+ * @param {number} attempt Number of repetitions so far.
+ * @return {Promise<object>} The answer.
+ */
+function pauseAndRepeat(url, fields, attempt) {
+    return new Promise((resolve) => {
+        window.setTimeout(resolve, 2000);
+    }).then(() => syncStageWithRetry(url, fields, true, attempt + 1));
+}
+
+/**
+ * Send one stage. A stage that gets no answer (a short network interruption, a busy server) is repeated twice
+ * before the caller falls back to the classic page; the stages continue where the previous one stopped,
+ * so repeating is safe.
+ *
+ * @param {string} url Address of sync.php.
+ * @param {string} fields Form fields of the synchronisation form (URL encoded).
+ * @param {boolean} continuing Whether this is a following stage.
+ * @param {number} attempt Number of repetitions so far.
+ * @return {Promise<object>} The answer.
+ */
+function syncStageWithRetry(url, fields, continuing, attempt) {
+    return syncStage(url, fields, continuing).catch((error) => {
+        if (attempt >= 2) {
+            throw error;
+        }
+        return pauseAndRepeat(url, fields, attempt);
+    });
+}
+
+/**
  * Run all stages of a synchronisation inside the block, then reload the course page.
  * Falls back to the classic form submission if the server does not answer with JSON.
  *
@@ -89,27 +123,18 @@ const runSync = (form, hint, anchor) => {
     const ui = progressBox(anchor || form, hint);
     // Read the fields now: the controls of the card are disabled while the synchronisation runs.
     const fields = new URLSearchParams(new FormData(form)).toString();
-    // A stage that gets no answer (a short network interruption, a busy server) is repeated twice before the
-    // classic page is used; the stages continue where the previous one stopped, so repeating is safe.
-    const step = (continuing, attempt) => syncStage(form.action, fields, continuing).then((answer) => {
+    const step = (continuing) => syncStageWithRetry(form.action, fields, continuing, 0).then((answer) => {
         if (answer.state === 'progress') {
             const percent = Math.max(3, Math.min(100, Math.round(100 * answer.done / Math.max(1, answer.total))));
             ui.bar.style.width = percent + '%';
             ui.text.textContent = answer.text || '';
-            return step(true, 0);
+            return step(true);
         }
         ui.bar.style.width = '100%';
         window.location.href = answer.url || window.location.href;
         return answer;
-    }, (error) => {
-        if (attempt >= 2) {
-            throw error;
-        }
-        return new Promise((resolve) => {
-            window.setTimeout(resolve, 2000);
-        }).then(() => step(true, attempt + 1));
     });
-    step(false, 0).catch(() => {
+    step(false).catch(() => {
         // Classic flow: the server shows its own progress page.
         form.querySelectorAll('input, select, button').forEach((control) => {
             control.disabled = false;
