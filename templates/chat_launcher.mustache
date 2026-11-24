@@ -23,8 +23,9 @@
     * courseid - Course id
     * userid - Current user id
     * hidden - Whether the launcher starts hidden
-    * shape - Shape of the button (round or square)
-    * style - Inline custom property with the button size
+    * frame - framed or bare: white frame around the logo or not
+    * fit - contain or cover: logo is shown whole or fills the button
+    * style - Inline custom properties with size, corner radius and padding of the button
     * icon - Icon of the button
     * chaturl - Embedded chat page
 
@@ -33,13 +34,14 @@
         "courseid": 2,
         "userid": 5,
         "hidden": false,
-        "shape": "round",
-        "style": "--fk-logo-size:72px;",
+        "frame": "framed",
+        "fit": "contain",
+        "style": "--fk-btn-w:72px;--fk-btn-h:72px;--fk-btn-r:20px;--fk-btn-pad:9px;--fk-icon-r:11px;",
         "icon": "https://example.com/icon.png",
         "chaturl": "https://example.com/blocks/fredkitheagent/chat.php?courseid=2&embedded=1"
     }
 }}
-<div class="fredkitheagent-floating-root" data-fredkitheagent-launcher="1" data-logoshape="{{shape}}" style="{{style}}" data-courseid="{{courseid}}" data-userid="{{userid}}"{{#hidden}} hidden{{/hidden}}>
+<div class="fredkitheagent-floating-root" data-fredkitheagent-launcher="1" data-frame="{{frame}}" data-fit="{{fit}}" style="{{style}}" data-courseid="{{courseid}}" data-userid="{{userid}}"{{#hidden}} hidden{{/hidden}}>
     <button type="button" class="fredkitheagent-floating-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="fredkitheagent-floating-panel-{{courseid}}">
         <img src="{{icon}}" alt="" class="fredkitheagent-floating-icon"><span class="sr-only">{{#str}} managedchatopen, block_fredkitheagent {{/str}}</span>
     </button>

@@ -101,7 +101,9 @@ $lastline = (string)array_pop($welcomelines);
 echo $OUTPUT->render_from_template('block_fredkitheagent/chat_page', [
     'style' => '--fredki-header:' . $header . ';--fredki-accent:' . $accent . ';--fredki-bg:' . $background .
         ';--fredki-botbubble:' . $botbubble . ';--fredki-userbubble:' . $userbubble . ';',
-    'logoshape' => $appearance['shape'],
+    'logoshape' => $appearance['logoshape'],
+    'logoframe' => $appearance['frame'] ? 'framed' : 'bare',
+    'logofit' => $appearance['keepratio'] ? 'contain' : 'cover',
     'courseid' => (int)$courseid,
     'endpoint' => $endpoint,
     'sesskey' => sesskey(),

@@ -431,8 +431,11 @@ class block_fredkitheagent extends block_base {
             'courseid' => (int)$COURSE->id,
             'userid' => (int)$USER->id,
             'hidden' => $initiallyhidden,
-            'shape' => $appearance['shape'],
-            'style' => '--fk-logo-size:' . (int)$appearance['size'] . 'px;',
+            'frame' => $appearance['frame'] ? 'framed' : 'bare',
+            'fit' => $appearance['keepratio'] ? 'contain' : 'cover',
+            'style' => '--fk-btn-w:' . $appearance['width'] . 'px;--fk-btn-h:' . $appearance['height'] . 'px;'
+                . '--fk-btn-r:' . $appearance['radius'] . 'px;--fk-btn-pad:' . $appearance['padding'] . 'px;'
+                . '--fk-icon-r:' . $appearance['innerradius'] . 'px;',
             'icon' => $courseicon ?: $OUTPUT->image_url('icon', 'block_fredkitheagent')->out(false),
             'chaturl' => (new moodle_url('/blocks/fredkitheagent/chat.php', [
                 'courseid' => (int)$COURSE->id, 'embedded' => 1,

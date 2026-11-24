@@ -33,21 +33,52 @@ use block_fredkitheagent\local\course_design;
  */
 final class course_design_logo_test extends \advanced_testcase {
     /**
-     * Without a setting the logo is round and 72 px.
+     * Without any setting the chat keeps its familiar look: round avatar, rounded square button of 72 px.
      */
     public function test_defaults(): void {
         $this->resetAfterTest();
-        $this->assertSame(['shape' => 'round', 'size' => 72], course_design::logo_appearance());
+        $a = course_design::logo_appearance();
+        $this->assertSame('round', $a['logoshape']);
+        $this->assertSame('rounded', $a['buttonshape']);
+        $this->assertSame(72, $a['width']);
+        $this->assertSame(72, $a['height']);
+        $this->assertTrue($a['frame']);
+        $this->assertTrue($a['keepratio']);
+        $this->assertSame(20, $a['radius']);
     }
 
     /**
-     * Allowed values are used as they are.
+     * Width and height are independent, the shape decides the corner radius.
      */
     public function test_valid_values(): void {
         $this->resetAfterTest();
-        set_config('chatlogoshape', 'square', 'block_fredkitheagent');
-        set_config('chatlogosize', 120, 'block_fredkitheagent');
-        $this->assertSame(['shape' => 'square', 'size' => 120], course_design::logo_appearance());
+        set_config('chatlogoshape', 'sharp', 'block_fredkitheagent');
+        set_config('chatbuttonshape', 'round', 'block_fredkitheagent');
+        set_config('chatbuttonwidth', 144, 'block_fredkitheagent');
+        set_config('chatbuttonheight', 96, 'block_fredkitheagent');
+        set_config('chatlogoframe', 0, 'block_fredkitheagent');
+        set_config('chatbuttonkeepratio', 0, 'block_fredkitheagent');
+        $a = course_design::logo_appearance();
+        $this->assertSame('sharp', $a['logoshape']);
+        $this->assertSame('round', $a['buttonshape']);
+        $this->assertSame(144, $a['width']);
+        $this->assertSame(96, $a['height']);
+        $this->assertFalse($a['frame']);
+        $this->assertFalse($a['keepratio']);
+        $this->assertSame(48, $a['radius']);
+        $this->assertSame(0, $a['padding']);
+    }
+
+    /**
+     * Sizes are kept within the allowed range.
+     */
+    public function test_sizes_are_clamped(): void {
+        $this->resetAfterTest();
+        set_config('chatbuttonwidth', 9999, 'block_fredkitheagent');
+        set_config('chatbuttonheight', 5, 'block_fredkitheagent');
+        $a = course_design::logo_appearance();
+        $this->assertSame(course_design::BUTTON_MAX, $a['width']);
+        $this->assertSame(course_design::BUTTON_MIN, $a['height']);
     }
 
     /**
@@ -56,8 +87,26 @@ final class course_design_logo_test extends \advanced_testcase {
     public function test_invalid_values_fall_back(): void {
         $this->resetAfterTest();
         set_config('chatlogoshape', 'x" onmouseover="y', 'block_fredkitheagent');
-        set_config('chatlogosize', 9999, 'block_fredkitheagent');
-        $this->assertSame(['shape' => 'round', 'size' => 72], course_design::logo_appearance());
+        set_config('chatbuttonshape', '<b>', 'block_fredkitheagent');
+        set_config('chatbuttonwidth', 'abc', 'block_fredkitheagent');
+        $a = course_design::logo_appearance();
+        $this->assertSame('round', $a['logoshape']);
+        $this->assertSame('rounded', $a['buttonshape']);
+        $this->assertSame(72, $a['width']);
+    }
+
+    /**
+     * Settings saved by version 1.9.2 still work.
+     */
+    public function test_settings_of_version_192_are_still_read(): void {
+        $this->resetAfterTest();
+        set_config('chatlogoshape', 'square', 'block_fredkitheagent');
+        set_config('chatlogosize', 96, 'block_fredkitheagent');
+        $a = course_design::logo_appearance();
+        $this->assertSame('rounded', $a['logoshape']);
+        $this->assertSame('rounded', $a['buttonshape']);
+        $this->assertSame(96, $a['width']);
+        $this->assertSame(96, $a['height']);
     }
 
     /**

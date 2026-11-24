@@ -31,11 +31,17 @@ final class course_design {
     /** @var mixed Value for colors. */
     public const COLORS = ['headercolor', 'accentcolor', 'backgroundcolor', 'botbubblecolor', 'userbubblecolor'];
 
-    /** @var int[] Selectable sizes of the chat button in pixels. */
-    public const LOGO_SIZES = [56, 72, 96, 120];
+    /** @var string[] Selectable shapes of the chat logo and of the chat button. */
+    public const LOGO_SHAPES = ['round', 'rounded', 'sharp'];
 
-    /** @var string[] Selectable shapes of the chat logo. */
-    public const LOGO_SHAPES = ['round', 'square'];
+    /** @var int Smallest size of the chat button in pixels. */
+    public const BUTTON_MIN = 40;
+
+    /** @var int Largest size of the chat button in pixels. */
+    public const BUTTON_MAX = 240;
+
+    /** @var int Default size of the chat button in pixels. */
+    public const BUTTON_DEFAULT = 72;
 
     /**
      * Get.
@@ -142,16 +148,68 @@ final class course_design {
     }
 
     /**
-     * Shape and size of the chat logo from the plugin settings; unknown values fall back to the defaults.
+     * Shape of a logo from a stored setting value; unknown values fall back to the default.
      *
-     * @return array Keys shape (round or square) and size (pixels).
+     * @param mixed $value The stored value.
+     * @param string $default The default shape.
+     * @return string The result.
+     */
+    private static function shape($value, string $default): string {
+        $value = (string)$value;
+        if ($value === 'square') {
+            // Value of version 1.9.2: square with rounded corners.
+            $value = 'rounded';
+        }
+        return in_array($value, self::LOGO_SHAPES, true) ? $value : $default;
+    }
+
+    /**
+     * A size of the chat button in pixels, kept within the allowed range.
+     *
+     * @param mixed $value The stored value.
+     * @param int $fallback The value to use if nothing valid is stored.
+     * @return int The result.
+     */
+    private static function button_size($value, int $fallback): int {
+        $value = (int)$value;
+        if ($value <= 0) {
+            return $fallback;
+        }
+        return max(self::BUTTON_MIN, min(self::BUTTON_MAX, $value));
+    }
+
+    /**
+     * Appearance of the chat logo and of the chat button from the plugin settings.
+     *
+     * Unknown or missing values fall back to the defaults, so nothing from the settings can break the page.
+     *
+     * @return array Keys: logoshape, buttonshape (round, rounded or sharp), width, height (pixels),
+     *               frame (white frame around the logo), keepratio (logo is not cropped),
+     *               radius, padding, innerradius (pixels, derived).
      */
     public static function logo_appearance(): array {
-        $shape = (string)get_config('block_fredkitheagent', 'chatlogoshape');
-        $size = (int)get_config('block_fredkitheagent', 'chatlogosize');
+        $cfg = get_config('block_fredkitheagent');
+        $legacysize = self::button_size($cfg->chatlogosize ?? 0, self::BUTTON_DEFAULT);
+        $logoshape = self::shape($cfg->chatlogoshape ?? '', 'round');
+        $buttonshape = self::shape($cfg->chatbuttonshape ?? ($cfg->chatlogoshape ?? ''), 'rounded');
+        $width = self::button_size($cfg->chatbuttonwidth ?? 0, $legacysize);
+        $height = self::button_size($cfg->chatbuttonheight ?? 0, $legacysize);
+        $frame = isset($cfg->chatlogoframe) ? !empty($cfg->chatlogoframe) : true;
+        $keepratio = isset($cfg->chatbuttonkeepratio) ? !empty($cfg->chatbuttonkeepratio) : true;
+
+        $min = min($width, $height);
+        $radius = ['round' => intdiv($min, 2), 'rounded' => (int)round($min * 0.28), 'sharp' => 0][$buttonshape];
+        $padding = $frame ? (int)round($min * 0.12) : 0;
         return [
-            'shape' => in_array($shape, self::LOGO_SHAPES, true) ? $shape : 'round',
-            'size' => in_array($size, self::LOGO_SIZES, true) ? $size : 72,
+            'logoshape' => $logoshape,
+            'buttonshape' => $buttonshape,
+            'width' => $width,
+            'height' => $height,
+            'frame' => $frame,
+            'keepratio' => $keepratio,
+            'radius' => $radius,
+            'padding' => $padding,
+            'innerradius' => max(0, $radius - $padding),
         ];
     }
 }

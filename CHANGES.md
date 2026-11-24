@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.3 (2026-11-24)
+
+* Plugin settings "Chat logo": shape of the logo in the chat window and of the chat button (round, rounded corners or
+  sharp corners), width and height of the chat button in pixels (40 to 240, independent of each other), optional white
+  frame around the logo, and the choice whether the logo keeps its proportions or fills the button.
+  Replaces the fixed sizes of 1.9.2; settings saved with 1.9.2 are still respected.
+
 ## 1.9.2 (2026-11-24)
 
 * Plugin settings: the chat logo can now be shown round or square (rounded corners), and the size of the button at the

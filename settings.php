@@ -107,20 +107,48 @@ if ($ADMIN->fulltree) {
         get_string('settinglogoshape_desc', 'block_fredkitheagent'),
         'round',
         [
-            'round' => get_string('settinglogoshape_round', 'block_fredkitheagent'),
-            'square' => get_string('settinglogoshape_square', 'block_fredkitheagent'),
+            'round' => get_string('settingshape_round', 'block_fredkitheagent'),
+            'rounded' => get_string('settingshape_rounded', 'block_fredkitheagent'),
+            'sharp' => get_string('settingshape_sharp', 'block_fredkitheagent'),
         ]
     ));
+    $settings->add(new admin_setting_configcheckbox(
+        'block_fredkitheagent/chatlogoframe',
+        get_string('settinglogoframe', 'block_fredkitheagent'),
+        get_string('settinglogoframe_desc', 'block_fredkitheagent'),
+        1
+    ));
     $settings->add(new admin_setting_configselect(
-        'block_fredkitheagent/chatlogosize',
-        get_string('settinglogosize', 'block_fredkitheagent'),
-        get_string('settinglogosize_desc', 'block_fredkitheagent'),
-        72,
+        'block_fredkitheagent/chatbuttonshape',
+        get_string('settingbuttonshape', 'block_fredkitheagent'),
+        get_string('settingbuttonshape_desc', 'block_fredkitheagent'),
+        'rounded',
         [
-            56 => get_string('settinglogosize_s', 'block_fredkitheagent'),
-            72 => get_string('settinglogosize_m', 'block_fredkitheagent'),
-            96 => get_string('settinglogosize_l', 'block_fredkitheagent'),
-            120 => get_string('settinglogosize_xl', 'block_fredkitheagent'),
+            'round' => get_string('settingshape_round', 'block_fredkitheagent'),
+            'rounded' => get_string('settingshape_rounded', 'block_fredkitheagent'),
+            'sharp' => get_string('settingshape_sharp', 'block_fredkitheagent'),
         ]
+    ));
+    $settings->add(new admin_setting_configtext(
+        'block_fredkitheagent/chatbuttonwidth',
+        get_string('settingbuttonwidth', 'block_fredkitheagent'),
+        get_string('settingbuttonwidth_desc', 'block_fredkitheagent'),
+        72,
+        PARAM_INT,
+        5
+    ));
+    $settings->add(new admin_setting_configtext(
+        'block_fredkitheagent/chatbuttonheight',
+        get_string('settingbuttonheight', 'block_fredkitheagent'),
+        get_string('settingbuttonheight_desc', 'block_fredkitheagent'),
+        72,
+        PARAM_INT,
+        5
+    ));
+    $settings->add(new admin_setting_configcheckbox(
+        'block_fredkitheagent/chatbuttonkeepratio',
+        get_string('settingbuttonkeepratio', 'block_fredkitheagent'),
+        get_string('settingbuttonkeepratio_desc', 'block_fredkitheagent'),
+        1
     ));
 }

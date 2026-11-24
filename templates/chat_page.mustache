@@ -25,7 +25,9 @@
     * embedded - Whether the page is shown in the floating panel
     * backurl - Course page
     * logo - Avatar of the agent
-    * logoshape - Shape of the avatar (round or square)
+    * logoshape - Shape of the avatar (round, rounded or sharp)
+    * logoframe - framed or bare: white frame around the avatar or not
+    * logofit - contain or cover: avatar is shown whole or fills its box
     * title - "FredKI" and the role of the course agent
     * subtitle - Subtitle and course name
     * welcome - Opening statement (plain text)
@@ -42,13 +44,15 @@
         "backurl": "https://example.com/course/view.php?id=2",
         "logo": "https://example.com/logo.png",
         "logoshape": "round",
+        "logoframe": "framed",
+        "logofit": "contain",
         "title": "FredKI · Berater",
         "subtitle": "Course agent · Example course",
         "welcome": "Hello!",
         "footer": "Answers can contain errors."
     }
 }}
-<section class="fredki-course-chat" style="{{style}}" data-fredki-chat="1" data-logoshape="{{logoshape}}" data-courseid="{{courseid}}" data-endpoint="{{endpoint}}" data-sesskey="{{sesskey}}" data-threadid="{{threadid}}" data-typinglabel="{{#cleanstr}} chattyping, block_fredkitheagent {{/cleanstr}}">
+<section class="fredki-course-chat" style="{{style}}" data-fredki-chat="1" data-logoshape="{{logoshape}}" data-logoframe="{{logoframe}}" data-logofit="{{logofit}}" data-courseid="{{courseid}}" data-endpoint="{{endpoint}}" data-sesskey="{{sesskey}}" data-threadid="{{threadid}}" data-typinglabel="{{#cleanstr}} chattyping, block_fredkitheagent {{/cleanstr}}">
     <header class="fredki-course-header">
         {{^embedded}}<a href="{{backurl}}" class="fredki-course-back">{{#str}} chatbackcourse, block_fredkitheagent {{/str}}</a>{{/embedded}}
         <img src="{{logo}}" alt="FredKI" class="fredki-course-logo">

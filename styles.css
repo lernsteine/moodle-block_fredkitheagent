@@ -3753,56 +3753,76 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     outline-offset: 3px;
 }
 
-/* Chat logo: size and shape from the plugin settings (1.9.2). */
+/* Chat button and chat logo: size, shape and frame from the plugin settings (1.9.3). */
 .fredkitheagent-floating-root {
-    --fk-logo-size: 72px;
+    --fk-btn-w: 72px;
+    --fk-btn-h: 72px;
+    --fk-btn-r: 22px;
+    --fk-btn-pad: 8px;
+    --fk-icon-r: 14px;
 }
+
 .fredkitheagent-floating-trigger {
-    width: var(--fk-logo-size);
-    height: var(--fk-logo-size);
-    border-radius: 50%;
+    width: var(--fk-btn-w);
+    height: var(--fk-btn-h);
+    border-radius: var(--fk-btn-r);
 }
-.fredkitheagent-floating-root[data-logoshape="square"] .fredkitheagent-floating-trigger {
-    border-radius: calc(var(--fk-logo-size) * .28);
-}
+
 .fredkitheagent-floating-icon {
-    width: calc(var(--fk-logo-size) * .76) !important;
-    height: calc(var(--fk-logo-size) * .76) !important;
-    max-width: calc(var(--fk-logo-size) * .76) !important;
+    width: calc(var(--fk-btn-w) - 2 * var(--fk-btn-pad)) !important;
+    height: calc(var(--fk-btn-h) - 2 * var(--fk-btn-pad)) !important;
+    max-width: calc(var(--fk-btn-w) - 2 * var(--fk-btn-pad)) !important;
+    border-radius: var(--fk-icon-r);
+    object-fit: contain;
 }
-.fredkitheagent-floating-root[data-logoshape="round"] .fredkitheagent-floating-icon {
-    width: calc(var(--fk-logo-size) * .8) !important;
-    height: calc(var(--fk-logo-size) * .8) !important;
-    max-width: calc(var(--fk-logo-size) * .8) !important;
+
+.fredkitheagent-floating-root[data-fit="cover"] .fredkitheagent-floating-icon {
+    object-fit: cover;
+}
+
+.fredkitheagent-floating-root[data-frame="bare"] .fredkitheagent-floating-trigger {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    filter: drop-shadow(0 6px 12px rgba(10, 33, 51, .3));
+}
+
+.fredkitheagent-floating-panel {
+    bottom: calc(var(--fk-btn-h) + 14px);
+}
+
+.fredki-course-chat .fredki-course-logo {
     border-radius: 50%;
     object-fit: contain;
 }
-.fredkitheagent-floating-panel {
-    bottom: calc(var(--fk-logo-size) + 14px);
-}
-.fredki-course-chat[data-logoshape="round"] .fredki-course-logo {
-    border-radius: 50%;
-}
-.fredki-course-chat[data-logoshape="square"] .fredki-course-logo {
+
+.fredki-course-chat[data-logoshape="rounded"] .fredki-course-logo {
     border-radius: 10px;
+}
+
+.fredki-course-chat[data-logoshape="sharp"] .fredki-course-logo {
+    border-radius: 0;
+}
+
+.fredki-course-chat[data-logofit="cover"] .fredki-course-logo {
+    object-fit: cover;
+}
+
+.fredki-course-chat[data-logoframe="bare"] .fredki-course-logo {
+    background: transparent;
 }
 
 @media (max-width: 560px) {
     .fredkitheagent-floating-trigger {
-        width: calc(var(--fk-logo-size) - 8px);
-        height: calc(var(--fk-logo-size) - 8px);
+        transform: scale(.88);
+        transform-origin: right bottom;
     }
-    .fredkitheagent-floating-root[data-logoshape="square"] .fredkitheagent-floating-trigger {
-        border-radius: calc((var(--fk-logo-size) - 8px) * .28);
+
+    .fredkitheagent-floating-trigger:hover,
+    .fredkitheagent-floating-trigger:focus-visible {
+        transform: scale(.88) translateY(-3px);
     }
-    .fredkitheagent-floating-icon {
-        width: calc((var(--fk-logo-size) - 8px) * .76) !important;
-        height: calc((var(--fk-logo-size) - 8px) * .76) !important;
-    }
-    .fredkitheagent-floating-root[data-logoshape="round"] .fredkitheagent-floating-icon {
-        width: calc((var(--fk-logo-size) - 8px) * .8) !important;
-        height: calc((var(--fk-logo-size) - 8px) * .8) !important;
-    }
+
     .fredkitheagent-floating-panel {
         bottom: 0;
     }
