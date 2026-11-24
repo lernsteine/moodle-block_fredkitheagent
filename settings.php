@@ -48,9 +48,14 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'block_fredkitheagent/managedactivation',
         get_string('settingactivationheading', 'block_fredkitheagent'),
-        html_writer::link(
-            new moodle_url('/blocks/fredkitheagent/activation.php'),
-            get_string('settingactivationlink', 'block_fredkitheagent')
+        html_writer::div(
+            html_writer::tag('p', get_string('settingactivationintro', 'block_fredkitheagent'))
+            . html_writer::link(
+                new moodle_url('/blocks/fredkitheagent/activation.php'),
+                get_string('settingactivationlink', 'block_fredkitheagent'),
+                ['class' => 'fk-settingsbutton']
+            ),
+            'fk-settingsactivate'
         )
     ));
     $settings->add(new admin_setting_heading(

@@ -3707,3 +3707,48 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     border-radius: 20px;
     background: #f9fcfd;
 }
+
+/* 1.9.1: clearly visible entry to the activation page in the plugin settings. */
+.fk-settingsactivate {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 20px;
+    max-width: 720px;
+    padding: 18px 20px;
+    border: 1px solid #d9ecef;
+    border-radius: 20px;
+    background: #f4fafb;
+}
+.fk-settingsactivate p {
+    flex: 1 1 260px;
+    margin: 0;
+    font-size: 15px;
+    color: #3f4245;
+}
+.fk-settingsactivate a.fk-settingsbutton,
+.fk-settingsactivate a.fk-settingsbutton:visited {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 28px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #0a9fb1 0%, #00818f 100%);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 650;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 129, 143, .24), inset 0 1px 0 rgba(255, 255, 255, .22);
+}
+.fk-settingsactivate a.fk-settingsbutton:hover,
+.fk-settingsactivate a.fk-settingsbutton:focus {
+    background: linear-gradient(135deg, #0aa7ba 0%, #006f7c 100%);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(0, 129, 143, .30), inset 0 1px 0 rgba(255, 255, 255, .26);
+}
+.fk-settingsactivate a.fk-settingsbutton:focus-visible {
+    outline: 3px solid rgba(0, 129, 143, .38);
+    outline-offset: 3px;
+}

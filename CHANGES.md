@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.1 (2026-11-24)
+
+* Plugin settings: the entry to the activation page is now a clearly visible button with a short explanation
+  instead of a small text link.
+
 ## 1.9.0 (2026-11-24)
 
 * More inviting activation page: a usage card shows the package, the messages of this month and the courses with a
