@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.2 (2026-11-24)
+
+* Plugin settings: the chat logo can now be shown round or square (rounded corners), and the size of the button at the
+  bottom right can be chosen (56, 72, 96 or 120 px). The logo from the settings is now also used on that button
+  (a logo set for a single course still takes precedence). Without a saved setting the logo is round and 72 px.
+
 ## 1.9.1 (2026-11-24)
 
 * Plugin settings: the entry to the activation page is now a clearly visible button with a short explanation

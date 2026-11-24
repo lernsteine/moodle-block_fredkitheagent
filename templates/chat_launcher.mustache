@@ -23,6 +23,8 @@
     * courseid - Course id
     * userid - Current user id
     * hidden - Whether the launcher starts hidden
+    * shape - Shape of the button (round or square)
+    * style - Inline custom property with the button size
     * icon - Icon of the button
     * chaturl - Embedded chat page
 
@@ -31,11 +33,13 @@
         "courseid": 2,
         "userid": 5,
         "hidden": false,
+        "shape": "round",
+        "style": "--fk-logo-size:72px;",
         "icon": "https://example.com/icon.png",
         "chaturl": "https://example.com/blocks/fredkitheagent/chat.php?courseid=2&embedded=1"
     }
 }}
-<div class="fredkitheagent-floating-root" data-fredkitheagent-launcher="1" data-courseid="{{courseid}}" data-userid="{{userid}}"{{#hidden}} hidden{{/hidden}}>
+<div class="fredkitheagent-floating-root" data-fredkitheagent-launcher="1" data-logoshape="{{shape}}" style="{{style}}" data-courseid="{{courseid}}" data-userid="{{userid}}"{{#hidden}} hidden{{/hidden}}>
     <button type="button" class="fredkitheagent-floating-trigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="fredkitheagent-floating-panel-{{courseid}}">
         <img src="{{icon}}" alt="" class="fredkitheagent-floating-icon"><span class="sr-only">{{#str}} managedchatopen, block_fredkitheagent {{/str}}</span>
     </button>

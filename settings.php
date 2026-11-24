@@ -101,4 +101,26 @@ if ($ADMIN->fulltree) {
         get_string('settinglogo_desc', 'block_fredkitheagent'),
         'chatlogo'
     ));
+    $settings->add(new admin_setting_configselect(
+        'block_fredkitheagent/chatlogoshape',
+        get_string('settinglogoshape', 'block_fredkitheagent'),
+        get_string('settinglogoshape_desc', 'block_fredkitheagent'),
+        'round',
+        [
+            'round' => get_string('settinglogoshape_round', 'block_fredkitheagent'),
+            'square' => get_string('settinglogoshape_square', 'block_fredkitheagent'),
+        ]
+    ));
+    $settings->add(new admin_setting_configselect(
+        'block_fredkitheagent/chatlogosize',
+        get_string('settinglogosize', 'block_fredkitheagent'),
+        get_string('settinglogosize_desc', 'block_fredkitheagent'),
+        72,
+        [
+            56 => get_string('settinglogosize_s', 'block_fredkitheagent'),
+            72 => get_string('settinglogosize_m', 'block_fredkitheagent'),
+            96 => get_string('settinglogosize_l', 'block_fredkitheagent'),
+            120 => get_string('settinglogosize_xl', 'block_fredkitheagent'),
+        ]
+    ));
 }

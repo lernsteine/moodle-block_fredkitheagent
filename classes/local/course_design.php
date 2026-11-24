@@ -31,6 +31,12 @@ final class course_design {
     /** @var mixed Value for colors. */
     public const COLORS = ['headercolor', 'accentcolor', 'backgroundcolor', 'botbubblecolor', 'userbubblecolor'];
 
+    /** @var int[] Selectable sizes of the chat button in pixels. */
+    public const LOGO_SIZES = [56, 72, 96, 120];
+
+    /** @var string[] Selectable shapes of the chat logo. */
+    public const LOGO_SHAPES = ['round', 'square'];
+
     /**
      * Get.
      *
@@ -100,5 +106,52 @@ final class course_design {
             )->out(false);
         }
         return null;
+    }
+
+    /**
+     * The chat logo uploaded by the administrator in the plugin settings.
+     *
+     * @return ?string Pluginfile URL or null.
+     */
+    public static function system_logo_url(): ?string {
+        $context = \context_system::instance();
+        $files = get_file_storage()->get_area_files($context->id, 'block_fredkitheagent', 'chatlogo', 0, 'filename', false);
+        foreach ($files as $file) {
+            if (!$file->is_directory()) {
+                return \moodle_url::make_pluginfile_url(
+                    $context->id,
+                    'block_fredkitheagent',
+                    'chatlogo',
+                    0,
+                    '/',
+                    $file->get_filename()
+                )->out(false);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * The logo of the chat: the logo of the course if there is one, otherwise the one from the plugin settings.
+     *
+     * @param int $courseid The course id.
+     * @return ?string The result.
+     */
+    public static function chat_logo_url(int $courseid): ?string {
+        return self::logo_url($courseid) ?? self::system_logo_url();
+    }
+
+    /**
+     * Shape and size of the chat logo from the plugin settings; unknown values fall back to the defaults.
+     *
+     * @return array Keys shape (round or square) and size (pixels).
+     */
+    public static function logo_appearance(): array {
+        $shape = (string)get_config('block_fredkitheagent', 'chatlogoshape');
+        $size = (int)get_config('block_fredkitheagent', 'chatlogosize');
+        return [
+            'shape' => in_array($shape, self::LOGO_SHAPES, true) ? $shape : 'round',
+            'size' => in_array($size, self::LOGO_SIZES, true) ? $size : 72,
+        ];
     }
 }

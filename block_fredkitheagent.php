@@ -425,11 +425,14 @@ class block_fredkitheagent extends block_base {
         // This script must run for BOTH teachers and learners; otherwise the launcher
         // remains an inert button after being moved out of Moodle's block drawer.
         $this->page->requires->js_call_amd('block_fredkitheagent/floating_chat', 'init');
-        $courseicon = \block_fredkitheagent\local\course_design::logo_url((int)$COURSE->id);
+        $courseicon = \block_fredkitheagent\local\course_design::chat_logo_url((int)$COURSE->id);
+        $appearance = \block_fredkitheagent\local\course_design::logo_appearance();
         return $OUTPUT->render_from_template('block_fredkitheagent/chat_launcher', [
             'courseid' => (int)$COURSE->id,
             'userid' => (int)$USER->id,
             'hidden' => $initiallyhidden,
+            'shape' => $appearance['shape'],
+            'style' => '--fk-logo-size:' . (int)$appearance['size'] . 'px;',
             'icon' => $courseicon ?: $OUTPUT->image_url('icon', 'block_fredkitheagent')->out(false),
             'chaturl' => (new moodle_url('/blocks/fredkitheagent/chat.php', [
                 'courseid' => (int)$COURSE->id, 'embedded' => 1,

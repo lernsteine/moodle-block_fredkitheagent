@@ -85,30 +85,9 @@ if ($design && trim((string)$design->footertext) !== '') {
 if ($footer === '') {
     $footer = get_string('chatfooterdefault', 'block_fredkitheagent');
 }
-$courseavatar = \block_fredkitheagent\local\course_design::logo_url($courseid);
-$logo = $courseavatar ?: $OUTPUT->image_url('fredki_the_agent', 'block_fredkitheagent')->out(false);
-$fs = get_file_storage();
-$files = $fs->get_area_files(
-    context_system::instance()->id,
-    'block_fredkitheagent',
-    'chatlogo',
-    0,
-    'filename',
-    false
-);
-foreach ($files as $file) {
-    if (!$courseavatar && !$file->is_directory()) {
-        $logo = moodle_url::make_pluginfile_url(
-            context_system::instance()->id,
-            'block_fredkitheagent',
-            'chatlogo',
-            0,
-            '/',
-            $file->get_filename()
-        )->out(false);
-        break;
-    }
-}
+$logo = \block_fredkitheagent\local\course_design::chat_logo_url($courseid)
+    ?: $OUTPUT->image_url('fredki_the_agent', 'block_fredkitheagent')->out(false);
+$appearance = \block_fredkitheagent\local\course_design::logo_appearance();
 $endpoint = (new moodle_url('/blocks/fredkitheagent/chat_send.php'))->out(false);
 // Generated server-side so a missing WebCrypto API cannot prevent attaching the chat.
 $threadid = 'fk' . bin2hex(random_bytes(18));
@@ -122,6 +101,7 @@ $lastline = (string)array_pop($welcomelines);
 echo $OUTPUT->render_from_template('block_fredkitheagent/chat_page', [
     'style' => '--fredki-header:' . $header . ';--fredki-accent:' . $accent . ';--fredki-bg:' . $background .
         ';--fredki-botbubble:' . $botbubble . ';--fredki-userbubble:' . $userbubble . ';',
+    'logoshape' => $appearance['shape'],
     'courseid' => (int)$courseid,
     'endpoint' => $endpoint,
     'sesskey' => sesskey(),

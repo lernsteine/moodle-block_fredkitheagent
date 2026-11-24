@@ -3752,3 +3752,57 @@ body.fredkitheagent-embedded-chat .fredki-course-messages {
     outline: 3px solid rgba(0, 129, 143, .38);
     outline-offset: 3px;
 }
+
+/* Chat logo: size and shape from the plugin settings (1.9.2). */
+.fredkitheagent-floating-root {
+    --fk-logo-size: 72px;
+}
+.fredkitheagent-floating-trigger {
+    width: var(--fk-logo-size);
+    height: var(--fk-logo-size);
+    border-radius: 50%;
+}
+.fredkitheagent-floating-root[data-logoshape="square"] .fredkitheagent-floating-trigger {
+    border-radius: calc(var(--fk-logo-size) * .28);
+}
+.fredkitheagent-floating-icon {
+    width: calc(var(--fk-logo-size) * .76) !important;
+    height: calc(var(--fk-logo-size) * .76) !important;
+    max-width: calc(var(--fk-logo-size) * .76) !important;
+}
+.fredkitheagent-floating-root[data-logoshape="round"] .fredkitheagent-floating-icon {
+    width: calc(var(--fk-logo-size) * .8) !important;
+    height: calc(var(--fk-logo-size) * .8) !important;
+    max-width: calc(var(--fk-logo-size) * .8) !important;
+    border-radius: 50%;
+    object-fit: contain;
+}
+.fredkitheagent-floating-panel {
+    bottom: calc(var(--fk-logo-size) + 14px);
+}
+.fredki-course-chat[data-logoshape="round"] .fredki-course-logo {
+    border-radius: 50%;
+}
+.fredki-course-chat[data-logoshape="square"] .fredki-course-logo {
+    border-radius: 10px;
+}
+@media (max-width: 560px) {
+    .fredkitheagent-floating-trigger {
+        width: calc(var(--fk-logo-size) - 8px);
+        height: calc(var(--fk-logo-size) - 8px);
+    }
+    .fredkitheagent-floating-root[data-logoshape="square"] .fredkitheagent-floating-trigger {
+        border-radius: calc((var(--fk-logo-size) - 8px) * .28);
+    }
+    .fredkitheagent-floating-icon {
+        width: calc((var(--fk-logo-size) - 8px) * .76) !important;
+        height: calc((var(--fk-logo-size) - 8px) * .76) !important;
+    }
+    .fredkitheagent-floating-root[data-logoshape="round"] .fredkitheagent-floating-icon {
+        width: calc((var(--fk-logo-size) - 8px) * .8) !important;
+        height: calc((var(--fk-logo-size) - 8px) * .8) !important;
+    }
+    .fredkitheagent-floating-panel {
+        bottom: 0;
+    }
+}
